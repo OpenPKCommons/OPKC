@@ -3,7 +3,7 @@ Our first step is gathering a few viral kinetics databases to see what kind of s
 
 Here are the ones we'll start with: 
 
-- **Daily longitudinal sampling of SARS-CoV-2 infection reveals substantial heterogeneity in infectiousness** (Ke *et al.*)
+- [**Daily longitudinal sampling of SARS-CoV-2 infection reveals substantial heterogeneity in infectiousness**](https://static-content.springer.com/esm/art%3A10.1038%2Fs41564-022-01105-z/MediaObjects/41564_2022_1105_MOESM4_ESM.xlsx) (Ke *et al.*)
 - **Viral kinetics of sequential SARS-CoV-2 infections** (Kissler *et al.*)
 - **Combined analyses of within-host SARS-CoV-2 viral kinetics and information on past exposures to the virus in a human cohort identifies intrinsic differences of Omicron and Delta variants** (Russell *et al.*)
 - **Kinetics of SARS-CoV-2 Shedding in Nursing Home Residents and Staff** (Katz *et al.*)
