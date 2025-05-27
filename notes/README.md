@@ -6,7 +6,7 @@ Here are the ones we'll start with:
 - [**Daily longitudinal sampling of SARS-CoV-2 infection reveals substantial heterogeneity in infectiousness**](https://www.nature.com/articles/s41564-022-01105-z) (Ke *et al.* 2022) [Data](https://static-content.springer.com/esm/art%3A10.1038%2Fs41564-022-01105-z/MediaObjects/41564_2022_1105_MOESM4_ESM.xlsx)
 - [**Viral kinetics of sequential SARS-CoV-2 infections**](https://www.nature.com/articles/s41467-023-41941-z) (Kissler *et al.* 2023) [Data](https://github.com/skissler/Ct_SequentialInfections/blob/main/data/ct_dat_refined.csv)
 - [**Combined analyses of within-host SARS-CoV-2 viral kinetics and information on past exposures to the virus in a human cohort identifies intrinsic differences of Omicron and Delta variants**](https://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.3002463) (Russell *et al.* 2024) [Data](https://github.com/thimotei/legacy_ct_modelling/tree/main/data_inference)
-- [**Kinetics of SARS-CoV-2 Shedding in Nursing Home Residents and Staff**](https://agsjournals.onlinelibrary.wiley.com/doi/full/10.1111/jgs.19499) (Katz *et al.* 2025) [Data](https://data.cms.gov/covid-19/covid-19-nursing-home-data)
+- [**Temporal changes in SARS-CoV-2 clearance kinetics and the optimal design of antiviral pharmacodynamic studies: an individual patient data meta-analysis of a randomised, controlled, adaptive platform study (PLATCOV)**](https://agsjournals.onlinelibrary.wiley.com/doi/full/10.1111/jgs.19499) (Wongnak *et al.* 2024) [Data](https://github.com/jwatowatson/Determinants-viral-clearance)
 - [**Mucosal and systemic immune correlates of viral control after SARS-CoV-2 infection challenge in seronegative adults**](https://www.science.org/doi/10.1126/sciimmunol.adj9285) (Wagstaffe *et al.* 2024) [Data](https://www.science.org/doi/suppl/10.1126/sciimmunol.adj9285/suppl_file/sciimmunol.adj9285_data_file_s1.zip)
 
 Here are the headings we'll start with: 
@@ -45,6 +45,10 @@ Here are the headings we'll start with:
 I'm working today on building the ingestion code -- something to take in the different studies and create a rough schema based on their contents. 
 
 So far, this is saved as a directory: `code/ingest_studies/`, where the main file is `create_schema.py`. The study-specific ingestion code is in the `studies/` directory/package, and I'm going to develop some code in `shchema.py` to map the original column names to the schema-specific ones. The files within `studies/` will also need to do some re-shaping. 
+
+A note -- I've replaced the Katz study with Wongnak2024 (the PLATCOV study). I was having trouble finding a public release of the nursing home data from Katz (the epidemiological data is there, but the viral kinetics data doesn't seem to be linked); and I think there may be value in including data that comes from a clinical trial. 
+
+ 
 
 
 
