@@ -40,6 +40,12 @@ Here are the headings we'll start with:
 - **GE_ml_conversion:**: Conversion factor from viral load units to GE/ml
 
 
+# 27 May 2025
+
+I'm working today on building the ingestion code -- something to take in the different studies and create a rough schema based on their contents. 
+
+So far, this is saved as a directory: `code/ingest_studies/`, where the main file is `create_schema.py`. The study-specific ingestion code is in the `studies/` directory/package, and I'm going to develop some code in `shchema.py` to map the original column names to the schema-specific ones. The files within `studies/` will also need to do some re-shaping. 
+
 
 
 
