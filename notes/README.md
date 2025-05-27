@@ -35,9 +35,10 @@ Here are the headings we'll start with:
 - **Subtype:** Pathogen subtype 
 - **Platform:** Test platform
 - **DOI:** DOI of the study or data repository 
-- **VL:** Viral load 
+- **VL:** log10 Viral load 
 - **Units:** Viral load units (*e.g.*, Ct, GE/ml)
-- **GE_ml_conversion:**: Conversion factor from viral load units to GE/ml
+- **GE_ml_conversion_intercept:**: Conversion intercept from viral load units to GE/ml
+- **GE_ml_conversion_slope:**: Conversion slope from viral load units to GE/ml
 
 
 # 27 May 2025
