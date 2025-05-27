@@ -1,10 +1,5 @@
 import pandas as pd
-
-import ingest_ke
-import ingest_kissler
-import ingest_russell
-import ingest_katz
-import ingest_wagstaffe
+from studies import ingest_ke, ingest_kissler, ingest_russell, ingest_katz, ingest_wagstaffe
 
 # Replace 'your_file.xlsx' with the path to your Excel file
 # file_path = 'your_file.xlsx'
