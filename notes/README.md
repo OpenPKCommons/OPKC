@@ -48,7 +48,7 @@ So far, this is saved as a directory: `code/ingest_studies/`, where the main fil
 
 A note -- I've replaced the Katz study with Wongnak2024 (the PLATCOV study). I was having trouble finding a public release of the nursing home data from Katz (the epidemiological data is there, but the viral kinetics data doesn't seem to be linked); and I think there may be value in including data that comes from a clinical trial. 
 
- 
+
 
 
 
