@@ -37,8 +37,8 @@ Here are the headings we'll start with:
 - **DOI:** DOI of the study or data repository 
 - **VL:** log10 Viral load 
 - **Units:** Viral load units (*e.g.*, Ct, GE/ml)
-- **GE_ml_conversion_intercept:**: Conversion intercept from viral load units to GE/ml
-- **GE_ml_conversion_slope:**: Conversion slope from viral load units to GE/ml
+- **GEml_conversion_intercept:**: Conversion intercept from viral load units to GE/ml
+- **GEml_conversion_slope:**: Conversion slope from viral load units to GE/ml
 
 
 # 27 May 2025
