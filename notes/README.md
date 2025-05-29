@@ -75,7 +75,40 @@ Here are the headers in the raw data:
 
 That's in; now I'm going to work on bringing in the dataset from Russell2024. 
 
+Here are the headings: 
 
+- id
+- infection_id
+- swab_date
+- swab_type
+- ct_unadjusted
+- result
+- VOC
+- symptoms
+- symptom_onset_date
+- total_infections
+- no_vaccines
+- date_dose_1
+- date_dose_2
+- date_dose_3
+- date_dose_4
+- uncensored
+- no_pos_results
+- first_pos_test_date
+- t_since_first_pos
+- t
+- onset_time
+- no_exposures
+- age_group
+- ct_type
+- ct_value
+- t_since_last_dose
+- t_first_inf_by_id
+- t_first_inf_to_cur_inf
+- t_since_last_exposure
+- t_first_test
+- data_id
+- swab_type_num
 
 
 
