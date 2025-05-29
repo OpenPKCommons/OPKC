@@ -3,46 +3,27 @@ from schema import enforce_schema, coerce_types
 
 def load_and_format():
     # Import the raw data:
-    df = pd.read_csv("data/ke2022.csv")
+    df = pd.read_csv("data/russell2024.csv")
 
     # Keep only the columns we need: 
-    df = df[['Ind', 'Time', 'Lineage', 'Nasal_CN', 'Saliva_Ct', 'Antigen', 'Age']]
-
-    # Clean up the Ind column: 
-    df["Ind"] = df["Ind"].str.replace(r"\s*\*", "", regex=True)
-
-    # Pivot the test outcome columns into a single column: 
-    df = df.melt(
-        id_vars=[col for col in df.columns if col not in ["Nasal_CN", "Saliva_Ct", "Antigen"]],
-        value_vars=["Nasal_CN", "Saliva_Ct", "Antigen"],
-        var_name="SampleType",
-        value_name="Log10VL"
-        )
-
-    # Map the contents of column SampleType to standard names: 
-    df["SampleType"] = df["SampleType"].replace({
-        "Nasal_CN": "nasal",
-        "Saliva_Ct": "saliva",
-        "Antigen": "antigen"
-        })
+    df = df[['id', 'ct_unadjusted', 'VOC', 'symptoms', 'symptom_onset_date', 't', 'age_group', 'ct_type', 'ct_value']]
 
     # Rename columns to match schema: 
     df = df.rename(columns={
-        "Ind": "PersonID",
-        "Time": "TimeDays",
-        "Lineage": "Subtype",
-        "Age": "AgeRng1"
+        "id": "PersonID",
+        "VOC": "Subtype",
+        "symptoms": "Symptoms1",
+        "t": "TimeDays",
+        "ct_type": "Platform",
+        "ct_value": "Log10VL"
         })
 
     # Add additional columns with known but missing information:
-    df["StudyID"] = "ke2022"
+    df["StudyID"] = "russell2024"
     df["AgeRng2"] = df["AgeRng1"]
     df["DOI"] = "10.1038/s41564-022-01105-z"
-    df["Units"] = df["SampleType"].map({
-        "saliva": "Ct",
-        "nasal": "Ct",
-        "antigen": "binary"
-        })
+    df["Units"] = "Ct"
+    df["SampleType"] = "nasopharyngeal"
     df["Platform"] = df["SampleType"].map({
         "saliva": "Taqpath",
         "nasal": "Alinity",
