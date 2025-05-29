@@ -49,6 +49,29 @@ So far, this is saved as a directory: `code/ingest_studies/`, where the main fil
 
 A note -- I've replaced the Katz study with Wongnak2024 (the PLATCOV study). I was having trouble finding a public release of the nursing home data from Katz (the epidemiological data is there, but the viral kinetics data doesn't seem to be linked); and I think there may be value in including data that comes from a clinical trial. 
 
+# 29 May 2025 
+
+I've gotten some code running to ingest the Ke2022 study. Right now, the ingestion code for the remaining studies are copies of this one. Next, I want to ingest the code from our "sequential infections" study (Kissler2023). 
+
+(Also -- I've created a Streamlit app to visualize the viral kinetics data, and it's working ok. That's in a separate directory right now, but I'll likely merge it over into this one soon.) 
+
+Here are the headers in the raw data: 
+
+- PersonID
+- InfectionEvent
+- TestDateIndex
+- CtT1
+- AgeGrp
+- VaccinationStatus
+- BoosterStatus
+- InterveningDose
+- LineageBroad
+- InfNum
+- NInf
+- PrevLineageBroad
+- NextLineageBroad
+- RowID
+- InPairedAnalysis
 
 
 

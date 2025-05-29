@@ -3,59 +3,34 @@ from schema import enforce_schema, coerce_types
 
 def load_and_format():
     # Import the raw data:
-    df = pd.read_csv("data/ke2022.csv")
+    df = pd.read_csv("data/kissler2023.csv")
 
     # Keep only the columns we need: 
-    df = df[['Ind', 'Time', 'Lineage', 'Nasal_CN', 'Saliva_Ct', 'Antigen', 'Age']]
+    df = df[['PersonID', 'InfectionEvent', 'TestDateIndex', 'CtT1', 'AgeGrp', 'LineageBroad']]
 
-    # Clean up the Ind column: 
-    df["Ind"] = df["Ind"].str.replace(r"\s*\*", "", regex=True)
+    # Format the age group column into separate age ranges: 
+    df[["AgeRng1", "AgeRng2"]] = df["AgeGrp"].str.extract(r"[\[\(](\d+),\s*(\d+)[\)\]]")
 
-    # Pivot the test outcome columns into a single column: 
-    df = df.melt(
-        id_vars=[col for col in df.columns if col not in ["Nasal_CN", "Saliva_Ct", "Antigen"]],
-        value_vars=["Nasal_CN", "Saliva_Ct", "Antigen"],
-        var_name="SampleType",
-        value_name="Log10VL"
-        )
-
-    # Map the contents of column SampleType to standard names: 
-    df["SampleType"] = df["SampleType"].replace({
-        "Nasal_CN": "nasal",
-        "Saliva_Ct": "saliva",
-        "Antigen": "antigen"
-        })
+    # Convert to numeric
+    df["AgeRng1"] = pd.to_numeric(df["AgeRng1"], errors="coerce")
+    df["AgeRng2"] = pd.to_numeric(df["AgeRng2"], errors="coerce")
 
     # Rename columns to match schema: 
     df = df.rename(columns={
-        "Ind": "PersonID",
-        "Time": "TimeDays",
-        "Lineage": "Subtype",
-        "Age": "AgeRng1"
+        "InfectionEvent": "InfectionID",
+        "TestDateIndex": "TimeDays",
+        "CtT1": "Log10VL",
+        "LineageBroad": "Subtype"
         })
 
     # Add additional columns with known but missing information:
-    df["StudyID"] = "ke2022"
-    df["AgeRng2"] = df["AgeRng1"]
-    df["DOI"] = "10.1038/s41564-022-01105-z"
-    df["Units"] = df["SampleType"].map({
-        "saliva": "Ct",
-        "nasal": "Ct",
-        "antigen": "binary"
-        })
-    df["Platform"] = df["SampleType"].map({
-        "saliva": "Taqpath",
-        "nasal": "Alinity",
-        "antigen": "Sofia"
-        })
-    df["GEml_conversion_intercept"] = df["SampleType"].map({
-        "saliva": 14.24,
-        "nasal": 11.35,
-        })
-    df["GEml_conversion_slope"] = df["SampleType"].map({
-        "saliva": -0.28,
-        "nasal": -0.25,
-        })
+    df["StudyID"] = "kissler2023"
+    df["DOI"] = "10.1038/s41467-023-41941-z"
+    df["Units"] = "Ct"
+    df["Platform"] = "cobas_target1"
+    df["GEml_conversion_intercept"] = 40.93733
+    df["GEml_conversion_slope"] = -3.60971
+    df["SampleType"] = "nasal_oropharyngeal"
 
     df = enforce_schema(df)
     df = coerce_types(df)
