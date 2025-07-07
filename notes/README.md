@@ -118,7 +118,24 @@ To create the schema:
 `$ python3 code/ingest_studies/create_schema.py`
 
 
+Working more now on getting russell imported: 
 
+I think we need the following columns: 
+
+
+|   russell   |  schema      |
+|-------------|--------------|
+|             |              |
+
+- id 
+- ct_unadjusted 
+- VOC 
+- symptoms 
+- symptom_onset_date 
+- t 
+- age_group
+- ct_type 
+- ct_value 
 
 
 
