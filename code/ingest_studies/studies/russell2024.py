@@ -6,7 +6,7 @@ def load_and_format():
     df = pd.read_csv("data/russell2024.csv")
 
     # Keep only the columns we need: 
-    df = df[['id', 'ct_unadjusted', 'VOC', 'symptoms', 'symptom_onset_date', 't', 'age_group', 'ct_type', 'ct_value']]
+    df = df[['id', 'VOC', 'symptoms', 'symptom_onset_date', 't', 'age_group', 'ct_type', 'ct_value']]
 
     # Rename columns to match schema: 
     df = df.rename(columns={

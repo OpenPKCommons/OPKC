@@ -123,23 +123,20 @@ Working more now on getting russell imported:
 I think we need the following columns: 
 
 
-|   russell   |  schema      |
-|-------------|--------------|
-|             |              |
+| russell              | schema            |
+|----------------------|-------------------|
+| id                   | PersonID          |
+| ct_value             | Log10VL           |
+| VOC                  | Subtype           |
+| symptoms             | Symptoms          |
+| symptom_onset_date   | Symptoms          |
+| t                    | TimeDays          |
+| age_group            | AgeRng1, AgeRng2  |
+| ct_type              | Platform          |
 
-- id 
-- ct_unadjusted 
-- VOC 
-- symptoms 
-- symptom_onset_date 
-- t 
-- age_group
-- ct_type 
-- ct_value 
+I need to figure out exactly how the ct_value is calculated (from ct_unadjusted); it removes the na values, but also has some proper numerical adjustments to the ct values for the n- and s-gene targets. 
 
-
-
-
+For symptoms, I'll have to extract the timing. I also need to think about how to deal with 'symptomatic' as a category, without any specification of the actual symptoms. 
 
 
 
