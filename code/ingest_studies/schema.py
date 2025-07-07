@@ -25,3 +25,41 @@ def coerce_types(df):
     df[string_cols] = df[string_cols].astype(str)
 
     return df
+
+import pandas as pd
+
+def split_age_range(df, col="AgeGrp", out1="AgeRng1", out2="AgeRng2"):
+    """
+    Splits an age range string like '[30, 39)' or '30-39' in a DataFrame column
+    into two new numeric columns.
+
+    Parameters:
+        df (pd.DataFrame): The DataFrame containing the age range column.
+        col (str): Name of the column with age ranges.
+        out1 (str): Name of the output column for the lower age bound.
+        out2 (str): Name of the output column for the upper age bound.
+
+    Returns:
+        pd.DataFrame: A copy of the DataFrame with the new age range columns added.
+    """
+    df = df.copy()
+    
+    # Try different common formats: "[30, 39)", "30-39", "30 to 39"
+    patterns = [
+        r"[\[\(](\d+),\s*(\d+)[\)\]]",  # Matches [30, 39) or (30, 39]
+        r"(\d+)[\s\-–to]+(\d+)",         # Matches 30-39, 30–39, 30 to 39
+    ]
+    
+    for pattern in patterns:
+        matches = df[col].str.extract(pattern)
+        if matches.notna().all(axis=1).any():
+            df[[out1, out2]] = matches
+            break
+
+    df[out1] = pd.to_numeric(df[out1], errors="coerce")
+    df[out2] = pd.to_numeric(df[out2], errors="coerce")
+    
+    return df
+
+
+

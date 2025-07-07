@@ -117,7 +117,6 @@ To create the schema:
 
 `$ python3 code/ingest_studies/create_schema.py`
 
-
 Working more now on getting russell imported: 
 
 I think we need the following columns: 
@@ -133,10 +132,15 @@ I think we need the following columns:
 | t                    | TimeDays          |
 | age_group            | AgeRng1, AgeRng2  |
 | ct_type              | Platform          |
+| swab_type            | SampleType        |
 
 I need to figure out exactly how the ct_value is calculated (from ct_unadjusted); it removes the na values, but also has some proper numerical adjustments to the ct values for the n- and s-gene targets. 
 
 For symptoms, I'll have to extract the timing. I also need to think about how to deal with 'symptomatic' as a category, without any specification of the actual symptoms. 
+
+We'll want to create 'SampleID' as a new index column. It's unclear, though, whether we're dealing with the same sample run in multiple ways (dry vs vtm, overall vs s vs n targets) or with different samples. I think probably the same sample. 
+
+More broadly: we need to specify which are the index columns. It seems like we could get some conflicts: we might have the same swab run on multiple targets, or different swabs on different targets but on the same day; or different swabs run on the same target. This needs some thought. 
 
 
 
