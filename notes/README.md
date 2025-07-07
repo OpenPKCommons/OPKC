@@ -142,6 +142,8 @@ We'll want to create 'SampleID' as a new index column. It's unclear, though, whe
 
 More broadly: we need to specify which are the index columns. It seems like we could get some conflicts: we might have the same swab run on multiple targets, or different swabs on different targets but on the same day; or different swabs run on the same target. This needs some thought. 
 
+Either way, when I return to this, I'll want to figure out how to deal with the different targets. 
+
 
 
 
