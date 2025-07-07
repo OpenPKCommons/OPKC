@@ -111,6 +111,12 @@ Here are the headings:
 - swab_type_num
 
 
+# 7 July 2025
+
+To create the schema: 
+
+`$ python3 code/ingest_studies/create_schema.py`
+
 
 
 
