@@ -1,6 +1,6 @@
 | DOI | PaperNameString | Status | By |
 |-----|-----------------|--------|----|
-| 10.1038/s41564-022-01105-z | Ke et al 2022 | INGESTED | Stephen |
+| 10.1038/s41564-022-01105-z | Ke et al 2022 Daily | INGESTED | Stephen |
 | 10.1038/s41467-023-41941-z | Kissler et al 2023 | INGESTED | Stephen |
 | 10.1371/journal.pbio.3002463 | Russel et al 2024 | INGESTED | Stephen |
 | 10.1016/S1473-3099(24)00183-X | Wagstaff et al 2024 | INGESTED | Stephen |
@@ -20,3 +20,10 @@
 | 10.1038/s41564-025-01998-6 | Facciuolo et al 2025 | IDed | Dan |
 | 10.21203/rs.3.rs-6900680/v1 | Lee et al 2025 | IDed | Dan |
 | 10.1038/s41467-025-61553-z | Peña-Mosca et al 2025  | IDed | Dan |
+| 10.1038/s41591-022-01816-0 | Puhach et al 2022 | IDed | Ellen |
+| 10.1038/s41586-024-07575-x | Lindeboom et al 2024 | IDed | Ellen |
+| 10.1016/S2213-2600(22)00226-0 | Hakki et al 2022 | IDed | Ellen |
+| 10.1016/S2666-5247(23)00005-8 | Galmiche et al 2023 | IDed | Ellen |
+| 10.1016/S2666-5247(23)00101-5 | Zhou et al 2023 | IDed | Ellen |
+| 10.3389/fimmu.2018.00323 | Ascough et al 2018 | IDed | Ellen |
+| 10.1007/82_2022_257 | Dayananda et al 2022 | IDed | Ellen |
