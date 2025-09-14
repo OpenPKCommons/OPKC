@@ -13,6 +13,6 @@ $ python3 code/ingest_studies/create_schema.py
 A helper script for testing the ingestion of individual studies before integrating them into the full database is also available: 
 
 ```
-4 python3 code/ingest_studies/test_import.py
+$ python3 code/ingest_studies/test_import.py
 ```
 
