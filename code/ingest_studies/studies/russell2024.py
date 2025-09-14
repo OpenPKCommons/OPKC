@@ -39,22 +39,22 @@ def load_and_format():
 
     # Add additional columns with known but missing information:
     df["StudyID"] = "russell2024"
-    df["DOI"] = "10.1038/s41564-022-01105-z"
+    df["DOI"] = "10.1371/journal.pbio.3002463"
     df["Units"] = "Ct"
-    df["SampleType"] = "nasopharyngeal"
-    df["Platform"] = df["SampleType"].map({
-        "saliva": "Taqpath",
-        "nasal": "Alinity",
-        "antigen": "Sofia"
-        })
-    df["GEml_conversion_intercept"] = df["SampleType"].map({
-        "saliva": 14.24,
-        "nasal": 11.35,
-        })
-    df["GEml_conversion_slope"] = df["SampleType"].map({
-        "saliva": -0.28,
-        "nasal": -0.25,
-        })
+    # df["SampleType"] = "nasopharyngeal"
+    # df["Platform"] = df["SampleType"].map({
+    #     "saliva": "Taqpath",
+    #     "nasal": "Alinity",
+    #     "antigen": "Sofia"
+    #     })
+    # df["GEml_conversion_intercept"] = df["SampleType"].map({
+    #     "saliva": 14.24,
+    #     "nasal": 11.35,
+    #     })
+    # df["GEml_conversion_slope"] = df["SampleType"].map({
+    #     "saliva": -0.28,
+    #     "nasal": -0.25,
+    #     })
 
     df = enforce_schema(df)
     df = coerce_types(df)
