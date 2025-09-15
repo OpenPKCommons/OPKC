@@ -17,3 +17,7 @@ $ python3 code/ingest_studies/test_import.py
 ```
 
 To do: update sample type in russell2024 to nasopharyngeal, and figure out how to report the full/ n-gene / s-gene targets -- maybe on the platform, which I sitll don't know. 
+
+Here's a provisional entity relationship diagram: 
+
+![An entity relationship diagram for the OpenPKCommons](figures/ERD.png)
