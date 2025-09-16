@@ -13,9 +13,18 @@ Next, activate the virtual environment:
 
 `source venv/bin/activate`
 
-Last, install all the required packages from the `requirements.txt` file: 
+Install all the required packages from the `requirements.txt` file: 
 
 `pip install -r requirements.txt`
+
+Last (important!!), add `venv/` and `.env` to your `.gitignore` file (create one in your local `gvkl/` directory if you don't have one yet) 
+
+```
+# .gitignore
+venv/
+.env
+```
+
 
 ### Data processing 
 
