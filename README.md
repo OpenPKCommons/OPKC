@@ -25,6 +25,11 @@ venv/
 .env
 ```
 
+### Virtual environment management (every time you open the code) 
+
+Be sure to re-activate the virtual environment: 
+
+`source venv/bin/activate`
 
 ### Data processing 
 
