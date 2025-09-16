@@ -4,6 +4,21 @@ This repository contains software to combine data from multiple studies into a s
 
 ## Quick start
 
+### Virtual environment setup (once)
+This project uses `venv` to manage package versions. After cloning this project to your local machine, navigate to the root directory (`gvkl/`) and run the following from the command line: 
+
+`$ python3 -m venv venv`
+
+Next, activate the virtual environment: 
+
+`source venv/bin/activate`
+
+Last, install all the required packages from the `requirements.txt` file: 
+
+`pip install -r requirements.txt`
+
+### Data processing 
+
 To ingest the data, format it, and generate the database, run 
 
 ```
@@ -15,6 +30,8 @@ A helper script for testing the ingestion of individual studies before integrati
 ```
 $ python3 code/ingest_studies/test_import.py
 ```
+
+## Additional information
 
 To do: update sample type in russell2024 to nasopharyngeal, and figure out how to report the full/ n-gene / s-gene targets -- maybe on the platform, which I sitll don't know. 
 
