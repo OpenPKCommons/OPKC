@@ -144,6 +144,14 @@ More broadly: we need to specify which are the index columns. It seems like we c
 
 Either way, when I return to this, I'll want to figure out how to deal with the different targets. 
 
+# 22 Sep 2025 
+
+Study -> paper? How to deal with repeated samples/infections across papers (but part of the same study)? 
+
+Storyboard the website! Ellen -> figma for website prototyping? 
+
+
+
 
 
 
