@@ -45,6 +45,13 @@ A helper script for testing the ingestion of individual studies before integrati
 $ python3 code/ingest_studies/test_import.py
 ```
 
+## Phase I progress
+
+graph LR
+	A[Start] --> B[Step 2]
+
+
+
 ## Phase II Work Plan
 
 ### Relational Database Structure 
