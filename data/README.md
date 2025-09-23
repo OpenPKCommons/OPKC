@@ -21,13 +21,17 @@ In the "Status" column of main_lit_list, users can indicate what stage of the li
         - as in would definitely need to request, and figures do not display individual resolution
     - NA ❎ = not applicable, not something we can use for whatever reason
     - MO 🤖 = modeling only
+    - DAI = data already included
+    	- e.g. data from this source has already been included as part of another dataset
+    	- these references are recorded to prevent redundant scanning
 - A quick way to find papers with easily accessible data for us is by searching within the paper text for "github", "Zenodo" or "Dryad"
 - Other metadata worth noting:
 	- pathogen(s), any variant info
     - XS 🌐 = cross-sectional data (may be of use for model parameters, but isn't individual-level empirical data itself)
 	- readout(s)
 		- symptoms, titers, etc.
-        - 🤧 = symptom trajectory information
+        - sx 🤧 = symptom trajectory information
+    - MA ♻️ = paper is a review or meta-analysis
 	- time resolution and duration
 		- year(s) data collected?
 	- patient/participant population
@@ -39,6 +43,8 @@ In the "Status" column of main_lit_list, users can indicate what stage of the li
 
 ### 3. **Ingest** the data from that source and save it to this directory
 - Any papers with status Scanned: DE can be immediately ingested. Other designations will need more work.
+
+Tentatively we're using DIGEST to distinguish those papers that have data saved here AND have scripts written to clean and format the data up to our standards.
 
 ## Challenges and nuances of note
 - identifying empirical vs. modeled data
