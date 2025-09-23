@@ -45,10 +45,13 @@ A helper script for testing the ingestion of individual studies before integrati
 $ python3 code/ingest_studies/test_import.py
 ```
 
-## Additional information
+## Phase II Work Plan
 
-To do: update sample type in russell2024 to nasopharyngeal, and figure out how to report the full/ n-gene / s-gene targets -- maybe on the platform, which I sitll don't know. 
+### Relational Database Structure 
 
 Here's a provisional entity relationship diagram: 
 
 ![An entity relationship diagram for the OpenPKCommons](figures/ERD.png)
+
+### Web app architecture 
+
