@@ -47,9 +47,10 @@ $ python3 code/ingest_studies/test_import.py
 
 ## Phase I progress
 
+```mermaid
 graph LR
 	A[Start] --> B[Step 2]
-
+```
 
 
 ## Phase II Work Plan
