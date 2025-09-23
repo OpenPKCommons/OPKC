@@ -47,6 +47,8 @@ $ python3 code/ingest_studies/test_import.py
 
 ## Phase I progress
 
+### Ingesting studies 
+
 ```mermaid
 graph LR
 	inbox[Inbox: 48]
