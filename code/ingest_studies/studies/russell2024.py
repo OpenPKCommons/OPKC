@@ -24,14 +24,20 @@ def load_and_format():
     df["AgeRng1"] = pd.to_numeric(df["AgeRng1"], errors="coerce")
     df["AgeRng2"] = pd.to_numeric(df["AgeRng2"], errors="coerce")
 
+    # Add the platform: 
+    df["Platform"] = df["ct_type"].map({
+        "ct_value": "Crick COVID-19 Consortium (CCC) ORF1ab",
+        "ct_n_gene": "Crick COVID-19 Consortium (CCC) N gene",
+        "ct_s_gene": "Crick COVID-19 Consortium (CCC) S gene"
+        })
+
     # Rename columns to match schema: 
     df = df.rename(columns={
         "id": "PersonID",
-        "swab_type": "SampleType",
+        # "swab_type": "SampleType",
         "VOC": "Subtype",
         "symptoms": "Symptoms1",
         "t": "TimeDays",
-        "ct_type": "Platform",
         "ct_value": "Log10VL"
         })
 
@@ -41,6 +47,7 @@ def load_and_format():
     df["StudyID"] = "russell2024"
     df["DOI"] = "10.1371/journal.pbio.3002463"
     df["Units"] = "Ct"
+    df["SampleType"] = "nasopharyngeal"
     # df["SampleType"] = "nasopharyngeal"
     # df["Platform"] = df["SampleType"].map({
     #     "saliva": "Taqpath",
