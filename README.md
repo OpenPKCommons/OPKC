@@ -49,7 +49,7 @@ $ python3 code/ingest_studies/test_import.py
 
 ```mermaid
 graph LR
-	A[Start] --> B[Step 2]
+	exists[Exists: 6] --> provingest[Provisional ingest: 1] --> ingested[Ingested: 2]
 ```
 
 
