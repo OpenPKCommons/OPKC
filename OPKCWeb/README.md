@@ -14,4 +14,4 @@ To launch the development server, navigate to this directory in the terminal and
 python manage.py runserver
 ```
 
-Then, open your web browser and navigate to `http://127.0.0.1:8000/`. You should see a page saying "The install worked successfully! Congratulations!"
+Then, open your web browser and navigate to `http://127.0.0.1:8000/`. This will bring you to a homepage where you can explore the website's functionality. 
