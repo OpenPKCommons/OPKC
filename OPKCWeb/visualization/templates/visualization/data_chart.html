@@ -5,6 +5,16 @@
     <script src="https://cdn.plot.ly/plotly-2.31.1.min.js"></script>
 </head>
 <body>
+    <p>
+        <a href="{% url 'home' %}" 
+           style="text-decoration: none; 
+                  color: #007bff; 
+                  border: 1px solid #007bff; 
+                  padding: 5px 10px; 
+                  border-radius: 3px;">
+            ← Back to Home
+        </a>
+    </p>
     <h1>{{ chart_title }}</h1>
 
     <div id="timeDaysBarChart" style="width: 80%; height: 500px; margin: auto;"></div>
