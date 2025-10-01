@@ -11,7 +11,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Construct the full path to the CSV data file
 # This assumes your file is in 'visualization/data/test_import.csv' relative to the project root.
-DATA_FILE_PATH = os.path.join(BASE_DIR, 'visualization', 'data', 'test_import.csv')
+DATA_FILE_PATH = os.path.join(BASE_DIR, 'visualization', 'data', 'combined_cleaned_data.csv')
 
 # Define the view for the home page
 def home_view(request):
