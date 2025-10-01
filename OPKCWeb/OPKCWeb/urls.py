@@ -15,8 +15,16 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+# Import the new view function from your visualization app
+from visualization import views as visualization_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    
+    # 1. New: Map the root URL ('') to your home_view
+    path('', visualization_views.home_view, name='home'),
+    
+    # 2. Existing: Keep the 'charts/' prefix for your application URLs
+    path('charts/', include('visualization.urls')),
 ]

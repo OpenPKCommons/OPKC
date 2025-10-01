@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>OPKC Web - Home</title>
+</head>
+<body style="font-family: Arial, sans-serif; text-align: center; padding-top: 50px;">
+    
+    <h1>Welcome to the Visualization Dashboard</h1>
+    <p>Use the button below to view the sample distribution chart.</p>
+
+    <a href="{% url 'visualization:time_days_bar' %}" 
+       style="display: inline-block; 
+              padding: 10px 20px; 
+              background-color: #007bff; 
+              color: white; 
+              text-decoration: none; 
+              border-radius: 5px;
+              font-size: 1.1em;">
+        Go to Sample Distribution Chart
+    </a>
+
+    <p style="margin-top: 50px; color: #666;">
+        Current Django Time: {% now "H:i:s M d, Y" %}
+    </p>
+
+</body>
+</html>
