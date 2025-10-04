@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ chart_title }}</title>
+    <script src="https://cdn.plot.ly/plotly-2.31.1.min.js"></script>
+</head>
+<body>
+    <p>
+        <a href="{% url 'home' %}" 
+           style="text-decoration: none; 
+                  color: #007bff; 
+                  border: 1px solid #007bff; 
+                  padding: 5px 10px; 
+                  border-radius: 3px;">
+            ← Back to Home
+        </a>
+    </p>
+    <h1>{{ chart_title }}</h1>
+
+    <div id="timeDaysBarChart" style="width: 80%; height: 500px; margin: auto;"></div>
+
+    <script>
+        // Data passed from Django is still available in the context
+        const labels = JSON.parse('{{ chart_labels|safe }}');
+        const data = JSON.parse('{{ chart_data|safe }}');
+        const title = '{{ chart_title|safe }}';
+
+        // 3. Define the data trace for the bar chart
+        const chartData = [{
+            x: labels, // X-axis data (Time Days)
+            y: data,   // Y-axis data (Sample Counts)
+            type: 'bar',
+            name: 'Sample Count',
+            marker: {
+                color: 'rgb(55, 128, 191)' // Blue color for bars
+            }
+        }];
+
+        // 4. Define the layout configuration
+        const layout = {
+            title: {
+                text: title,
+                font: {
+                    size: 24 // Larger font size for main title
+                }
+            },
+            xaxis: {
+                title: 'Days Relative to Symptom Onset/Infection',
+                automargin: true // Ensures long labels don't get cut off
+            },
+            yaxis: {
+                title: 'Sample Count',
+                zeroline: true, // Show the zero line
+                rangemode: 'tozero' // Start the y-axis at zero
+            },
+            responsive: true // Makes the chart fit the container
+        };
+
+        // 5. Render the chart using Plotly.plot()
+        Plotly.newPlot('timeDaysBarChart', chartData, layout, {
+            displayModeBar: true // Show the Plotly toolbar for export, zoom, etc.
+        });
+
+    </script>
+</body>
+</html>
