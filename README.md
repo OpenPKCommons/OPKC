@@ -55,7 +55,7 @@ graph LR
 	mayexist[May exist: 2]
 	exists[Exists: 6]
 	provingest[Provisional ingest: 0]
-	ingested[Ingested: 3]
+	ingested[Ingested: 4]
 	exists --> provingest --> ingested
 ```
 
