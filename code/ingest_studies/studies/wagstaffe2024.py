@@ -5,31 +5,31 @@ def load_and_format():
     # Import the raw data:
     df = pd.read_csv("data/wagstaffe2024.csv")
 
-    # Keep only the columns we need: 
+    # Keep only the columns we need (all in this case): 
     df = df[['PersonID', 'DaysPostInoculation', 'GEml', 'site']]
     # for each individual we have 1 to 19.5 DaysPostInoculation data points with corresponding GEml (NA if not available)
-    # Need to address:
-    # 1. are individual IDs same for nose and throat samples or independent?
-    # 2. how is GEml measured? What conversions need to be made?
-    # 3. how does GEml col get converted?
+    # Virological assessments of infections were based on 12-­ hour mid-turbinate and throat flocked swabs
 
-    # Map the contents of column SampleType to standard names: 
+    # Map the contents of column site (to be SampleType) to standard names: 
     df["site"] = df["site"].replace({
         "nose": "nasal",
-        "throat": "saliva" # need to confirm vs oropharyngeal
+        "throat": "saliva" # need to confirm vs oropharyngeal -> see issue
         })
 
     # Rename columns to match schema: 
     df = df.rename(columns={
         "PersonID": "PersonID",
         "DaysPostInoculation": "TimeDays",
+        "GEml": "Log10VL", # is this log10?
         "site": "SampleType"
         })
 
     # Add additional columns with known but missing information:
     df["StudyID"] = "wagstaffe2024"
-    df["DOI"] = "10.1016/S1473-3099(24)00183-X"
+    df["DOI"] = "10.1126/sciimmunol.adj9285"
     df["Units"] = "GEml"
+
+    # For reference...
     # ACTIVATION TIME
         # throat: 1.78 days
         # nose: 2.61 days
@@ -45,15 +45,6 @@ def load_and_format():
     # VIRAL LOAD DECAY RATE
         # throat: 0.69 days^-1
         # nose: 1.29 days^-1
-
-    # df["GEml_conversion_intercept"] = df["SampleType"].map({
-    #     "saliva": 0.0, # need to find!
-    #     "nasal": 0.0, # need to find!
-    #     })
-    # df["GEml_conversion_slope"] = df["SampleType"].map({
-    #     "saliva": 0.0, # need to find!
-    #     "nasal": 0.0, # need to find!
-    #     })
 
     df = enforce_schema(df)
     df = coerce_types(df)
