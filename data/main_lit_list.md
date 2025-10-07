@@ -3,8 +3,8 @@
 | 10.1038/s41564-022-01105-z | Ke et al 2022 Daily | DIGESTED | Stephen |
 | 10.1038/s41467-023-41941-z | Kissler et al 2023 | DIGESTED | Stephen |
 | 10.1371/journal.pbio.3002463 | Russel et al 2024 | DIGESTED | Stephen |
-| 10.1016/S1473-3099(24)00183-X | Wagstaff et al 2024 | Ingested | Stephen |
-| 10.1126/sciimmunol.adj9285 | Wongnak et al 2024 | DIGESTED | Stephen |
+| 10.1126/sciimmunol.adj9285 | Wagstaffe et al 2024 | Ingested | Stephen |
+| 10.1016/S1473-3099(24)00183-X| Wongnak et al 2024 | DIGESTED | Stephen |
 | | | | 2, 5 |
 | 10.1101/2025.07.02.662782 | Alahakoon et al 2025 | Scanned: DE | Ellen |
 | 10.1038/s41586-024-08166-6 | Baker et al 2024 | Scanned: DE | Ellen |
