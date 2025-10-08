@@ -30,7 +30,7 @@ Comprehensive, authoritative list of papers scanned for possible inclusion in op
 | 10.1371/journal.pbio.3002463 | Russell et al 2024 | `DIGESTED` | | Stephen |
 | 10.1126/sciimmunol.adj9285 | Wagstaffe et al 2024 | `DIGESTED` | | Carrie |
 | 10.1016/S1473-3099(24)00183-X | Wongnak et al 2024 | `DIGESTED` | | Stephen |
-Count = 2, 5
+Count = 5, 5
 
 ### DE = DATA EXISTS
 | DOI | PaperNameString | Status/Classification | Tags | By |
