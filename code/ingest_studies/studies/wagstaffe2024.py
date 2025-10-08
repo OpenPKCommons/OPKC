@@ -13,7 +13,7 @@ def load_and_format():
     # Map the contents of column site (to be SampleType) to standard names: 
     df["site"] = df["site"].replace({
         "nose": "nasal",
-        "throat": "saliva" # need to confirm vs oropharyngeal -> see issue
+        "throat": "throat" # need to confirm vs oropharyngeal -> see issue
         })
 
     # Rename columns to match schema: 
