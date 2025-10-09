@@ -1,5 +1,5 @@
 import pandas as pd
-from schema import enforce_schema, coerce_types, split_age_range
+from ..schema import enforce_schema, coerce_types, split_age_range
 
 def load_and_format():
     # Import the raw data:

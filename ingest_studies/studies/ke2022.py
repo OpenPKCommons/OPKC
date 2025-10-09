@@ -1,5 +1,5 @@
 import pandas as pd
-from schema import enforce_schema, coerce_types
+from ..schema import enforce_schema, coerce_types
 
 def load_and_format():
     # Import the raw data:
