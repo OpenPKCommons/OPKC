@@ -19,6 +19,7 @@ Comprehensive, authoritative list of papers scanned for possible inclusion in op
 	3. MA ♻️ = meta-analysis or review that combines other original data sources
 	4. REF = paper has references that should be scanned for data availability
 	5. LAB or LOD = paper has lab data that may be useful (e.g. culture, LOD)
+	6. BIN = infection status is binary, positive/negative
 
 
 ## Literature List
@@ -35,7 +36,7 @@ Count = 5, 5
 ### DE = DATA EXISTS
 | DOI | PaperNameString | Status/Classification | Tags | By |
 |:---|:---|:---:|:---:|---:|
-| 10.1101/2025.07.02.662782 | Alahakoon et al 2025 | `DE` | | Ellen |
+| 10.1101/2025.07.02.662782 | Alahakoon et al 2025 Trackign West Nile | `DE` | | Ellen |
 | 10.1038/s41586-024-08166-6 | Baker et al 2024 | `DE` | | Ellen |
 | 10.1038/s41586-024-07849-4 | Caserta et al 2025 | `DE` | | Ellen |
 | 10.1038/s41586-024-08063-y | Halwe et al 2024 | `DE` | | Ellen |
@@ -68,7 +69,8 @@ Count = 13
 | 10.1128/iai.29.2.348-355.1980 | Murphy et al 1980 | `DE-NEA` | | Ellen RR |
 | 10.1038/s41591-020-0869-5 | He et al 2020 | `DE-NEA` | | Ellen RR |
 | 10.1001/jamanetworkopen.2021.42796 | Stankiewicz et al 2022 | `DE-NEA` | | Ellen RR |
-Count = 15
+| 10.1056/nejmc2202092 | Boucau et al 2022 | `DE-NEA` | | Ellen RR |
+Count = 16
 
 ### DME = Data MAY exist
 | DOI | PaperNameString | Status/Classification | Tags | By |
@@ -105,11 +107,10 @@ Count = 15
 | 10.1086/650458 | Ng et al 2010 | `DME` | | Ellen RR |
 | 10.1093/infdis/jiab337 | Smith et al 2021 | `DME` | | Ellen RR |
 | 10.1093/cid/ciac510 | Bouton et al 2022 | `DME` | | Ellen RR |
-| 10.1056/nejmc2202092 | Boucau et al 2022 | `DME` | | Ellen RR |
 | 10.1001/jama.1996.03530280047035 | Hayden et al 1996 | `DME` | | Ellen RR |
 | 10.1016/s0140-6736(09)62126-7 | Miller et al 2010 | `DME` | | Ellen RR |
 | 10.1086/314938 | Fritz et al 1999 | `DME` | | Ellen RR |
-Count = 36
+Count = 35
 
 ### IDed paper in scanning queue
 | DOI | PaperNameString | Status/Classification | Tags | By |
