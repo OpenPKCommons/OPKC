@@ -36,13 +36,13 @@ Be sure to re-activate the virtual environment:
 To ingest the data, format it, and generate the database, run 
 
 ```
-$ python3 code/ingest_studies/create_schema.py
+$ python3 ingest_studies.create_schema
 ```
 
 A helper script for testing the ingestion of individual studies before integrating them into the full database is also available: 
 
 ```
-$ python3 code/ingest_studies/test_import.py
+$ python3 ingest_studies.test_import
 ```
 
 ## Phase I progress

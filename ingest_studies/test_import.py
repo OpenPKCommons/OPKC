@@ -1,5 +1,5 @@
-from studies import ke2022, kissler2023, russell2024, wagstaffe2024, wongnak2024
-from schema import enforce_schema, coerce_types
+from .studies import ke2022, kissler2023, russell2024, wagstaffe2024, wongnak2024
+from .schema import enforce_schema, coerce_types
 import pandas as pd
 
 def main():
