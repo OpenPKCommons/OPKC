@@ -19,6 +19,7 @@ Comprehensive, authoritative list of papers scanned for possible inclusion in op
 	3. MA ♻️ = meta-analysis or review that combines other original data sources
 	4. REF = paper has references that should be scanned for data availability
 	5. LAB or LOD = paper has lab data that may be useful (e.g. culture, LOD)
+	6. BIN = infection status is binary, positive/negative
 
 
 ## Literature List
@@ -33,22 +34,20 @@ Comprehensive, authoritative list of papers scanned for possible inclusion in op
 Count = 5, 5
 
 ### DE = DATA EXISTS
-| DOI | PaperNameString | Status/Classification | Tags | By |
-|:---|:---|:---:|:---:|---:|
-| 10.1101/2025.07.02.662782 | Alahakoon et al 2025 | `DE` | | Ellen |
-| 10.1038/s41586-024-08166-6 | Baker et al 2024 | `DE` | | Ellen |
-| 10.1038/s41586-024-07849-4 | Caserta et al 2025 | `DE` | | Ellen |
-| 10.1038/s41586-024-08063-y | Halwe et al 2024 | `DE` | | Ellen |
-| 10.1128/jcm.01785-21 | Savela Winnett Romano et al 2022 | `DE` | | Ellen |
-| 10.7326/M20-1495 | Kucirka et al 2020 | `DE` | `MA` | Ellen |
-| 10.1016/S2213-2600(22)00226-0 | Hakki et al 2022 | `DE` | | Ellen |
-| 10.1038/s41564-025-01998-6 | Facciuolo et al 2025 | `DE` | | Ellen |
-| 10.1038/s41467-025-61553-z | Peña-Mosca et al 2025  | `DE` | | Ellen |
-| 10.1038/s41591-022-01816-0 | Puhach et al 2022 | `DE` | | Ellen |
-| 10.1073/pnas.0307506101 | Fraser et al 2004 | `DE` | `MA` `MO` | Ellen RR |
-| 10.1038/s41467-020-20568-4 | van Kampen et al 2021 | `DE` | `LAB` | Ellen RR |
-| 10.1126/science.abi5273 | Jones et al 2021 | `DE` | | Ellen RR |
-Count = 13
+| DOI | PaperNameString | Status/Classification | Tags | By | Data link |
+|:---|:---|:---:|:---:|:---|:---|
+| 10.1016/S2213-2600(22)00226-0 | Hakki et al 2022 | `DE` | | Ellen | [github](https://github.com/HPRURespMed/SARS-CoV-2-viral-shedding-dynamics) |
+| 10.1128/jcm.01785-21 | Savela Winnett Romano et al 2022 | `DE` | | Ellen | [author site](https://data.caltech.edu/records/bv2tf-aap55) |
+| 10.1101/2025.02.01.636082v1 | Eales et al 2025 | `DE` | | Ellen | [github](https://github.com/Eales96/H5N1_viral_kinetics) |
+| 10.7326/M20-1495 | Kucirka et al 2020 | `DE` | `MA` | Ellen | [github](https://github.com/HopkinsIDD/covidRTPCR) |
+| 10.1038/s41591-022-01816-0 | Puhach et al 2022 | `DE` | | Ellen | [Extended data at paper](https://www-nature-com.colorado.idm.oclc.org/articles/s41591-022-01816-0#Sec18) |
+| 10.1126/science.abi5273 | Jones et al 2021 | `DE` | | Ellen RR | [github](https://github.com/VirologyCharite/SARS-CoV-2-VL-paper/tree/main) |
+| 10.1038/s41467-020-20568-4 | van Kampen et al 2021 | `DE` | `LAB` | Ellen RR | [Source data at paper](https://www-nature-com.colorado.idm.oclc.org/articles/s41467-020-20568-4#Sec12) |
+| 10.1101/2025.07.02.662782 | Alahakoon et al 2025 Trackign West Nile | `DE` | | Ellen | [github](https://github.com/PunyaAlahakoon/west_nile_virus_abm/tree/main/3_figure_generation/data) |
+| 10.1038/s41467-025-61553-z | Peña-Mosca et al 2025  | `DE` | | Ellen | [github](https://github.com/fepenamosca/hpai_impact_dairies/tree/fd5f303f4aae47ef3a6259e7e7b94284f8c3af67/data) |
+| 10.1038/s41564-025-01998-6 | Facciuolo et al 2025 | `DE` | | Ellen | [Source Data at paper](https://www-nature-com.colorado.idm.oclc.org/articles/s41564-025-01998-6#Sec25) |
+| 10.1073/pnas.0307506101 | Fraser et al 2004 | `DE` | `MA` `MO` | Ellen RR | []() |
+Count = 11
 
 ### DE-NEA = Data exists, not easily accesible
 | DOI | PaperNameString | Status/Classification | Tags | By |
@@ -68,7 +67,8 @@ Count = 13
 | 10.1128/iai.29.2.348-355.1980 | Murphy et al 1980 | `DE-NEA` | | Ellen RR |
 | 10.1038/s41591-020-0869-5 | He et al 2020 | `DE-NEA` | | Ellen RR |
 | 10.1001/jamanetworkopen.2021.42796 | Stankiewicz et al 2022 | `DE-NEA` | | Ellen RR |
-Count = 15
+| 10.1056/nejmc2202092 | Boucau et al 2022 | `DE-NEA` | | Ellen RR |
+Count = 16
 
 ### DME = Data MAY exist
 | DOI | PaperNameString | Status/Classification | Tags | By |
@@ -105,11 +105,10 @@ Count = 15
 | 10.1086/650458 | Ng et al 2010 | `DME` | | Ellen RR |
 | 10.1093/infdis/jiab337 | Smith et al 2021 | `DME` | | Ellen RR |
 | 10.1093/cid/ciac510 | Bouton et al 2022 | `DME` | | Ellen RR |
-| 10.1056/nejmc2202092 | Boucau et al 2022 | `DME` | | Ellen RR |
 | 10.1001/jama.1996.03530280047035 | Hayden et al 1996 | `DME` | | Ellen RR |
 | 10.1016/s0140-6736(09)62126-7 | Miller et al 2010 | `DME` | | Ellen RR |
 | 10.1086/314938 | Fritz et al 1999 | `DME` | | Ellen RR |
-Count = 36
+Count = 35
 
 ### IDed paper in scanning queue
 | DOI | PaperNameString | Status/Classification | Tags | By |
@@ -154,16 +153,18 @@ Count = 11
 Count = 11
 
 ### DAI = Data already included
-| DOI | PaperNameString | Status/Classification | Tags | By |
-|:---|:---|:---:|:---:|---:|
-| 10.1101/2025.02.01.636082v1 | Eales et al 2025 | `DAI` | | Ellen |
-| 10.1371/journal.pbio.3001333 | Kissler 2021 PLOS CtTrajectories | `DAI` | | Ellen |
-| 10.1056/nejmc2102507 | Kissler 2021 NEJM CtTrajectories_B117 Vax | `DAI` | | Ellen |
-| 10.7554/eLife.81849 | Hay Kissler 2022 eLife SC2 kinetics | `DAI` | | Ellen |
-| 10.1056/nejmc2102507 | Kissler et al 2021 | `DAI` | | Ellen RR |
-| 10.1371/journal.pbio.3001333 | Kissler et al 2021 | `DAI` | | Ellen RR |
-| 10.1016/s1473-3099(21)00648-4 | Singanayagam et al 2021 | `DAI` | | Ellen RR |
-| 10.1371/journal.pcbi.0030240 | Handel et al 2007 | `DAI` | | Ellen RR |
+| DOI | PaperNameString | Status/Classification | Tags | By | DOI of authoritative paper |
+|:---|:---|:---:|:---:|:---|:---|
+| 10.1038/s41586-024-07849-4 | Caserta et al 2025 | `DAI` | | Ellen | 10.1101/2025.02.01.636082v1 |
+| 10.1038/s41586-024-08166-6 | Baker et al 2024 | `DE` | | Ellen | 10.1101/2025.02.01.636082v1 |
+| 10.1038/s41586-024-08063-y | Halwe et al 2024 | `DE` | | Ellen | 10.1101/2025.02.01.636082v1 |
+| 10.1371/journal.pbio.3001333 | Kissler 2021 PLOS CtTrajectories | `DAI` | | Ellen | 10.1038/s41467-023-41941-z |
+| 10.1056/nejmc2102507 | Kissler 2021 NEJM CtTrajectories_B117 Vax | `DAI` | | Ellen | 10.1038/s41467-023-41941-z |
+| 10.7554/eLife.81849 | Hay Kissler 2022 eLife SC2 kinetics | `DAI` | | Ellen | 10.1038/s41467-023-41941-z |
+| 10.1056/nejmc2102507 | Kissler et al 2021 | `DAI` | | Ellen RR | 10.1038/s41467-023-41941-z |
+| 10.1371/journal.pbio.3001333 | Kissler et al 2021 | `DAI` | | Ellen RR | 10.1038/s41467-023-41941-z |
+| 10.1016/s1473-3099(21)00648-4 | Singanayagam et al 2021 | `DAI` | | Ellen RR | 10.1016/S2213-2600(22)00226-0 |
+| 10.1371/journal.pcbi.0030240 | Handel et al 2007 | `DAI` | | Ellen RR | 10.1086/314938 |
 Count = 7
 
 Total tally = 102
