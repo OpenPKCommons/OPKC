@@ -5,7 +5,7 @@ This repository contains software to combine data from multiple studies into a s
 ## Quick start
 
 ### Virtual environment setup (once)
-This project uses `venv` to manage package versions. After cloning this project to your local machine, navigate to the root directory (`gvkl/`) and run the following from the command line: 
+This project uses `venv` to manage package versions. After cloning this project to your local machine, navigate to the root directory (`OPKC/`) and run the following from the command line: 
 
 `$ python3 -m venv venv`
 
@@ -17,7 +17,7 @@ Install all the required packages from the `requirements.txt` file:
 
 `pip install -r requirements.txt`
 
-Last (important!!), add `venv/` and `.env` to your `.gitignore` file (create one in your local `gvkl/` directory if you don't have one yet) 
+Last (important!!), add `venv/` and `.env` to your `.gitignore` file (create one in your local `OPKC/` directory if you don't have one yet) 
 
 ```
 # .gitignore
@@ -36,13 +36,13 @@ Be sure to re-activate the virtual environment:
 To ingest the data, format it, and generate the database, run 
 
 ```
-$ python3 ingest_studies.create_schema
+$ python3 -m ingest_studies.create_schema
 ```
 
 A helper script for testing the ingestion of individual studies before integrating them into the full database is also available: 
 
 ```
-$ python3 ingest_studies.test_import
+$ python3 -m ingest_studies.test_import
 ```
 
 ## Phase I progress
