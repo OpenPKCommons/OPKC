@@ -51,11 +51,12 @@ $ python3 code/ingest_studies/test_import.py
 
 ```mermaid
 graph LR
-	inbox[Inbox: 48]
-	mayexist[May exist: 2]
-	exists[Exists: 6]
-	provingest[Provisional ingest: 0]
-	ingested[Ingested: 4]
+	inbox[Inbox: 23]
+	mayexist[May exist: 35]
+	denea[Exists - not easy to access: 16]
+	exists[Exists: 9]
+	provingest[Provisional ingest: 1]
+	ingested[Ingested: 6]
 	exists --> provingest --> ingested
 ```
 

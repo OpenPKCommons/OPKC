@@ -8,46 +8,54 @@ Comprehensive, authoritative list of papers scanned for possible inclusion in op
 - DME ❇️ = data may exist, worth following up more in-depth
 	- as in would definitely need to request, and figures do not display individual resolution
 	- this is more work than DE-NEA
+	- * an asterisk denotes that this data seems especially difficult to track down
 - NA ❎ = not applicable, not something we can use for whatever reason
 - MO 🤖 = modeling only
 - DAI = data already included
 	- e.g. data from these references have already been included or superseded by another DE reference
 	- these are listed in main_list_list to prevent redundant scanning
 - tags
+	- pathogen studied
+		- [`SARS2`, `H5N1`, `H1N1`, `FMD`, `WestNile`]
+	- species studied, if other than human
+		- [`mosq`, `cows`, `sheep`]
 	1. XS 🌐 = cross-sectional data (may be of use for model parameters, but isn't individual-level empirical data itself)
 	2. sx 🤧 = symptom trajectory information
 	3. MA ♻️ = meta-analysis or review that combines other original data sources
 	4. REF = paper has references that should be scanned for data availability
 	5. LAB or LOD = paper has lab data that may be useful (e.g. culture, LOD)
 	6. BIN = infection status is binary, positive/negative
+	7. MOSP = mobility or spatial data
+	8. PACK = package
 
 
 ## Literature List
 ### Datasets already downloaded (ingested) and formatted (digested)
 | DOI | PaperNameString | Status/Classification | Tags | By |
 |:---|:---|:---:|:---:|---:|
-| 10.1038/s41564-022-01105-z | Ke et al 2022 Daily | `DIGESTED` | | Stephen |
-| 10.1038/s41467-023-41941-z | Kissler et al 2023 | `DIGESTED` | | Stephen |
-| 10.1371/journal.pbio.3002463 | Russell et al 2024 | `DIGESTED` | | Stephen |
-| 10.1126/sciimmunol.adj9285 | Wagstaffe et al 2024 | `DIGESTED` | | Carrie |
-| 10.1016/S1473-3099(24)00183-X | Wongnak et al 2024 | `DIGESTED` | | Stephen |
-Count = 5, 5
+| 10.1038/s41564-022-01105-z | Ke et al 2022 Daily | `DIGESTED` | `SARS2` | Stephen |
+| 10.1038/s41467-023-41941-z | Kissler et al 2023 | `DIGESTED` | `SARS2` | Stephen |
+| 10.1371/journal.pbio.3002463 | Russell et al 2024 | `DIGESTED` | `SARS2` | Stephen |
+| 10.1126/sciimmunol.adj9285 | Wagstaffe et al 2024 | `DIGESTED` | `SARS2` | Carrie |
+| 10.1016/S1473-3099(24)00183-X | Wongnak et al 2024 | `DIGESTED` | `SARS2` | Stephen |
+| 10.1016/S2213-2600(22)00226-0 | Hakki et al 2022 | `Digested to be merged` | `SARS2` | Oliver | [github](https://github.com/HPRURespMed/SARS-CoV-2-viral-shedding-dynamics) |
+| 10.1128/jcm.01785-21 | Savela Winnett Romano et al 2022 | `Ingesting` | `SARS2` | Oliver | [author site](https://data.caltech.edu/records/bv2tf-aap55) |
+
+Count = 7
 
 ### DE = DATA EXISTS
 | DOI | PaperNameString | Status/Classification | Tags | By | Data link |
 |:---|:---|:---:|:---:|:---|:---|
-| 10.1016/S2213-2600(22)00226-0 | Hakki et al 2022 | `DE` | | Ellen | [github](https://github.com/HPRURespMed/SARS-CoV-2-viral-shedding-dynamics) |
-| 10.1128/jcm.01785-21 | Savela Winnett Romano et al 2022 | `DE` | | Ellen | [author site](https://data.caltech.edu/records/bv2tf-aap55) |
-| 10.1101/2025.02.01.636082v1 | Eales et al 2025 | `DE` | | Ellen | [github](https://github.com/Eales96/H5N1_viral_kinetics) |
-| 10.7326/M20-1495 | Kucirka et al 2020 | `DE` | `MA` | Ellen | [github](https://github.com/HopkinsIDD/covidRTPCR) |
-| 10.1038/s41591-022-01816-0 | Puhach et al 2022 | `DE` | | Ellen | [Extended data at paper](https://www-nature-com.colorado.idm.oclc.org/articles/s41591-022-01816-0#Sec18) |
-| 10.1126/science.abi5273 | Jones et al 2021 | `DE` | | Ellen RR | [github](https://github.com/VirologyCharite/SARS-CoV-2-VL-paper/tree/main) |
+| 10.1101/2025.02.01.636082v1 | Eales et al 2025 | `DE` | `H5N1` | Ellen | [github](https://github.com/Eales96/H5N1_viral_kinetics) |
+| 10.7326/M20-1495 | Kucirka et al 2020 | `DE` | `SARS2` `MA` | Ellen | [github](https://github.com/HopkinsIDD/covidRTPCR) |
+| 10.1038/s41591-022-01816-0 | Puhach et al 2022 | `DE` | `SARS2` | Ellen | [Extended data at paper](https://www-nature-com.colorado.idm.oclc.org/articles/s41591-022-01816-0#Sec18) |
+| 10.1126/science.abi5273 | Jones et al 2021 | `DE` | `SARS2` | Ellen RR | [github](https://github.com/VirologyCharite/SARS-CoV-2-VL-paper/tree/main) |
 | 10.1038/s41467-020-20568-4 | van Kampen et al 2021 | `DE` | `LAB` | Ellen RR | [Source data at paper](https://www-nature-com.colorado.idm.oclc.org/articles/s41467-020-20568-4#Sec12) |
-| 10.1101/2025.07.02.662782 | Alahakoon et al 2025 Trackign West Nile | `DE` | | Ellen | [github](https://github.com/PunyaAlahakoon/west_nile_virus_abm/tree/main/3_figure_generation/data) |
-| 10.1038/s41467-025-61553-z | Peña-Mosca et al 2025  | `DE` | | Ellen | [github](https://github.com/fepenamosca/hpai_impact_dairies/tree/fd5f303f4aae47ef3a6259e7e7b94284f8c3af67/data) |
-| 10.1038/s41564-025-01998-6 | Facciuolo et al 2025 | `DE` | | Ellen | [Source Data at paper](https://www-nature-com.colorado.idm.oclc.org/articles/s41564-025-01998-6#Sec25) |
+| 10.1101/2025.07.02.662782 | Alahakoon et al 2025 Tracking West Nile | `DE` | `WestNile` `mosq` | Ellen | [github](https://github.com/PunyaAlahakoon/west_nile_virus_abm/tree/main/3_figure_generation/data) |
+| 10.1038/s41467-025-61553-z | Peña-Mosca et al 2025  | `DE` | `H5N1` `cows` | Ellen | [github](https://github.com/fepenamosca/hpai_impact_dairies/tree/fd5f303f4aae47ef3a6259e7e7b94284f8c3af67/data) |
+| 10.1038/s41564-025-01998-6 | Facciuolo et al 2025 | `DE` | `H5N1` `cows` | Ellen | [Source Data at paper](https://www-nature-com.colorado.idm.oclc.org/articles/s41564-025-01998-6#Sec25) |
 | 10.1073/pnas.0307506101 | Fraser et al 2004 | `DE` | `MA` `MO` | Ellen RR | []() |
-Count = 11
+Count = 9
 
 ### DE-NEA = Data exists, not easily accesible
 | DOI | PaperNameString | Status/Classification | Tags | By |
@@ -68,6 +76,7 @@ Count = 11
 | 10.1038/s41591-020-0869-5 | He et al 2020 | `DE-NEA` | | Ellen RR |
 | 10.1001/jamanetworkopen.2021.42796 | Stankiewicz et al 2022 | `DE-NEA` | | Ellen RR |
 | 10.1056/nejmc2202092 | Boucau et al 2022 | `DE-NEA` | | Ellen RR |
+| 10.1093/biostatistics/kxaa009 | Mahsin et al 2019 | `DE-NEA` | `H1N1` `MOSP` | Ellen C1 |
 Count = 16
 
 ### DME = Data MAY exist

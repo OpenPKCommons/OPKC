@@ -1,8 +1,8 @@
 # Overview
-This directory contains data ingested from the literature. Logged in "main_lit_list.md" are the data sources. As contributors identify literature, they should make sure this list is kept up to date.
+This directory contains data downloaded from the literature. Logged in "main_lit_list.md" are the data sources. As contributors identify literature, they should make sure this list is kept up to date.
 
 ## Literature Workflow
-In the "Status" column of main_lit_list, users can indicate what stage of the literature worflow a given reference is in, and either add new papers to the list or work on scanning or ingesting already identified papers.
+In the "Status" column of main_lit_list, collaborators can indicate what stage of the literature worflow a given reference is in, and either add new papers to the list or work on scanning or ingesting already identified papers, and create a github Issue to indicate work in progress.
 
 ### 1. **Identify** a candidate paper
 - Check main_lit_list for the DOI to ensure that it hasn't already been processed, and if not, add it.
@@ -11,8 +11,7 @@ In the "Status" column of main_lit_list, users can indicate what stage of the li
     - Authors (e.g. Christopher Chiu, works from senior authors on already identified papers)
     - Methods or topics (e.g. challange studies, epi review papers)
 
-
-### 2. **Scan** paper for pathogen kinetics data to quickly determin if that data exists or not.
+### 2. **Scan** paper for pathogen kinetics data to quickly determine if that data exists or not.
 - Annotate in main_lit_list according to the below scheme. (Emojis are for easy labeling in Slack.)
     - DE ✅ = data exists
 	- DE-NEA ✳️ = not easily accessible
@@ -24,27 +23,11 @@ In the "Status" column of main_lit_list, users can indicate what stage of the li
     - DAI = data already included
     	- e.g. data from this source has already been included as part of another dataset
     	- these references are recorded to prevent redundant scanning
-- A quick way to find papers with easily accessible data for us is by searching within the paper text for "github", "Zenodo" or "Dryad"
-- Other metadata worth noting:
-	- pathogen(s), any variant info
-    - XS 🌐 = cross-sectional data (may be of use for model parameters, but isn't individual-level empirical data itself)
-	- readout(s)
-		- symptoms, titers, etc.
-        - sx 🤧 = symptom trajectory information
-    - MA ♻️ = paper is a review or meta-analysis
-	- time resolution and duration
-		- year(s) data collected?
-	- patient/participant population
-	- interventions/drugs/treatments
-		- e.g. challenge, neutralization, etc.
-	- any infection or transmission data?
-	- study design/sampling notes
-	- first and relevant senior authors
+	- For other metadata worth flagging (e.g. pathogen, cross-sectional data, meta-analysis, lab data, spatial data, etc.), use tags. Refer to [main_lit_list.md] for tags in use.
 
-### 3. **Ingest** the data from that source and save it to this directory
+### 3. **Ingest** the data from that source by saving it to this directory, then creating a script in ingest_studies/studies that formats it according to our schema.
 - Any papers with status Scanned: DE can be immediately ingested. Other designations will need more work.
-
-Tentatively we're using DIGEST to distinguish those papers that have data saved here AND have scripts written to clean and format the data up to our standards.
+- A paper is marked as **digested** when this has been done and it has been added to our database with create_schema.py
 
 ## Challenges and nuances of note
 - identifying empirical vs. modeled data
