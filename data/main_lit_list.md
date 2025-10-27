@@ -54,8 +54,7 @@ Count = 7
 | 10.1101/2025.07.02.662782 | Alahakoon et al 2025 Tracking West Nile | `DE` | `WestNile` `mosq` | Ellen | [github](https://github.com/PunyaAlahakoon/west_nile_virus_abm/tree/main/3_figure_generation/data) |
 | 10.1038/s41467-025-61553-z | Peña-Mosca et al 2025  | `DE` | `H5N1` `cows` | Ellen | [github](https://github.com/fepenamosca/hpai_impact_dairies/tree/fd5f303f4aae47ef3a6259e7e7b94284f8c3af67/data) |
 | 10.1038/s41564-025-01998-6 | Facciuolo et al 2025 | `DE` | `H5N1` `cows` | Ellen | [Source Data at paper](https://www-nature-com.colorado.idm.oclc.org/articles/s41564-025-01998-6#Sec25) |
-| 10.1073/pnas.0307506101 | Fraser et al 2004 | `DE` | `MA` `MO` | Ellen RR | []() |
-Count = 9
+Count = 8
 
 ### DE-NEA = Data exists, not easily accesible
 | DOI | PaperNameString | Status/Classification | Tags | By |
@@ -117,7 +116,12 @@ Count = 16
 | 10.1001/jama.1996.03530280047035 | Hayden et al 1996 | `DME` | | Ellen RR |
 | 10.1016/s0140-6736(09)62126-7 | Miller et al 2010 | `DME` | | Ellen RR |
 | 10.1086/314938 | Fritz et al 1999 | `DME` | | Ellen RR |
-Count = 35
+| 10.1126/science.1086478 | Riley et al 2003 | DME | `SARS`  | Ellen |
+| 10.1126/science.1086616 | Lipsitch et al 2003 | DME | `SARS`  | Ellen |
+| 10.1016/S0140-6736(03)13410-1 | Donnelly et al 2003 | DME | `SARS` * | Ellen |
+| 10.1016/S0140-6736(03)13412-5 | Peiris et al 2003 | DME | `SARS` `sx` `LAB` | Ellen |
+
+Count = 38
 
 ### IDed paper in scanning queue
 | DOI | PaperNameString | Status/Classification | Tags | By |
@@ -143,7 +147,9 @@ Count = 4+
 | 10.1038/nature04795 | Ferguson et al 2006 | `MO` | | Ellen RR |
 | 10.1056/nejmoa0905498 | Cauchemez et al 2009 | `MO` | | Ellen RR |
 | 10.1001/jamanetworkopen.2021.10071 | Holmdahl et al 2021 | `MO` | | Ellen RR |
-Count = 11
+| 10.1073/pnas.0307506101 | Fraser et al 2004 | `DE` | `MA` `MO` | Ellen RR |
+| 10.1016/0025-5564(85)90064-1 | Rvachev et al 1985 | MO | `Flu` `H1N1` | Ellen |
+Count = 13
 
 ### NA = Not Applicable
 | DOI | PaperNameString | Status/Classification | Tags | By |
@@ -159,7 +165,9 @@ Count = 11
 | 10.1371/journal.ppat.1003205 | Milton et al 2013 | `NA` | | Ellen RR |
 | 10.3201/eid1211.060426 | Tellier et al 2006 | `NA` | | Ellen RR |
 | 10.1016/s2666-5247(21)00143-9 | Pickering et al 2021 | `NA` | `LOD` | Ellen RR |
-Count = 11
+| 10.1016/S0140-6736(00)02061-4 | Babiker et al 2000 | NA | `HIV`  | Ellen |
+| 10.1016/S1473-3099(24)00416-X | Pham et al 2024 | NA | `Bact Res`  | Ellen GH |
+Count = 13
 
 ### DAI = Data already included
 | DOI | PaperNameString | Status/Classification | Tags | By | DOI of authoritative paper |
@@ -176,4 +184,4 @@ Count = 11
 | 10.1371/journal.pcbi.0030240 | Handel et al 2007 | `DAI` | | Ellen RR | 10.1086/314938 |
 Count = 7
 
-Total tally = 102
+Total tally = 109
