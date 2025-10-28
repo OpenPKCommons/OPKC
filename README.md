@@ -53,7 +53,7 @@ $ python3 code/ingest_studies/test_import.py
 graph LR
 	inbox[Inbox: 23]
 	mayexist[May exist: 38]
-	denea[Exists - not easy to access: 16]
+	denea[Exists - not easy to access: 17]
 	exists[Exists: 8]
 	provingest[Provisional ingest: 1]
 	ingested[Ingested: 6]
