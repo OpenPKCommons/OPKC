@@ -1,7 +1,8 @@
 import pandas as pd
 
 STANDARD_SCHEMA = [
-    "StudyID", "PersonID", "InfectionID", "SampleID", "TimeDays",
+    "StudyID", "PersonID", "Pathogen", "PtSpecies",
+    "InfectionID", "SampleID", "TimeDays",
     "Symptoms1", "Symptoms2", "Symptoms3", "Symptoms4",
     "Comorbidity1", "Comorbidity2", "Comorbidity3", "Comorbidity4",
     "Treatment1", "Treatment2", "Treatment3", "Treatment4",
@@ -21,12 +22,10 @@ def coerce_types(df):
     for col in numeric_cols:
         df[col] = pd.to_numeric(df[col], errors="coerce")
 
-    string_cols = ["StudyID", "PersonID", "InfectionID", "SampleID", "Symptoms1", "Symptoms2", "Symptoms3", "Symptoms4", "Comorbidity1", "Comorbidity2", "Comorbidity3", "Comorbidity4", "Treatment1", "Treatment2", "Treatment3", "Treatment4", "SampleType", "Subtype", "Platform", "DOI", "Units"]
+    string_cols = ["StudyID", "PersonID", "Pathogen", "PtSpecies", "InfectionID", "SampleID", "Symptoms1", "Symptoms2", "Symptoms3", "Symptoms4", "Comorbidity1", "Comorbidity2", "Comorbidity3", "Comorbidity4", "Treatment1", "Treatment2", "Treatment3", "Treatment4", "SampleType", "Subtype", "Platform", "DOI", "Units"]
     df[string_cols] = df[string_cols].astype(str)
 
     return df
-
-import pandas as pd
 
 def split_age_range(df, col="AgeGrp", out1="AgeRng1", out2="AgeRng2"):
     """

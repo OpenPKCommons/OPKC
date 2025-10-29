@@ -36,6 +36,7 @@ def load_and_format():
 
     # Add additional columns with known but missing information:
     df["StudyID"] = "ke2022"
+    df["Pathogen"] = "SARS2"
     df["AgeRng2"] = df["AgeRng1"]
     df["DOI"] = "10.1038/s41564-022-01105-z"
     df["Units"] = df["SampleType"].map({

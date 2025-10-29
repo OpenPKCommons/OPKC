@@ -112,6 +112,8 @@ def load_and_format():
 
     # 6) Fill study-level metadata lab schema expects
     df["StudyID"] = "hakki2022"
+    df["Pathogen"] = "SARS2"
+    df["PtSpecies"] = "Human"
     df["DOI"] = "10.1016/S2213-2600(22)00226-0"
     # SampleType/Platform - set conservative defaults; refine from Methods later if needed
     if "SampleType" not in df.columns:
