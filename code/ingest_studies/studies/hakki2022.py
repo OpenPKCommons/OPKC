@@ -133,9 +133,13 @@ def load_and_format():
     # If enforce_schema drops unknown columns, store in a Notes column.
     print(f"Loaded Hakki et al. 2022 — {len(df)} total rows.")
     return df
+
+"""
+#print confirmation message
 if __name__ == "__main__":
     df = load_and_format()
     print(f"Loaded from: {__file__}")
     print(df.shape)
     print(df.columns.tolist())
     print(df.head().to_string(index=False))
+"""
