@@ -40,7 +40,7 @@ Comprehensive, authoritative list of papers scanned for possible inclusion in op
 | 10.1371/journal.pbio.3002463 | Russell et al 2024 | `DIGESTED` | `SARS2` | | Stephen |
 | 10.1126/sciimmunol.adj9285 | Wagstaffe et al 2024 | `DIGESTED` | `SARS2` | | Carrie |
 | 10.1016/S1473-3099(24)00183-X | Wongnak et al 2024 | `DIGESTED` | `SARS2` | | Stephen |
-| 10.1016/S2213-2600(22)00226-0 | Hakki et al 2022 | `Digested to be merged` | `SARS2` | `VAX` `LAB`| Oliver | [github](https://github.com/HPRURespMed/SARS-CoV-2-viral-shedding-dynamics) |
+| 10.1016/S2213-2600(22)00226-0 | Hakki et al 2022 | `DIGESTED` | `SARS2` | `VAX` `LAB`| Oliver | [github](https://github.com/HPRURespMed/SARS-CoV-2-viral-shedding-dynamics) |
 | 10.1128/jcm.01785-21 | Savela Winnett Romano et al 2022 | `Ingesting` | `SARS2` | | Oliver | [author site](https://data.caltech.edu/records/bv2tf-aap55) |
 
 Count = 7
