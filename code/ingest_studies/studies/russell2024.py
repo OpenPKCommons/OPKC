@@ -45,6 +45,7 @@ def load_and_format():
 
     # Add additional columns with known but missing information:
     df["StudyID"] = "russell2024"
+    df["Pathogen"] = "SARS2"
     df["DOI"] = "10.1371/journal.pbio.3002463"
     df["Units"] = "Ct"
     df["SampleType"] = "nasopharyngeal"
