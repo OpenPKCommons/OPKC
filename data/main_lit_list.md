@@ -15,16 +15,16 @@ Comprehensive, authoritative list of papers scanned for possible inclusion in op
 	- e.g. data from these references have already been included or superseded by another DE reference
 	- these are listed in main_list_list to prevent redundant scanning
 - pathogen(s)
-	- [`SARS2`, `Flu`, `FMD`, `WestNile`, `SARS`, `MERS`, `Smallpox`, `HIV`]
+	- [`SARS2`, `Flu`, `FMD`, `WestNile`, `SARS`, `MERS`, `Smallpox`, `HIV`, `Bact Res` #baterial resistance, `Dengue`]
 - tags
 	- pathogen strain or subtype (e.g. `H5N1`, `Omicron`)
 	- species studied, if other than human
-		- [`mosq`, `cows`, `sheep`, `birds`]
+		- [`mosq`, `cows`, `sheep`, `birds`, `in vitro`]
 	1. XS 🌐 = cross-sectional data (may be of use for model parameters, but isn't individual-level empirical data itself)
 	2. sx 🤧 = symptom trajectory information
 	3. MA ♻️ = meta-analysis or review that combines other original data sources
 	4. REF = paper has references that should be scanned for data availability
-	5. LAB, LOD, SEQ = paper has lab data that may be useful (e.g. culture, LOD, genetic sequencing)
+	5. LAB, LOD, SEQ, Ab = paper has lab data that may be useful (e.g. culture, LOD, genetic sequencing, antibodies)
 	6. BIN = infection status is binary, positive/negative
 	7. MOSP = mobility or spatial data
 	8. PACK = package
@@ -49,6 +49,8 @@ Count = 7
 | DOI | PaperNameString | Status/Classification | Pathogen | Tags | INGEST-IN-PROGRESS-BY? | Data link |
 |:---|:---|:---:|:---:|:---:|:---|:---|
 | 10.1101/2025.02.01.636082v1 | Eales et al 2025 | `DE` | `H5N1` | | Ellen | [github](https://github.com/Eales96/H5N1_viral_kinetics) |
+| 10.1038/s41564-024-01668-z | Waickman et al 2024 | `DE` | `Dengue` | `LAB` | UNCLAIMED | [data at paper](https://www-nature-com.colorado.idm.oclc.org/articles/s41564-024-01668-z) |
+| 10.7554/eLife.92606.3 | Vuong et al 2024 | `DE` | `Dengue` | `LAB` | UNCLAIMED | [github](https://github.com/Nguyenlamvuong/Dengue_Viremia_Kinetics_eLife_2024/blob/main/Viremia%20and%20outcomes%20240522.Rdata) |
 | 10.7326/M20-1495 | Kucirka et al 2020 | `DE` | `SARS2` | `MA` | UNCLAIMED | [github](https://github.com/HopkinsIDD/covidRTPCR) |
 | 10.1038/s41591-022-01816-0 | Puhach et al 2022 | `DE` | `SARS2` | | Carrie | [Extended data at paper](https://www-nature-com.colorado.idm.oclc.org/articles/s41591-022-01816-0#Sec18) |
 | 10.1126/science.abi5273 | Jones et al 2021 | `DE` | `SARS2` | | Carrie | [github](https://github.com/VirologyCharite/SARS-CoV-2-VL-paper/tree/main) |
@@ -56,7 +58,7 @@ Count = 7
 | 10.1101/2025.07.02.662782 | Alahakoon et al 2025 Tracking West Nile | `DE` | `WestNile` | `mosq` `birds` | UNCLAIMED | [github](https://github.com/PunyaAlahakoon/west_nile_virus_abm/tree/main/3_figure_generation/data) |
 | 10.1038/s41467-025-61553-z | Peña-Mosca et al 2025  | `DE` | `Flu` |`H5N1` `cows` | Ellen | [github](https://github.com/fepenamosca/hpai_impact_dairies/tree/fd5f303f4aae47ef3a6259e7e7b94284f8c3af67/data) |
 | 10.1038/s41564-025-01998-6 | Facciuolo et al 2025 | `DE` | `Flu` |`H5N1` `cows` | Ellen | [Source Data at paper](https://www-nature-com.colorado.idm.oclc.org/articles/s41564-025-01998-6#Sec25) |
-Count = 8
+Count = 10
 
 ### DE-NEA = Data exists, not easily accesible (alphabetized)
 | DOI | PaperNameString | Status/Classification | Pathogen | Tags | AUTHOR_CONTACTED? |
@@ -122,8 +124,9 @@ Count = 17
 | 10.1126/science.1086616 | Lipsitch et al 2003 | `DME` | `SARS` | | Ellen |
 | 10.1016/S0140-6736(03)13410-1 | Donnelly et al 2003 | `DME` | `SARS` | * | Ellen |
 | 10.1016/S0140-6736(03)13412-5 | Peiris et al 2003 | `DME` | `SARS` | `sx` `LAB` | Ellen |
+| 10.1128/CVI.00229-08 | Gagneur et al 2008 | `DME` | `Measles` | `LAB` `Ab` | Ellen GH |
 
-Count = 38
+Count = 40
 
 ### IDed paper in scanning queue
 | DOI | PaperNameString | Status/Classification | Pathogen | Tags | By |
@@ -151,7 +154,8 @@ Count = 4+
 | 10.1001/jamanetworkopen.2021.10071 | Holmdahl et al 2021 | `MO` | | Ellen RR |
 | 10.1073/pnas.0307506101 | Fraser et al 2004 | `DE` | `MA` `MO` | Ellen RR |
 | 10.1016/0025-5564(85)90064-1 | Rvachev et al 1985 | `MO` | `Flu` `H1N1` | Ellen |
-Count = 13
+| 10.3390/v9080197 | Cao et al 2017 | `MO` | `REF` | Dan |
+Count = 14
 
 ### NA = Not Applicable
 | DOI | PaperNameString | Status/Classification | Tags | By |
@@ -169,7 +173,8 @@ Count = 13
 | 10.1016/s2666-5247(21)00143-9 | Pickering et al 2021 | `NA` | `LOD` | Ellen RR |
 | 10.1016/S0140-6736(00)02061-4 | Babiker et al 2000 | `NA` | `HIV`  | Ellen |
 | 10.1016/S1473-3099(24)00416-X | Pham et al 2024 | `NA` | `Bact Res`  | Ellen GH |
-Count = 13
+| 10.3390/v17101343 | Aloisio et al 2025 | `NA` | `SARS2` | Dan | 
+Count = 14
 
 ### DAI = Data already included
 | DOI | PaperNameString | Status/Classification | Tags | By | DOI of authoritative paper |
@@ -184,6 +189,6 @@ Count = 13
 | 10.1371/journal.pbio.3001333 | Kissler et al 2021 | `DAI` | | Ellen RR | 10.1038/s41467-023-41941-z |
 | 10.1016/s1473-3099(21)00648-4 | Singanayagam et al 2021 | `DAI` | | Ellen RR | 10.1016/S2213-2600(22)00226-0 |
 | 10.1371/journal.pcbi.0030240 | Handel et al 2007 | `DAI` | | Ellen RR | 10.1086/314938 |
-Count = 7
+Count = 10
 
 Total tally = 109

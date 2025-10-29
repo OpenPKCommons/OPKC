@@ -52,9 +52,9 @@ $ python3 code/ingest_studies/test_import.py
 ```mermaid
 graph LR
 	inbox[Inbox: 23]
-	mayexist[May exist: 38]
+	mayexist[May exist: 40]
 	denea[Exists - not easy to access: 17]
-	exists[Exists: 8]
+	exists[Exists: 10]
 	provingest[Provisional ingest: 1]
 	ingested[Ingested: 6]
 	exists --> provingest --> ingested

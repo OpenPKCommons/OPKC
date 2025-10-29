@@ -18,6 +18,8 @@ In the "Status" column of main_lit_list, collaborators can indicate what stage o
 	    - as in the data is clearly there at individual scale but would need to be extracted or requested
     - DME ❇️ = data may exist, worth following up more in-depth
         - as in would definitely need to request, and figures do not display individual resolution
+		- this is more work than DE-NEA
+		- * an asterisk denotes that this data seems especially difficult to track down
     - NA ❎ = not applicable, not something we can use for whatever reason
     - MO 🤖 = modeling only
     - DAI = data already included
