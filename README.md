@@ -84,7 +84,7 @@ graph LR
 - Hospitalized: Was the patient hospitalized?
 - SampleSource1: Anatomical source of sample (e.g., saliva, nose/anterior nares, nasopharyngeal), formerly SampleType
 - SampleSource2: as above
-- SampleMethod: Type of sample (e.g., swab, raw saliva, buffered saliva)
+- SampleMethod: Type of sample, medium if relevant (e.g., swab, raw saliva, buffered saliva, VTM)
 - AgeRng1: Lower end of the patient's age bracket
 - AgeRng2: Upper end of the patient's age bracket
 - Subtype: Pathogen subtype/strain/variant
