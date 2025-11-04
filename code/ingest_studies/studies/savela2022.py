@@ -13,7 +13,8 @@ type and time since infection onset.
 Temporal variables:
 -------------------
 - `Days Post-Enrollment` represents the number of days since **study enrollment** 
-  for each participant. This variable is mapped to the schema variable `TimeDays`.
+  for each participant. We re-baseline per person so that the **first detectable**
+  sample (i.e., first non-ND) is set to TimeDays = 0.0.
 
 - Additional time variables in some supplemental files (e.g., `days_4C`, 
   `day_archive`) reflect storage or extraction stability experiments rather than 
@@ -46,10 +47,10 @@ Notes:
   `load_and_format()`.
 """
 
-import math
+import os, sys, math
 import pandas as pd
+import numpy as np
 # Make parent folder importable to import schema.py
-import os, sys
 THIS_DIR = os.path.dirname(__file__)
 PARENT_DIR = os.path.abspath(os.path.join(THIS_DIR, ".."))  # .../ingest_studies
 if PARENT_DIR not in sys.path:
@@ -57,126 +58,128 @@ if PARENT_DIR not in sys.path:
 
 from schema import enforce_schema, coerce_types
 
-def load_savela2022_infection(data_dir):
-    """Load and format longitudinal infection data (Fig 2A–G paired datasets)."""
-    infection_files = [
+def _sample_fields_from_text(txt: str):
+    """
+    Map raw 'Sample Type' text into (SampleSource1, SampleMethod).
+    Expected sample_type_str contains something like 'saliva' or 'nasal swab'.
+    """
+    if not isinstance(txt, str):
+        return (pd.NA, pd.NA)
+    t = txt.strip().lower()
+    if "saliva" in t:
+        return ("saliva", "saliva collection")
+    # Savela uses anterior nares (nasal) swabs
+    if "nasal" in t or "nares" in t or "anterior" in t or "swab" in t:
+        return ("nose", "swab")
+    return (pd.NA, pd.NA)
+
+def _safe_log10_mean(n1, n2):
+    """
+    Compute log10 of mean copies/mL across N1 & N2 if either is valid (>0).
+    If both are missing/nonpositive, return NaN.
+    """
+    vals = [v for v in [n1, n2] if pd.notna(v) and v > 0]
+    if not vals:
+        return np.nan
+    return math.log10(np.mean(vals))
+
+
+def load_savela2022_infection(data_dir: str) -> pd.DataFrame:
+    """Load and standardize longitudinal infection data (Fig 2A–G paired)."""
+    infection_files = sorted(
         f for f in os.listdir(data_dir)
         if f.startswith("savela2022_fig2") and f.endswith(".xlsx")
-    ]
-    dfs = []
+    )
+    if not infection_files:
+        raise FileNotFoundError("No savela2022_fig2*.xlsx files found in data directory.")
 
+    frames = []
     for f in infection_files:
-        df = pd.read_excel(os.path.join(data_dir, f))
-        df["source_file"] = f
-        dfs.append(df)
-
-    df = pd.concat(dfs, ignore_index=True)
-
-    # Clean and standardize
-    df.rename(columns={
-        "Participant": "ParticipantID",
-        "Days Post-Enrollment": "DaysPostEnrollment",
-        "Sample Type": "SampleType",
-        "Viral Load N1 (copies/mL)": "ViralLoad_N1",
-        "Viral Load N2 (copies/mL)": "ViralLoad_N2",
-    }, inplace=True, errors="ignore")
-
+        raw = pd.read_excel(os.path.join(data_dir, f))
+        # Clean and standardize
+        df = raw.rename(columns={
+            "Participant": "PersonID",
+            "Days Post-Enrollment": "TimeDays",
+            "Viral Load N1 (copies/mL)": "Target1",
+            "Viral Load N2 (copies/mL)": "Target2",
+        })
+   
+# Parse Sample Type into SampleSource1 & SampleMethod
+        ss = df.get("Sample Type")
+        sample_pairs = ss.apply(_sample_fields_from_text) if ss is not None else [(pd.NA, pd.NA)] * len(df)
+        df["SampleSource1"] = [p[0] for p in sample_pairs]
+        df["SampleMethod"]  = [p[1] for p in sample_pairs]
+#Fixed metadata
     df["StudyID"] = "savela2022"
+    df["Pathogen"] = "SARS-CoV-2"
+    df["PtSpecies"] = "Human"
     df["Units"] = "copies/mL"
-    df["Matrix"] = df["SampleType"].str.lower()
-    df["Method"] = "RT-qPCR"
-    df["Notes"] = "Self-collected paired saliva and nasal swab samples"
+    df["Platform"] = "RT-qPCR"
+    df["DOI"] = "10.1126/microbiol.abh2556"
+    #df["AgeRng1"] = "6-11"
+    #df["AgeRng2"] = "12-17"
+    #df["AgeRng3"] = "30-39"
+    #df["AgeRng4"] = "50-59"
+    #df["Symptoms1"] = #ICD10 R05 Cough
+    #df["Symptoms2"] = #ICD10 R06.02 Shortness of Breath 
+    #df["Symptoms3"] = #ICD10 R09.81 Congestion/Runny Nose 
+    #df["Symptoms4"] = #ICD10 R43 Change in Taste/Smell 
+    #df["Symptoms5"] = #ICD10 R07 Sore Throat 
+    #df["Symptoms6"] = #ICD10 R11 Nausea/Vomiting 
+    #df["Symptoms7"] = #ICD10 R19.7 Diarrhea 
+    #df["Symptoms8"] = #ICD10 R50.9 Fever 
+    #df["Symptoms9"] = #ICD10 R51 Headache 
+    #df["Symptoms10"] = #ICD10 R52 Muscle Aches
 
-    # Simplify and reorder columns
-    df = df[[
-        "StudyID", "ParticipantID", "DaysPostEnrollment", "Matrix",
-        "ViralLoad_N1", "ViralLoad_N2", "Units", "Method", "Notes", "source_file"
-    ]]
+# Ensure numeric targets
+    for col in ["Target1", "Target2"]:
+        if col in df.columns:
+            df[col] = pd.to_numeric(df[col], errors="coerce")
 
-    return df
+# Compute Log10VL per row
+    df["Log10VL"] = df.apply(lambda r: _safe_log10_mean(r.get("Target1"), r.get("Target2")), axis=1)
 
+# Keep columns we’ll align to schema later (others will be added by enforce_schema)
+    frames.append(df[[
+        "StudyID", "PersonID", "Pathogen", "PtSpecies",
+        "TimeDays", "SampleSource1", "SampleMethod",
+        "Platform", "DOI", "Target1", "Target2", "Log10VL", "Units"
+    ]])
 
-def load_savela2022_calibration(data_dir):
-    """Load calibration curve data (Fig 1A/B)."""
-    files = {
-        "swab": "savela2022_swab.xlsx",
-        "saliva": "savela2022_saliva.xlsx"
-    }
+    out = pd.concat(frames, ignore_index=True)
 
-    dfs = []
-    for sample_type, filename in files.items():
-        path = os.path.join(data_dir, filename)
-        df = pd.read_excel(path)
-        df["SampleType"] = sample_type
-        dfs.append(df)
+# Re-baseline TimeDays so that first detected positive per person = 0
+# "Detected" = Target1 or Target2 present and > 0 (after coercion)
+    def first_detected_day(g):
+        mask = ((g["Target1"].fillna(-1) > 0) | (g["Target2"].fillna(-1) > 0)) & g["TimeDays"].notna()
+        if mask.any():
+            return g.loc[mask, "TimeDays"].min()
+        return np.nan
 
-    df = pd.concat(dfs, ignore_index=True)
+    shifts = out.groupby("PersonID", dropna=False).apply(first_detected_day).rename("t0")
+    out = out.merge(shifts, on="PersonID", how="left")
+    out["TimeDays"] = pd.to_numeric(out["TimeDays"], errors="coerce") - pd.to_numeric(out["t0"], errors="coerce")
+    out.drop(columns=["t0"], inplace=True)
 
-    df.rename(columns={
-        "Sample ID": "SampleID",
-        "Geometric Mean": "GeometricMean",
-        "qPCRLoad": "RTqPCR_Load",
-        "qPCRCt": "RTqPCR_Ct",
-        "dPCRLoad (Cp/mL)": "ddPCR_Load"
-    }, inplace=True)
+    # Final schema alignment
+    out = enforce_schema(out)
+    out = coerce_types(out)
 
-    df["StudyID"] = "savela2022"
-    df["Experiment"] = "calibration"
-    df["Units"] = "copies/mL"
-
-    df = df[[
-        "StudyID", "Experiment", "SampleType", "SampleID",
-        "RTqPCR_Load", "ddPCR_Load", "RTqPCR_Ct", "GeometricMean", "Units"
-    ]]
-
-    return df
-
-
-def load_savela2022_stability(data_dir):
-    """Optional: load saliva and swab stability (SI Fig 3B)."""
-    files = [
-        "savela2022_saliva_SI.xlsx",
-        "savela2022_swab_SI.csv"
-    ]
-    dfs = []
-    for f in files:
-        path = os.path.join(data_dir, f)
-        if f.endswith(".xlsx"):
-            df = pd.read_excel(path)
-        else:
-            df = pd.read_csv(path)
-        dfs.append(df)
-
-    df = pd.concat(dfs, ignore_index=True)
-    df["StudyID"] = "savela2022"
-    df["Experiment"] = "sample_stability"
-    df.rename(columns={"VL_cpml": "CopiesPerML"}, inplace=True)
-    df["Units"] = "copies/mL"
-    return df
-
-
+    return out
 def load_and_format(base_dir=None):
-    """Master loader that compiles all Savela 2022 datasets into unified format."""
+    """
+    Master loader for Savela et al. 2022 (version 1 schema-compliant).
+    Currently loads only the infection trajectory data (Fig 2A–G paired datasets).
+    """
     if base_dir is None:
         base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.."))
 
-
     data_dir = os.path.join(base_dir, "data")
-
-    infection = load_savela2022_infection(data_dir)
-    calibration = load_savela2022_calibration(data_dir)
-
-    try:
-        stability = load_savela2022_stability(data_dir)
-    except Exception as e:
-        print(f"Warning: could not load stability data: {e}")
-        stability = pd.DataFrame()
-
-    df_all = pd.concat([infection, calibration, stability], ignore_index=True, sort=False)
-    print(f"Loaded Savela et al. 2022 — {len(df_all)} total rows.")
-    return df_all
+    df_infection = load_savela2022_infection(data_dir)
+    print(f"Loaded Savela et al. 2022 — {len(df_infection)} total rows.")
+    return df_infection
 
 
 if __name__ == "__main__":
     df = load_and_format()
-    print(df.head(20))
+    print(df.head(15))
