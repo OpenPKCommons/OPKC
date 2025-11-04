@@ -13,7 +13,7 @@ def load_and_format():
         "ID": "PersonID",
         "Time": "TimeDays",
         "Trt": "Treatment1",
-        "Swab_ID": "SampleType",
+        "Swab_ID": "SampleSource", #they specify which tonsil, but oropharyngeal would suffice
         "Age": "AgeRng1",
         "BARCODE": "SampleID", 
         "Variant": "Subtype",
@@ -29,7 +29,10 @@ def load_and_format():
     df["PtSpecies"] = "Human"
     df["DOI"] = "10.1016/S1473-3099(24)00183-X"
     df["Units"] = "GEml"
-    df["Platform"] = "TaqCheckFastPCR"
+    df["SampleMethod"] = "flocked_OP_swab_in_VTM" #Swabs = Thermo Fisher MicroTest and COPAN FLOQSwabs, VTm = Thermo Fisher M4RT viral transport medium (3 mL)
+    df["PlatformName"] = "RT-qPCR"
+    df["PlatformTech"] = "TaqCheckFastPCR"
+    df["Targets"] = "N, S"
 
     df = enforce_schema(df)
     df = coerce_types(df)

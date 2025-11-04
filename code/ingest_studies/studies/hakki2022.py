@@ -27,10 +27,8 @@ Notes:
 ------
 - Viral load (`copy`) and infectious titre (`pfu`) were reported in units per mL.
 - `Log10VL` is computed from these raw values (non-positive values → NaN).
-- Default assumptions: SampleType = "combined_nose_throat_swab", Platform = "RT-qPCR"
+- Default assumptions: SampleSource = "nose+throat", SampleMethod = "swab in VTM", Platform = "RT-qPCR"
   (update if further methodological details confirm otherwise).
-  - Sampling involved combined nose-and-throat (URT) swabs, treated as "combined_nose_throat_swab"
-  for schema consistency across datasets.
 """
 
 import math
@@ -115,11 +113,14 @@ def load_and_format():
     df["Pathogen"] = "SARS2"
     df["PtSpecies"] = "Human"
     df["DOI"] = "10.1016/S2213-2600(22)00226-0"
+    df["Targets"] = "ORF1ab"
     # SampleType/Platform - set conservative defaults; refine from Methods later if needed
-    if "SampleType" not in df.columns:
-        df["SampleType"] = "combined_nose_throat_swab"
-    if "Platform" not in df.columns:
-        df["Platform"] = "RT-qPCR"           # TODO: refine targets if I extract them later
+    if "SampleSource" not in df.columns:
+        df["SampleSource"] = "nose+throat"
+    if "SampleMethod" not in df.columns:
+        df["SampleMethod"] = "nose+throat_swabs_in_VTM"
+    if "PlatformName" not in df.columns:
+        df["PlatformName"] = "RT-qPCR"           # TODO: refine targets if I extract them later
 
     # Optional: normalize booleans
     if "LFD_Positive" in df.columns:

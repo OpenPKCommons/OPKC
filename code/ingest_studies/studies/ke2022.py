@@ -15,15 +15,15 @@ def load_and_format():
     df = df.melt(
         id_vars=[col for col in df.columns if col not in ["Nasal_CN", "Saliva_Ct", "Antigen"]],
         value_vars=["Nasal_CN", "Saliva_Ct", "Antigen"],
-        var_name="SampleType",
+        var_name="SampleSource",
         value_name="Log10VL"
         )
 
     # Map the contents of column SampleType to standard names: 
-    df["SampleType"] = df["SampleType"].replace({
+    df["SampleSource"] = df["SampleSource"].replace({
         "Nasal_CN": "nasal",
         "Saliva_Ct": "saliva",
-        "Antigen": "antigen"
+        "Antigen": "nasal antigen"
         })
 
     # Rename columns to match schema: 
@@ -40,21 +40,35 @@ def load_and_format():
     df["PtSpecies"] = "Human"
     df["AgeRng2"] = df["AgeRng1"]
     df["DOI"] = "10.1038/s41564-022-01105-z"
-    df["Units"] = df["SampleType"].map({
+    df["Units"] = df["SampleSource"].map({
         "saliva": "Ct",
         "nasal": "Ct",
-        "antigen": "binary"
+        "nasal antigen": "binary"
         })
-    df["Platform"] = df["SampleType"].map({
+    df["SampleMethod"] = df["SampleSource"].map({
+        "saliva": "raw_saliva",
+        "nasal": "flocked_swab_in_VTM",
+        "nasal antigen": "dry_swab"
+        })
+    df["PlatformName"] = df["SampleSource"].map({
+        "saliva": "RT-qPCR",
+        "nasal": "RT-qPCR", #calibrated with ddPCR
+        "nasal antigen": "Antigen"
+        })
+    df["PlatformTech"] = df["SampleSource"].map({
         "saliva": "Taqpath",
         "nasal": "Alinity",
-        "antigen": "Sofia"
+        "nasal antigen": "Sofia"
         })
-    df["GEml_conversion_intercept"] = df["SampleType"].map({
+    df["Targets"] = df["SampleSource"].map({
+        "saliva": "ORF1ab, N, S",
+        "nasal": "N1",
+        })
+    df["GEml_conversion_intercept"] = df["SampleSource"].map({
         "saliva": 14.24,
         "nasal": 11.35,
         })
-    df["GEml_conversion_slope"] = df["SampleType"].map({
+    df["GEml_conversion_slope"] = df["SampleSource"].map({
         "saliva": -0.28,
         "nasal": -0.25,
         })

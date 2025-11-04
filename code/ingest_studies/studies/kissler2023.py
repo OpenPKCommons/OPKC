@@ -29,10 +29,14 @@ def load_and_format():
     df["PtSpecies"] = "Human"
     df["DOI"] = "10.1038/s41467-023-41941-z"
     df["Units"] = "Ct"
-    df["Platform"] = "cobas_target1"
+    df["PlatformName"] = "RTqPCR"
+    df["PlatformTech"] = "cobas_target1"
     df["GEml_conversion_intercept"] = 11.34089
     df["GEml_conversion_slope"] = -0.2770306
-    df["SampleType"] = "nasal_oropharyngeal"
+    df["SampleSource"] = "nasal+oropharyngeal"
+    df["SampleMethod"] = "swab in VTM"
+    df["Targets"] = "E484K, N501Y, delHV-69/70"
+    
 
     df = enforce_schema(df)
     df = coerce_types(df)

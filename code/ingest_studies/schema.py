@@ -6,9 +6,9 @@ STANDARD_SCHEMA = [
     "Symptoms1", "Symptoms2", "Symptoms3", "Symptoms4",
     "Comorbidity1", "Comorbidity2", "Comorbidity3", "Comorbidity4",
     "Treatment1", "Treatment2", "Treatment3", "Treatment4",
-    "Hospitalized", "SampleSource1", "SampleSource2", "SampleMethod", "AgeRng1", "AgeRng2",
-    "Subtype", "Platform", "DOI", "Log10VL", "Units", "GEml_conversion_intercept", "GEml_conversion_slope",
-    "Target1", "Target2"
+    "Hospitalized", "SampleSource", "SampleMethod", "AgeRng1", "AgeRng2",
+    "Subtype", "PlatformName", "DOI", "Log10VL", "Units", "GEml_conversion_intercept", "GEml_conversion_slope",
+    "Targets", "PlatformTech"
 ]
 
 def enforce_schema(df):
@@ -23,7 +23,7 @@ def coerce_types(df):
     for col in numeric_cols:
         df[col] = pd.to_numeric(df[col], errors="coerce")
 
-    string_cols = ["StudyID", "PersonID", "Pathogen", "PtSpecies", "InfectionID", "SampleID", "Symptoms1", "Symptoms2", "Symptoms3", "Symptoms4", "Comorbidity1", "Comorbidity2", "Comorbidity3", "Comorbidity4", "Treatment1", "Treatment2", "Treatment3", "Treatment4", "SampleType", "Subtype", "Platform", "DOI", "Units"]
+    string_cols = ["StudyID", "PersonID", "Pathogen", "PtSpecies", "InfectionID", "SampleID", "Symptoms1", "Symptoms2", "Symptoms3", "Symptoms4", "Comorbidity1", "Comorbidity2", "Comorbidity3", "Comorbidity4", "Treatment1", "Treatment2", "Treatment3", "Treatment4", "SampleSource", "SampleMethod", "Subtype", "PlatformName", "DOI", "Units", "Targets", "PlatformTech"]
     df[string_cols] = df[string_cols].astype(str)
 
     return df

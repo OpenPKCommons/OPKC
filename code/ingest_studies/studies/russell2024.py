@@ -24,21 +24,25 @@ def load_and_format():
     df["AgeRng1"] = pd.to_numeric(df["AgeRng1"], errors="coerce")
     df["AgeRng2"] = pd.to_numeric(df["AgeRng2"], errors="coerce")
 
-    # Add the platform: 
-    df["Platform"] = df["ct_type"].map({
-        "ct_value": "Crick COVID-19 Consortium (CCC) ORF1ab",
-        "ct_n_gene": "Crick COVID-19 Consortium (CCC) N gene",
-        "ct_s_gene": "Crick COVID-19 Consortium (CCC) S gene"
-        })
-
     # Rename columns to match schema: 
     df = df.rename(columns={
         "id": "PersonID",
-        # "swab_type": "SampleType",
+        "swab_type": "SampleMethod",
         "VOC": "Subtype",
         "symptoms": "Symptoms1",
         "t": "TimeDays",
         "ct_value": "Log10VL"
+        })
+    
+    df["Targets"] = df["ct_type"].map({
+        "ct_value": "ORF1a",
+        "ct_n_gene": "N",
+        "ct_s_gene": "S"
+    })
+
+    df["SampleMethod"] = df["SampleMethod"].map({
+        "Dry": "dry_swab",
+        "VTM": "swab_in_VTM",
         })
 
     # df = split_age_range(df, col="age_group")
@@ -49,21 +53,9 @@ def load_and_format():
     df["PtSpecies"] = "Human"
     df["DOI"] = "10.1371/journal.pbio.3002463"
     df["Units"] = "Ct"
-    df["SampleType"] = "nasopharyngeal"
-    # df["SampleType"] = "nasopharyngeal"
-    # df["Platform"] = df["SampleType"].map({
-    #     "saliva": "Taqpath",
-    #     "nasal": "Alinity",
-    #     "antigen": "Sofia"
-    #     })
-    # df["GEml_conversion_intercept"] = df["SampleType"].map({
-    #     "saliva": 14.24,
-    #     "nasal": 11.35,
-    #     })
-    # df["GEml_conversion_slope"] = df["SampleType"].map({
-    #     "saliva": -0.28,
-    #     "nasal": -0.25,
-    #     })
+    df["SampleSource"] = "nasopharyngeal"
+    df["PlatformName"] = "RT-qPCR"
+    df["PlatformTech"] = "QuantStudio 3"
 
     df = enforce_schema(df)
     df = coerce_types(df)
