@@ -1,5 +1,5 @@
 """
-Savela et al. 2022 (DOI: 10.1126/microbiol.abh2556)
+Savela et al. 2022 (DOI: 10.1128/JCM.01785-21)
 ====================================================================
 Study summary:
 ---------------
@@ -60,7 +60,7 @@ from schema import enforce_schema, coerce_types
 
 def _sample_fields_from_text(txt: str):
     """
-    Map raw 'Sample Type' text into (SampleSource1, SampleMethod).
+    Map raw 'Sample Type' text into (SampleSource, SampleMethod).
     Expected sample_type_str contains something like 'saliva' or 'nasal swab'.
     """
     if not isinstance(txt, str):
@@ -70,18 +70,16 @@ def _sample_fields_from_text(txt: str):
         return ("saliva", "saliva collection")
     # Savela uses anterior nares (nasal) swabs
     if "nasal" in t or "nares" in t or "anterior" in t or "swab" in t:
-        return ("nose", "swab")
+        return ("anterior nares", "swab")
     return (pd.NA, pd.NA)
 
-def _safe_log10_mean(n1, n2):
-    """
-    Compute log10 of mean copies/mL across N1 & N2 if either is valid (>0).
-    If both are missing/nonpositive, return NaN.
-    """
-    vals = [v for v in [n1, n2] if pd.notna(v) and v > 0]
-    if not vals:
-        return np.nan
-    return math.log10(np.mean(vals))
+def _safe_log10(x):
+    """Return log10(x) for positive x, else NaN."""
+    try:
+        x = float(x)
+        return math.log10(x) if x > 0 else float("nan")
+    except Exception:
+        return float("nan")
 
 
 def load_savela2022_infection(data_dir: str) -> pd.DataFrame:
@@ -94,8 +92,18 @@ def load_savela2022_infection(data_dir: str) -> pd.DataFrame:
         raise FileNotFoundError("No savela2022_fig2*.xlsx files found in data directory.")
 
     frames = []
+    age_map = {
+        "A": (30, 39),
+        "B": (50, 59),
+        "C": (50, 59),
+        "D": (12, 17), # No raw data for Fig 2D in CaltechDATA repository
+        "E": (30, 39), # No raw data for Fig 2E in CaltechDATA repository
+        "F": (6, 11), # No raw data for Fig 2F in CaltechDATA repository
+        "G": (50, 59),
+    }    
     for f in infection_files:
         raw = pd.read_excel(os.path.join(data_dir, f))
+
         # Clean and standardize
         df = raw.rename(columns={
             "Participant": "PersonID",
@@ -103,55 +111,60 @@ def load_savela2022_infection(data_dir: str) -> pd.DataFrame:
             "Viral Load N1 (copies/mL)": "Target1",
             "Viral Load N2 (copies/mL)": "Target2",
         })
-   
-# Parse Sample Type into SampleSource1 & SampleMethod
+
+        # Parse Sample Type
         ss = df.get("Sample Type")
         sample_pairs = ss.apply(_sample_fields_from_text) if ss is not None else [(pd.NA, pd.NA)] * len(df)
-        df["SampleSource1"] = [p[0] for p in sample_pairs]
-        df["SampleMethod"]  = [p[1] for p in sample_pairs]
-#Fixed metadata
-    df["StudyID"] = "savela2022"
-    df["Pathogen"] = "SARS-CoV-2"
-    df["PtSpecies"] = "Human"
-    df["Units"] = "copies/mL"
-    df["Platform"] = "RT-qPCR"
-    df["DOI"] = "10.1126/microbiol.abh2556"
-    #df["AgeRng1"] = "6-11"
-    #df["AgeRng2"] = "12-17"
-    #df["AgeRng3"] = "30-39"
-    #df["AgeRng4"] = "50-59"
-    #df["Symptoms1"] = #ICD10 R05 Cough
-    #df["Symptoms2"] = #ICD10 R06.02 Shortness of Breath 
-    #df["Symptoms3"] = #ICD10 R09.81 Congestion/Runny Nose 
-    #df["Symptoms4"] = #ICD10 R43 Change in Taste/Smell 
-    #df["Symptoms5"] = #ICD10 R07 Sore Throat 
-    #df["Symptoms6"] = #ICD10 R11 Nausea/Vomiting 
-    #df["Symptoms7"] = #ICD10 R19.7 Diarrhea 
-    #df["Symptoms8"] = #ICD10 R50.9 Fever 
-    #df["Symptoms9"] = #ICD10 R51 Headache 
-    #df["Symptoms10"] = #ICD10 R52 Muscle Aches
+        df["SampleSource"] = [p[0] for p in sample_pairs]
+        df["SampleMethod"] = [p[1] for p in sample_pairs]
 
-# Ensure numeric targets
-    for col in ["Target1", "Target2"]:
-        if col in df.columns:
-            df[col] = pd.to_numeric(df[col], errors="coerce")
+        # Metadata
+        df["StudyID"] = "savela2022"
+        df["Pathogen"] = "SARS-CoV-2"
+        df["PtSpecies"] = "Human"
+        df["Units"] = "copies/mL"
+        df["PlatformName"] = "RT-qPCR"
+        df["PlatformTech"] = "Bio-Rad CFX96"
+        df["DOI"] = "10.1128/JCM.01785-21"
 
-# Compute Log10VL per row
-    df["Log10VL"] = df.apply(lambda r: _safe_log10_mean(r.get("Target1"), r.get("Target2")), axis=1)
+        # Set age ranges based on figure letter
+        fig_letter = f.split("fig2")[1][0].upper()
+        df["AgeRng1"], df["AgeRng2"] = age_map.get(fig_letter, (pd.NA, pd.NA))
 
-# Keep columns we’ll align to schema later (others will be added by enforce_schema)
-    frames.append(df[[
-        "StudyID", "PersonID", "Pathogen", "PtSpecies",
-        "TimeDays", "SampleSource1", "SampleMethod",
-        "Platform", "DOI", "Target1", "Target2", "Log10VL", "Units"
-    ]])
+        # Ensure numeric targets
+        for col in ["Target1", "Target2"]:
+            if col in df.columns:
+                df[col] = pd.to_numeric(df[col], errors="coerce")
 
+        # N1 rows
+        df_n1 = df.copy(deep=True)
+        df_n1["Targets"] = "N1"
+        df_n1["Log10VL"] = df_n1["Target1"].apply(
+            lambda x: math.log10(x) if pd.notna(x) and x > 0 else np.nan
+        )
+
+        # N2 rows
+        df_n2 = df.copy(deep=True)
+        df_n2["Targets"] = "N2"
+        df_n2["Log10VL"] = df_n2["Target2"].apply(
+            lambda x: math.log10(x) if pd.notna(x) and x > 0 else np.nan
+        )
+
+        use_cols = [
+            "StudyID", "PersonID", "Pathogen", "PtSpecies", "TimeDays",
+            "SampleSource", "SampleMethod", "AgeRng1", "AgeRng2", "PlatformName", "PlatformTech", "DOI",
+            "Targets", "Log10VL", "Units"
+        ]
+
+        frames.append(df_n1[use_cols])
+        frames.append(df_n2[use_cols])
+
+    # Combine everything AFTER the loop
     out = pd.concat(frames, ignore_index=True)
 
-# Re-baseline TimeDays so that first detected positive per person = 0
-# "Detected" = Target1 or Target2 present and > 0 (after coercion)
+    # Re-baseline TimeDays
     def first_detected_day(g):
-        mask = ((g["Target1"].fillna(-1) > 0) | (g["Target2"].fillna(-1) > 0)) & g["TimeDays"].notna()
+        mask = g["Log10VL"].notna() & g["TimeDays"].notna()
         if mask.any():
             return g.loc[mask, "TimeDays"].min()
         return np.nan
@@ -166,6 +179,8 @@ def load_savela2022_infection(data_dir: str) -> pd.DataFrame:
     out = coerce_types(out)
 
     return out
+
+
 def load_and_format(base_dir=None):
     """
     Master loader for Savela et al. 2022 (version 1 schema-compliant).
