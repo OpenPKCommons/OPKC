@@ -40,7 +40,7 @@ def chart_view(request):
         # ... (rest of the view function) ...
 
         context = {
-            'chart_title': 'Count of Samples by Time Day',
+            'chart_title': 'Count of samples by day',
             'chart_labels': labels,
             'chart_data': data,
         }
