@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html>
 <head>
     <title>OPKC Web - Home</title>
@@ -23,5 +23,51 @@
         Current Django Time: {% now "H:i:s M d, Y" %}
     </p>
 
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Open Pathogen Kinetics Commons</title>
+    <!-- Load Tailwind CSS for modern styling and fonts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        // Use Tailwind's default modern sans-serif font stack
+                        sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', '"Helvetica Neue"', 'Arial', '"Noto Sans"', 'sans-serif'],
+                    },
+                },
+            },
+        }
+    </script>
+</head>
+<body class="font-sans text-gray-800 bg-gray-50">
+    <div class="flex items-center justify-center min-h-screen">
+        <div class="container mx-auto p-8 max-w-3xl">
+            
+            <!-- 1. Title: Left-justified by default -->
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+                Open Pathogen Kinetics Commons
+            </h1>
+
+            <p class="text-lg text-gray-700 mb-8">
+                Welcome to the OpenPKCommons project. This platform is dedicated to aggregating, standardizing, and visualizing pathogen pharmacokinetic (PK) data to accelerate research and development.
+            </p>
+
+            <!-- 2. Link to the dashboard (optional, but good for navigation) -->
+            <a href="{% url 'visualization:time_days_bar' %}" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow transition duration-150 text-lg">
+                Go to Dashboard
+            </a>
+            
+            <!-- 3. The "Current Django Time" element has been completely removed. -->
+
+        </div>
+    </div>
 </body>
 </html>
