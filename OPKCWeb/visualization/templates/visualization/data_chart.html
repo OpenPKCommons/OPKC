@@ -2,63 +2,102 @@
 <html>
 <head>
     <title>{{ chart_title }}</title>
+    <!-- 1. Load Plotly.js -->
     <script src="https://cdn.plot.ly/plotly-2.31.1.min.js"></script>
+    <!-- 2. Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // 3. Configure Tailwind to use the 'Inter' font family
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', '"Helvetica Neue"', 'Arial', '"Noto Sans"', 'sans-serif'],
+                    },
+                },
+            },
+        }
+    </script>
+    <!-- 4. Add this style block to fix the Plotly mode bar background -->
+    <style>
+        .modebar {
+            background: transparent !important; /* Make the toolbar background transparent */
+        }
+    </style>
 </head>
-<body>
-    <p>
-        <a href="{% url 'home' %}" 
-           style="text-decoration: none; 
-                  color: #007bff; 
-                  border: 1px solid #007bff; 
-                  padding: 5px 10px; 
-                  border-radius: 3px;">
-            ← Back to Home
-        </a>
-    </p>
-    <h1>{{ chart_title }}</h1>
+<body class="bg-gray-100 font-sans text-gray-800">
 
-    <div id="timeDaysBarChart" style="width: 80%; height: 500px; margin: auto;"></div>
+    <div class="container mx-auto p-4 md:p-8 max-w-6xl">
+        
+        <!-- 4. Styled "Back to Home" Link -->
+        <p class="mb-4">
+            <a href="{% url 'home' %}" 
+               class="inline-flex items-center text-blue-600 hover:text-blue-800 hover:underline font-medium transition duration-150">
+                <!-- Simple SVG arrow for "Back" -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M12.707 14.707a1 1 0 01-1.414 0L7 10.414V17a1 1 0 11-2 0V3a1 1 0 112 0v6.586l4.293-4.293a1 1 0 111.414 1.414L9.414 10l3.293 3.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+                </svg>
+                Back to Home
+            </a>
+        </p>
+
+        <!-- 5. White "Card" for the chart content -->
+        <div class="bg-white rounded-lg shadow-md border border-gray-200 p-4 md:p-6">
+
+            <!-- 6. Styled Title -->
+            <h1 class="text-2xl md:text-3xl font-bold text-gray-900 mb-6">
+                {{ chart_title }}
+            </h1>
+
+            <!-- 7. Plotly Chart Container -->
+            <div id="timeDaysBarChart" class="w-full h-[500px]">
+                <!-- Plotly chart will be injected here -->
+            </div>
+
+        </div>
+    </div>
 
     <script>
-        // Data passed from Django is still available in the context
+        // --- Django data (unchanged) ---
         const labels = JSON.parse('{{ chart_labels|safe }}');
         const data = JSON.parse('{{ chart_data|safe }}');
-        const title = '{{ chart_title|safe }}';
-
-        // 3. Define the data trace for the bar chart
+        
+        // --- Plotly Trace (unchanged) ---
         const chartData = [{
-            x: labels, // X-axis data (Time Days)
-            y: data,   // Y-axis data (Sample Counts)
+            x: labels,
+            y: data,
             type: 'bar',
             name: 'Sample Count',
             marker: {
-                color: 'rgb(55, 128, 191)' // Blue color for bars
+                color: 'rgb(37, 99, 235)' // A modern blue from Tailwind
             }
         }];
 
-        // 4. Define the layout configuration
+        // --- 8. Modernized Plotly Layout ---
         const layout = {
-            title: {
-                text: title,
-                font: {
-                    size: 24 // Larger font size for main title
-                }
-            },
+            // We removed the title from here, as the H1 tag already has it.
             xaxis: {
                 title: 'Days Relative to Symptom Onset/Infection',
-                automargin: true // Ensures long labels don't get cut off
+                automargin: true,
+                gridcolor: '#f3f4f6', // Lighter gridlines
+                zeroline: false
             },
             yaxis: {
                 title: 'Sample Count',
-                zeroline: true, // Show the zero line
-                rangemode: 'tozero' // Start the y-axis at zero
+                zeroline: true,
+                rangemode: 'tozero',
+                gridcolor: '#f3f4f6' // Lighter gridlines
             },
-            responsive: true // Makes the chart fit the container
+            // Make background transparent to match the white card
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            plot_bgcolor: 'rgba(0,0,0,0)',
+            margin: { l: 60, r: 30, t: 20, b: 50 }, // Adjust margins
+            responsive: true
         };
 
-        // 5. Render the chart using Plotly.plot()
+        // --- Render Chart (unchanged) ---
         Plotly.newPlot('timeDaysBarChart', chartData, layout, {
-            displayModeBar: true // Show the Plotly toolbar for export, zoom, etc.
+            displayModeBar: true
         });
 
     </script>
