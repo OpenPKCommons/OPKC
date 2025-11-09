@@ -7,6 +7,11 @@ from . import views
 app_name = 'visualization' 
 
 urlpatterns = [
+
+    # This makes 'home_view' render at the app's root URL
+    # and gives it the name 'index'
+    path('', views.home_view, name='index'),
+
     # Path for your first chart view
     path('time_days/', views.chart_view, name='time_days_bar'),
     
