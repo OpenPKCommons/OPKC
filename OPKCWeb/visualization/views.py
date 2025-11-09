@@ -6,6 +6,7 @@ import os
 import pandas as pd
 import json
 
+
 # Define the absolute path to the base directory of the Django project (OPKCWeb)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -28,26 +29,41 @@ def chart_view(request):
         # 1. Read the CSV file
         df = pd.read_csv(DATA_FILE_PATH, na_values=['<NA>'])
 
-        # --- 2. Get Unique Study IDs for Filters ---
+        # --- 2. Get Unique IDs for Filters ---
         study_ids = df['StudyID'].dropna().unique().tolist()
-        study_ids.sort() # Sort them for the filter list
+        study_ids.sort()
+        
+        # --- NEW: Get Unique Sample Types for Filters ---
+        sample_types = df['SampleType'].dropna().unique().tolist()
+        sample_types.sort()
 
         # --- 3. Prepare ALL Data for JS ---
-        # We only need the columns relevant for the plots and filters
-        plot_columns = ['StudyID', 'TimeDays', 'Log10VL']
+        # --- UPDATED: Added 'SampleType' to the columns ---
+        plot_columns = ['StudyID', 'SampleType', 'TimeDays', 'Log10VL']
         
         # Drop rows where all relevant columns are missing
         df_plot = df[plot_columns].dropna(subset=plot_columns, how='all')
 
-        # Convert the plotting data to JSON records format
-        all_data_json = df_plot.to_json(orient='records')
+        # --- FIX: Replace pandas NaN with None for valid JSON ---
+        # This prevents the "NaN" error during JSON.parse() in the browser
+        df_plot = df_plot.where(pd.notnull(df_plot), None)
+        
+        # Convert the plotting data to a list of dictionaries
+        all_data_list = df_plot.to_dict(orient='records')
         
         context = {
             'chart_title': 'Sample Data Dashboard',
-            # Pass the list of studies for the filters
+            
+            # --- We pass data as JSON strings to avoid template errors ---
+            
+            # Data for Study filters
             'study_ids_json': json.dumps(study_ids),
-            # Pass ALL the data for plotting
-            'all_data_json': all_data_json,
+            
+            # --- NEW: Data for SampleType filters ---
+            'sample_types_json': json.dumps(sample_types),
+            
+            # All data for plots
+            'all_data_json': json.dumps(all_data_list),
         }
 
         return render(request, 'visualization/data_chart.html', context)
