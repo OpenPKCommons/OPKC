@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <!-- All your <head> content (Tailwind, Plotly, styles) is identical -->
     <title>{{ chart_title }}</title>
-    <!-- 1. Load Plotly.js -->
     <script src="https://cdn.plot.ly/plotly-2.31.1.min.js"></script>
-    <!-- 2. Load Tailwind CSS (Re-added) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        // 3. Configure Tailwind (Re-added)
         tailwind.config = {
             theme: {
                 extend: {
@@ -18,163 +16,222 @@
             },
         }
     </script>
-    <!-- 4. Add Plotly Toolbar Fix (Re-added) -->
     <style>
-        .modebar {
-            background: transparent !important;
-        }
-        .modebar-group {
-            background-color: white !important;
-            border-radius: 6px !important;
-            border: 1px solid #e2e8f0 !important;
-        }
-        .modebar-btn.active, .modebar-btn:hover {
-            background-color: #f1f5f9 !important;
-        }
-        .modebar-btn.toggle {
-            background-color: #f8fafc !important;
-        }
-        .modebar-btn.toggle:hover, .modebar-btn.toggle.active {
-            background-color: #e2e8f0 !important;
-        }
-        .plotly-tooltip {
-            background-color: white !important;
-            border: 1px solid #e2e8f0 !important;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-            color: #1e293b !important;
-        }
+        .modebar { background: transparent !important; }
+        .modebar-group { background-color: white !important; border-radius: 6px !important; border: 1px solid #e2e8f0 !important; }
+        .modebar-btn.active, .modebar-btn:hover { background-color: #f1f5f9 !important; }
+        .modebar-btn.toggle { background-color: #f8fafc !important; }
+        .modebar-btn.toggle:hover, .modebar-btn.toggle.active { background-color: #e2e8f0 !important; }
+        .plotly-tooltip { background-color: white !important; border: 1px solid #e2e8f0 !important; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); color: #1e293b !important; }
+        /* Style for the filter checkboxes */
+        .filter-item { display: block; position: relative; padding-left: 28px; margin-bottom: 8px; cursor: pointer; user-select: none; }
+        .filter-item input { position: absolute; opacity: 0; cursor: pointer; height: 0; width: 0; }
+        .filter-item .checkmark { position: absolute; top: 2px; left: 0; height: 18px; width: 18px; background-color: #eee; border-radius: 4px; border: 1px solid #ccc; }
+        .filter-item:hover input ~ .checkmark { background-color: #ccc; }
+        .filter-item input:checked ~ .checkmark { background-color: #2563eb; }
+        .filter-item input:checked ~ .checkmark:after { content: ""; position: absolute; display: block; left: 6px; top: 2px; width: 5px; height: 10px; border: solid white; border-width: 0 3px 3px 0; transform: rotate(45deg); }
     </style>
 </head>
 <body class="bg-gray-100 font-sans text-gray-800">
 
-    <!-- Container with spacing for the two cards -->
-    <div class="container mx-auto p-4 md:p-8 max-w-6xl space-y-8">
+    <div class="container mx-auto p-4 md:p-8 max-w-7xl">
         
-        <!-- Styled "Back to Home" Link -->
-        <p>
-            <!-- 3. FIXED: Use the correct app_name 'visualization' and 'index' URL name -->
-            <a href="{% url 'visualization:index' %}" 
-               class="inline-flex items-center text-blue-600 hover:text-blue-800 hover:underline font-medium transition duration-150">
+        <!-- "Back to Home" Link -->
+        <p class="mb-4">
+            <a href="{% url 'visualization:index' %}" class="inline-flex items-center text-blue-600 hover:text-blue-800 hover:underline font-medium transition duration-150">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                     <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
                 </svg>
                 Back to Home
             </a>
         </p>
-
-        <!-- Card 1: Bar Chart -->
-        <div class="bg-white rounded-lg shadow-md border border-gray-200 p-4 md:p-6">
-            <h1 class="text-2xl md:text-3xl font-bold text-gray-900 mb-6">
-                {{ chart_title }}
-            </h1>
-            <div id="timeDaysBarChart" class="w-full h-[500px]"></div>
-        </div>
         
-        <!-- Card 2: Scatter Plot (Re-added) -->
-        <div class="bg-white rounded-lg shadow-md border border-gray-200 p-4 md:p-6">
-            <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-6">
-                Viral Load vs. Time
-            </h2>
-            <div id="vlScatterPlot" class="w-full h-[500px]"></div>
-        </div>
+        <!-- NEW LAYOUT: Flex container for Sidebar + Main Content -->
+        <div class="flex flex-col md:flex-row gap-8">
+            
+            <!-- === SIDEBAR (Filters) === -->
+            <aside class="w-full md:w-64 lg:w-72 flex-shrink-0">
+                <div class="bg-white rounded-lg shadow-md border border-gray-200 p-4 sticky top-8">
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Filters</h3>
+                    
+                    <!-- Study Filter Section -->
+                    <div class="border-t border-gray-200 pt-4">
+                        <h4 class="font-semibold text-gray-800 mb-3">Study ID</h4>
+                        <!-- Filter Actions -->
+                        <div class="flex gap-2 mb-3 text-sm">
+                            <button id="select-all" class="font-medium text-blue-600 hover:text-blue-800">Select All</button>
+                            <span class="text-gray-300">|</span>
+                            <button id="deselect-all" class="font-medium text-blue-600 hover:text-blue-800">Deselect All</button>
+                        </div>
+                        <!-- Checkbox list will be populated by JS -->
+                        <div id="study-filter-list" class="max-h-80 overflow-y-auto pr-2">
+                            <!-- e.g., <label class="filter-item">ke2022... </label> -->
+                        </div>
+                    </div>
 
+                </div>
+            </aside>
+
+            <!-- === MAIN CONTENT (Plots) === -->
+            <main class="flex-1 min-w-0">
+                <!-- Container with spacing for the two cards -->
+                <div class="space-y-8">
+                    <!-- Card 1: Bar Chart -->
+                    <div class="bg-white rounded-lg shadow-md border border-gray-200 p-4 md:p-6">
+                        <h1 class="text-2xl md:text-3xl font-bold text-gray-900 mb-6">
+                            Count of Samples by Day
+                        </h1>
+                        <div id="timeDaysBarChart" class="w-full h-[500px]"></div>
+                    </div>
+                    
+                    <!-- Card 2: Scatter Plot -->
+                    <div class="bg-white rounded-lg shadow-md border border-gray-200 p-4 md:p-6">
+                        <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-6">
+                            Viral Load vs. Time
+                        </h2>
+                        <div id="vlScatterPlot" class="w-full h-[500px]"></div>
+                    </div>
+                </div>
+            </main>
+
+        </div> <!-- End Flex container -->
     </div>
 
     <script>
-        // === PLOT 1: BAR CHART ===
-        try {
-            // --- 4. FIXED: Read the JSON data directly ---
-            // We removed JSON.parse() and the single quotes
-            const labels = {{ chart_labels|safe }};
-            const data = {{ chart_data|safe }};
+        // --- 1. Get ALL data from Django ---
+        // This is a big array of all data records, e.g., [{StudyID: "ke2022", TimeDays: -8, Log10VL: ...}, ...]
+        const ALL_DATA = {{ all_data_json|safe }};
+        // This is an array of study names, e.g., ["ke2022", "russell2024", ...]
+        const STUDY_IDS = {{ study_ids_json|safe }};
+        
+        // --- 2. Get DOM elements ---
+        const filterListContainer = document.getElementById('study-filter-list');
+        const selectAllBtn = document.getElementById('select-all');
+        const deselectAllBtn = document.getElementById('deselect-all');
+        
+        // --- 3. Plot Layouts (we keep these constant) ---
+        const barLayout = {
+            xaxis: { title: 'Infection day', automargin: true, gridcolor: '#f3f4f6', zeroline: false },
+            yaxis: { title: 'Sample Count', zeroline: true, rangemode: 'tozero', gridcolor: '#f3f4f6' },
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            plot_bgcolor: 'rgba(0,0,0,0)',
+            margin: { l: 60, r: 30, t: 20, b: 50 },
+            responsive: true
+        };
+        const scatterLayout = {
+            xaxis: { title: 'Time (Days)', gridcolor: '#f3f4f6', zeroline: true, zerolinecolor: '#d1d5db' },
+            yaxis: { title: 'Viral Load (Log10)', gridcolor: '#f3f4f6', zeroline: true, zerolinecolor: '#d1d5db', autorange: 'reversed' },
+            hovermode: 'closest',
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            plot_bgcolor: 'rgba(0,0,0,0)',
+            margin: { l: 60, r: 30, t: 30, b: 50 },
+            responsive: true
+        };
+
+        /**
+         * 4. Main function to filter data and update both plots
+         */
+        function updatePlots() {
+            // Get all checked studies
+            const selectedStudies = new Set();
+            filterListContainer.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                if (cb.checked) {
+                    selectedStudies.add(cb.dataset.study);
+                }
+            });
+
+            // Filter the main dataset
+            const filteredData = ALL_DATA.filter(row => selectedStudies.has(row.StudyID));
+
+            // --- Process Data for Bar Chart ---
+            const barCounts = filteredData.reduce((acc, row) => {
+                if (row.TimeDays != null) { // Check for null/undefined
+                    acc[row.TimeDays] = (acc[row.TimeDays] || 0) + 1;
+                }
+                return acc;
+            }, {});
             
-            const chartData = [{
-                x: labels,
-                y: data,
+            // Sort by day (numeric keys)
+            const barLabels = Object.keys(barCounts).map(Number).sort((a, b) => a - b);
+            const barData = barLabels.map(label => barCounts[label]);
+            
+            const barPlotData = [{
+                x: barLabels,
+                y: barData,
                 type: 'bar',
                 name: 'Sample Count',
                 marker: { color: 'rgb(37, 99, 235)' }
             }];
-
-            const layout = {
-                xaxis: {
-                    title: 'Infection day (Day 0 often reflects symptom onset or peak viral load)',
-                    automargin: true,
-                    gridcolor: '#f3f4f6',
-                    zeroline: false
-                },
-                yaxis: {
-                    title: 'Sample Count',
-                    zeroline: true,
-                    rangemode: 'tozero',
-                    gridcolor: '#f3f4f6'
-                },
-                paper_bgcolor: 'rgba(0,0,0,0)',
-                plot_bgcolor: 'rgba(0,0,0,0)',
-                margin: { l: 60, r: 30, t: 20, b: 50 },
-                responsive: true
-            };
-
-            Plotly.newPlot('timeDaysBarChart', chartData, layout, {
-                displayModeBar: true
-            });
-        } catch (e) {
-            console.error("Could not load bar chart data:", e);
-            document.getElementById('timeDaysBarChart').innerHTML = '<p class="text-red-500 text-center italic p-4">Error loading bar chart data.</p>';
-        }
-
-
-        // === PLOT 2: SCATTER PLOT (Re-added) ===
-        try {
-            // Read the new JSON data for the scatter plot
-            const scatterData = {{ scatter_data_json|safe }};
             
-            if (!scatterData || !scatterData.x || scatterData.x.length === 0) {
-                 throw new Error("No scatter data loaded from CSV.");
-            }
+            // --- Process Data for Scatter Plot ---
+            const scatterX = [];
+            const scatterY = [];
+            filteredData.forEach(row => {
+                if (row.TimeDays != null && row.Log10VL != null) {
+                    scatterX.push(row.TimeDays);
+                    scatterY.push(row.Log10VL);
+                }
+            });
 
             const scatterPlotData = [{
-                x: scatterData.x,
-                y: scatterData.y,
+                x: scatterX,
+                y: scatterY,
                 mode: 'markers',
                 type: 'scatter',
                 name: 'Viral Load',
-                marker: {
-                    color: 'rgb(220, 38, 38)', // A red color
-                    opacity: 0.5,
-                    size: 6
-                }
+                marker: { color: 'rgb(220, 38, 38)', opacity: 0.5, size: 6 }
             }];
 
-            const scatterLayout = {
-                xaxis: {
-                    title: 'Time (Days)',
-                    gridcolor: '#f3f4f6',
-                    zeroline: true,
-                    zerolinecolor: '#d1d5db'
-                },
-                yaxis: {
-                    title: 'Viral Load (Log10)',
-                    gridcolor: '#f3f4f6',
-                    zeroline: true,
-                    zerolinecolor: '#d1d5db',
-                    autorange: 'reversed'
-                },
-                hovermode: 'closest',
-                paper_bgcolor: 'rgba(0,0,0,0)',
-                plot_bgcolor: 'rgba(0,0,0,0)',
-                margin: { l: 60, r: 30, t: 30, b: 50 },
-                responsive: true
-            };
-
-            Plotly.newPlot('vlScatterPlot', scatterPlotData, scatterLayout, {
-                displayModeBar: true
-            });
-
-        } catch (e) {
-            console.error("Could not load scatter plot data:", e);
-            document.getElementById('vlScatterPlot').innerHTML = '<p class="text-red-500 text-center italic p-4">Error loading scatter plot data. Check server logs.</p>';
+            // --- Redraw Plots ---
+            // Use Plotly.react() for efficient updates, but newPlot() is safer
+            Plotly.newPlot('timeDaysBarChart', barPlotData, barLayout, { displayModeBar: true });
+            Plotly.newPlot('vlScatterPlot', scatterPlotData, scatterLayout, { displayModeBar: true });
         }
+
+        /**
+         * 5. Populate the filter sidebar with checkboxes
+         */
+        function populateFilters() {
+            STUDY_IDS.forEach(studyId => {
+                const label = document.createElement('label');
+                label.className = 'filter-item text-gray-700';
+                
+                const input = document.createElement('input');
+                input.type = 'checkbox';
+                input.checked = true;
+                input.dataset.study = studyId; // Store the ID for filtering
+                input.addEventListener('change', updatePlots); // Hook up the update function
+                
+                const checkmark = document.createElement('span');
+                checkmark.className = 'checkmark';
+                
+                label.appendChild(input);
+                label.appendChild(checkmark);
+                label.appendChild(document.createTextNode(` ${studyId}`));
+                
+                filterListContainer.appendChild(label);
+            });
+        }
+        
+        /**
+         * 6. Set up "Select All" / "Deselect All" buttons
+         */
+        function setupFilterButtons() {
+            selectAllBtn.addEventListener('click', () => {
+                filterListContainer.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = true);
+                updatePlots();
+            });
+            
+            deselectAllBtn.addEventListener('click', () => {
+                filterListContainer.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+                updatePlots();
+            });
+        }
+
+        // --- 7. Initialize the Dashboard ---
+        populateFilters();
+        setupFilterButtons();
+        updatePlots(); // Call once on page load to draw the initial plots
 
     </script>
 

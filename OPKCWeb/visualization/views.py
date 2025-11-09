@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 import os
 import pandas as pd
-import json # <-- 1. IMPORT json
+import json
 
 # Define the absolute path to the base directory of the Django project (OPKCWeb)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -21,43 +21,39 @@ def home_view(request):
 
 def chart_view(request):
     """
-    Renders the bar chart for time days distribution
-    AND the new scatter plot.
+    Renders the INTERACTIVE dashboard page.
+    This view now passes ALL data to the template for client-side filtering.
     """
     try:
         # 1. Read the CSV file
         df = pd.read_csv(DATA_FILE_PATH, na_values=['<NA>'])
 
-        # --- 2. Data for Bar Chart (Existing) ---
-        df_clean_bar = df.dropna(subset=['TimeDays']).copy()
-        frequency_series = df_clean_bar['TimeDays'].value_counts().sort_index()
-        labels = frequency_series.index.tolist()
-        data = frequency_series.tolist()
+        # --- 2. Get Unique Study IDs for Filters ---
+        study_ids = df['StudyID'].dropna().unique().tolist()
+        study_ids.sort() # Sort them for the filter list
+
+        # --- 3. Prepare ALL Data for JS ---
+        # We only need the columns relevant for the plots and filters
+        plot_columns = ['StudyID', 'TimeDays', 'Log10VL']
+        
+        # Drop rows where all relevant columns are missing
+        df_plot = df[plot_columns].dropna(subset=plot_columns, how='all')
+
+        # Convert the plotting data to JSON records format
+        all_data_json = df_plot.to_json(orient='records')
         
         context = {
-            'chart_title': 'Count of samples by day',
-            # --- 2. FIXED: Data must be passed as a JSON string ---
-            'chart_labels': json.dumps(labels),
-            'chart_data': json.dumps(data),
+            'chart_title': 'Sample Data Dashboard',
+            # Pass the list of studies for the filters
+            'study_ids_json': json.dumps(study_ids),
+            # Pass ALL the data for plotting
+            'all_data_json': all_data_json,
         }
-
-        # --- 3. Data for Scatter Plot (NEW) ---
-        df_clean_scatter = df.dropna(subset=['TimeDays', 'Log10VL']).copy()
-        
-        scatter_data = {
-            'x': df_clean_scatter['TimeDays'].tolist(),
-            'y': df_clean_scatter['Log10VL'].tolist()
-        }
-        
-        # Add the new scatter data to the context
-        context['scatter_data_json'] = json.dumps(scatter_data)
 
         return render(request, 'visualization/data_chart.html', context)
         
     except FileNotFoundError:
-        # Handle the case where the data file cannot be found
         return HttpResponse(f"Error: Data file not found at: {DATA_FILE_PATH}", status=500)
         
     except Exception as e:
-        # Handle other potential errors during processing
         return HttpResponse(f"An error occurred during data processing: {e}", status=500)
