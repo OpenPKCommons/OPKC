@@ -43,7 +43,7 @@
         <!-- Header -->
         <div class="p-6 border-b border-gray-200">
             <h1 class="text-2xl font-bold text-blue-700">Sample Explorer</h1>
-            <p class="text-sm text-gray-600 mt-1">Filter by Study and Sample Type</p>
+            <p class="text-sm text-gray-600 mt-1">Filter by Study, Sample Type, and Age</p>
         </div>
         
         <!-- Filters Container -->
@@ -60,7 +60,6 @@
                 </div>
                 <!-- Checkboxes will be dynamically inserted here -->
                 <div id="study-filter-list" class="filter-list h-40 max-h-40 overflow-y-auto space-y-1 rounded-md border border-gray-300 p-3 bg-gray-50">
-                    <!-- e.g., <label class="block"><input type="checkbox" value="StudyA"> StudyA</label> -->
                 </div>
             </div>
 
@@ -75,7 +74,16 @@
                 </div>
                 <!-- Checkboxes will be dynamically inserted here -->
                 <div id="sample-filter-list" class="filter-list h-32 max-h-32 overflow-y-auto space-y-1 rounded-md border border-gray-300 p-3 bg-gray-50">
-                    <!-- e.g., <label class="block"><input type="checkbox" value="Nasal"> Nasal</label> -->
+                </div>
+            </div>
+
+            <!-- NEW: Filter: Age Range -->
+            <div id="age-filter-group">
+                <label class="font-semibold text-gray-700">Age Range</label>
+                <div class="flex items-center space-x-2 mt-2">
+                    <input type="number" id="min-age" value="0" min="0" max="100" class="w-1/2 p-2 border border-gray-300 rounded-md shadow-sm text-sm">
+                    <span class="text-gray-600">to</span>
+                    <input type="number" id="max-age" value="100" min="0" max="100" class="w-1/2 p-2 border border-gray-300 rounded-md shadow-sm text-sm">
                 </div>
             </div>
 
@@ -143,7 +151,6 @@
         } catch (e) {
             console.error("Error parsing JSON data:", e);
             statusMessage.textContent = 'Error loading data.';
-            // Add error to filter lists
             document.getElementById('study-filter-list').innerHTML = '<p class="text-red-500">Error loading filters.</p>';
             document.getElementById('sample-filter-list').innerHTML = '<p class="text-red-500">Error loading filters.</p>';
         }
@@ -153,8 +160,10 @@
         const barPlotDiv = document.getElementById('timeDaysBarChart');
         const studyListDiv = document.getElementById('study-filter-list');
         const sampleListDiv = document.getElementById('sample-filter-list');
+        // NEW: Age filter inputs
+        const minAgeInput = document.getElementById('min-age');
+        const maxAgeInput = document.getElementById('max-age');
         
-        // Plotly's default color list (helps keep colors consistent)
         const PLOTLY_COLORS = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf'];
 
         /**
@@ -192,27 +201,40 @@
             // 1. Get selected filters
             const selectedStudies = Array.from(studyListDiv.querySelectorAll('input[type=checkbox]:checked')).map(cb => cb.value);
             const selectedSamples = Array.from(sampleListDiv.querySelectorAll('input[type=checkbox]:checked')).map(cb => cb.value);
+            // NEW: Get age filters
+            const userMinAge = parseFloat(minAgeInput.value) || 0;
+            const userMaxAge = parseFloat(maxAgeInput.value) || 100;
 
             // 2. Filter the raw data
-            const filteredData = ALL_DATA.filter(row => 
-                selectedStudies.includes(row.StudyID) && 
-                selectedSamples.includes(row.SampleType)
-            );
+            const filteredData = ALL_DATA.filter(row => {
+                // Filter by studies and samples
+                const studiesMatch = selectedStudies.includes(row.StudyID);
+                const samplesMatch = selectedSamples.includes(row.SampleType);
+                
+                // NEW: Filter by age range overlap
+                const personMinAge = row.AgeRng1;
+                const personMaxAge = row.AgeRng2;
+
+                // If age data is missing for this row, it cannot overlap. Exclude it.
+                if (personMinAge === null || personMaxAge === null) {
+                    return false;
+                }
+                
+                // This is the overlap logic: (PersonMax >= UserMin) AND (PersonMin <= UserMax)
+                const ageMatch = (personMaxAge >= userMinAge) && (personMinAge <= userMaxAge);
+                
+                // Return true only if all filters match
+                return studiesMatch && samplesMatch && ageMatch;
+            });
 
             // 3. --- Prep Data for Scatter Plot (Stratified) ---
             const scatterTraces = {};
             let colorIndex = 0;
-            const sampleColorMap = {}; // To assign a consistent color to each sample type
+            const sampleColorMap = {}; 
             
             filteredData.forEach(row => {
-                // Ensure row has valid data for this plot
-                if (row.TimeDays === null || row.Log10VL === null) {
-                    return;
-                }
-                
                 const traceName = row.SampleType;
                 
-                // Get or assign a color for this SampleType
                 if (!sampleColorMap[traceName]) {
                     sampleColorMap[traceName] = PLOTLY_COLORS[colorIndex % PLOTLY_COLORS.length];
                     colorIndex++;
@@ -228,7 +250,7 @@
                         marker: { 
                             size: 6, 
                             opacity: 0.7,
-                            color: sampleColorMap[traceName] // Assign color
+                            color: sampleColorMap[traceName]
                         }
                     };
                 }
@@ -240,13 +262,9 @@
             // 4. --- Prep Data for Bar Plot ---
             const barCounts = {};
             filteredData.forEach(row => {
-                if (row.TimeDays !== null) {
-                    // Use floor to group days if they are decimals
-                    const day = Math.floor(row.TimeDays); 
-                    barCounts[day] = (barCounts[day] || 0) + 1;
-                }
+                const day = Math.floor(row.TimeDays); 
+                barCounts[day] = (barCounts[day] || 0) + 1;
             });
-            // Convert to sorted arrays for Plotly
             const sortedDays = Object.keys(barCounts).map(Number).sort((a, b) => a - b);
             const barPlotData = [{
                 x: sortedDays,
@@ -258,60 +276,28 @@
 
             // 5. --- Define Layouts ---
             const scatterLayout = {
-                xaxis: {
-                    title: 'Time (Days)',
-                    gridcolor: '#f3f4f6',
-                    zeroline: true,
-                    zerolinecolor: '#d1d5db',
-                },
-                yaxis: {
-                    title: 'Viral Load (Log10)',
-                    gridcolor: '#f3f4f6',
-                    zeroline: true,
-                    zerolinecolor: '#d1d5db',
-                    autorange: 'reversed' // Invert Y-axis
-                },
+                xaxis: { title: 'Time (Days)', gridcolor: '#f3f4f6', zeroline: true, zerolinecolor: '#d1d5db' },
+                yaxis: { title: 'Viral Load (Log10)', gridcolor: '#f3f4f6', zeroline: true, zerolinecolor: '#d1d5db', autorange: 'reversed' },
                 hovermode: 'closest',
-                // FIX: Increased top margin and set bottom margin
                 margin: { l: 60, r: 30, t: 60, b: 80 }, 
                 paper_bgcolor: 'rgba(0,0,0,0)',
                 plot_bgcolor: 'rgba(0,0,0,0)',
                 showlegend: true,
-                // FIX: Move legend to bottom horizontal
-                legend: {
-                    orientation: 'h', // 'h' for horizontal
-                    y: -0.2, // Place it just below the x-axis
-                    yanchor: 'top',
-                    x: 0.5,
-                    xanchor: 'center'
-                }
+                legend: { orientation: 'h', y: -0.2, yanchor: 'top', x: 0.5, xanchor: 'center' }
             };
             
             const barLayout = {
-                xaxis: {
-                    title: 'Infection day (Day 0 often reflects symptom onset or peak viral load)',
-                    automargin: true,
-                    gridcolor: '#f3f4f6',
-                    zeroline: false
-                },
-                yaxis: {
-                    title: 'Sample Count',
-                    zeroline: true,
-                    rangemode: 'tozero',
-                    gridcolor: '#f3f4f6'
-                },
+                xaxis: { title: 'Infection day (Day 0 often reflects symptom onset or peak viral load)', automargin: true, gridcolor: '#f3f4f6', zeroline: false },
+                yaxis: { title: 'Sample Count', zeroline: true, rangemode: 'tozero', gridcolor: '#f3f4f6' },
                 paper_bgcolor: 'rgba(0,0,0,0)',
                 plot_bgcolor: 'rgba(0,0,0,0)',
-                // FIX: Increased top margin
                 margin: { l: 60, r: 30, t: 60, b: 50 }, 
             };
 
             // 6. --- Redraw Plots ---
             if (scatterPlotData.length > 0) {
-                // Use Plotly.react for efficient updates
                 Plotly.react(scatterPlotDiv, scatterPlotData, scatterLayout, { displayModeBar: true, responsive: true });
             } else {
-                // Show a message if no data
                 Plotly.react(scatterPlotDiv, [], {title: 'No data to display for selected filters'}, { responsive: true });
             }
             
@@ -340,10 +326,13 @@
         // Add listeners to filter lists (using event delegation for efficiency)
         studyListDiv.addEventListener('change', updatePlots);
         sampleListDiv.addEventListener('change', updatePlots);
+        // NEW: Add listeners for age inputs
+        minAgeInput.addEventListener('input', updatePlots);
+        maxAgeInput.addEventListener('input', updatePlots);
 
         // "Select All/None" buttons
         document.getElementById('study-select-all').addEventListener('click', () => setCheckboxes('study-filter-list', true));
-        document.getElementById('study-select-none').addEventListener('click', () => setCheckS('study-filter-list', false));
+        document.getElementById('study-select-none').addEventListener('click', () => setCheckboxes('study-filter-list', false));
         document.getElementById('sample-select-all').addEventListener('click', () => setCheckboxes('sample-filter-list', true));
         document.getElementById('sample-select-none').addEventListener('click', () => setCheckboxes('sample-filter-list', false));
 

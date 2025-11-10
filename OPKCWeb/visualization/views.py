@@ -33,36 +33,29 @@ def chart_view(request):
         study_ids = df['StudyID'].dropna().unique().tolist()
         study_ids.sort()
         
-        # --- NEW: Get Unique Sample Types for Filters ---
         sample_types = df['SampleType'].dropna().unique().tolist()
         sample_types.sort()
 
         # --- 3. Prepare ALL Data for JS ---
-        # --- UPDATED: Added 'SampleType' to the columns ---
-        plot_columns = ['StudyID', 'SampleType', 'TimeDays', 'Log10VL']
+        plot_columns = ['StudyID', 'SampleType', 'TimeDays', 'Log10VL', 'AgeRng1', 'AgeRng2']
         
-        # Drop rows where all relevant columns are missing
-        df_plot = df[plot_columns].dropna(subset=plot_columns, how='all')
+        # We need the core plot columns to be present.
+        core_plot_cols = ['StudyID', 'SampleType', 'TimeDays', 'Log10VL']
+        df_plot = df[plot_columns].dropna(subset=core_plot_cols, how='any')
 
-        # --- FIX: Replace pandas NaN with None for valid JSON ---
-        # This prevents the "NaN" error during JSON.parse() in the browser
-        df_plot = df_plot.where(pd.notnull(df_plot), None)
+        # --- ROBUST FIX for NaN: ---
+        # 1. Convert DataFrame to 'object' type. This allows 'None' to be stored.
+        # 2. Replace all remaining 'NaN' (and 'NaT') with Python's 'None'.
+        # 3. 'json.dumps()' will then correctly serialize 'None' to 'null'.
+        df_plot = df_plot.astype(object).where(pd.notnull(df_plot), None)
         
         # Convert the plotting data to a list of dictionaries
         all_data_list = df_plot.to_dict(orient='records')
         
         context = {
             'chart_title': 'Sample Data Dashboard',
-            
-            # --- We pass data as JSON strings to avoid template errors ---
-            
-            # Data for Study filters
             'study_ids_json': json.dumps(study_ids),
-            
-            # --- NEW: Data for SampleType filters ---
             'sample_types_json': json.dumps(sample_types),
-            
-            # All data for plots
             'all_data_json': json.dumps(all_data_list),
         }
 
