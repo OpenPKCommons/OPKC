@@ -43,43 +43,53 @@
         <!-- Header -->
         <div class="p-6 border-b border-gray-200">
             <h1 class="text-2xl font-bold text-blue-700">Sample Explorer</h1>
-            <p class="text-sm text-gray-600 mt-1">Filter by Study, Sample Type, and Age</p>
+            <p class="text-sm text-gray-600 mt-1">Filter & Stratify Data</p>
         </div>
         
         <!-- Filters Container -->
         <div class="flex-grow overflow-y-auto p-6 space-y-6">
             
+            <!-- Stratify: Color By -->
+            <div>
+                <label for="color-by-select" class="font-semibold text-gray-700">Color Scatter By</label>
+                <select id="color-by-select" class="w-full p-2 mt-2 border border-gray-300 rounded-md shadow-sm text-sm bg-white">
+                    <option value="SampleType">Sample Type</option>
+                    <option value="StudyID">Study</option>
+                    <option value="Age">Age</option>
+                </select>
+            </div>
+
             <!-- Filter: Studies -->
             <div id="study-filter-group">
                 <div class="flex justify-between items-center mb-2">
-                    <label class="font-semibold text-gray-700">Studies</label>
+                    <label class="font-semibold text-gray-700">Filter by Study</label>
                     <div>
                         <button id="study-select-all" class="text-xs font-medium text-blue-600 hover:underline">All</button> |
                         <button id="study-select-none" class="text-xs font-medium text-blue-600 hover:underline">None</button>
                     </div>
                 </div>
                 <!-- Checkboxes will be dynamically inserted here -->
-                <div id="study-filter-list" class="filter-list h-40 max-h-40 overflow-y-auto space-y-1 rounded-md border border-gray-300 p-3 bg-gray-50">
+                <div id="study-filter-list" class="filter-list h-32 max-h-32 overflow-y-auto space-y-1 rounded-md border border-gray-300 p-3 bg-gray-50">
                 </div>
             </div>
 
             <!-- Filter: Sample Types -->
             <div id="sample-filter-group">
                 <div class="flex justify-between items-center mb-2">
-                    <label class="font-semibold text-gray-700">Sample Types</label>
+                    <label class="font-semibold text-gray-700">Filter by Sample Type</label>
                     <div>
                         <button id="sample-select-all" class="text-xs font-medium text-blue-600 hover:underline">All</button> |
                         <button id="sample-select-none" class="text-xs font-medium text-blue-600 hover:underline">None</button>
                     </div>
                 </div>
                 <!-- Checkboxes will be dynamically inserted here -->
-                <div id="sample-filter-list" class="filter-list h-32 max-h-32 overflow-y-auto space-y-1 rounded-md border border-gray-300 p-3 bg-gray-50">
+                <div id="sample-filter-list" class="filter-list h-24 max-h-24 overflow-y-auto space-y-1 rounded-md border border-gray-300 p-3 bg-gray-50">
                 </div>
             </div>
 
-            <!-- NEW: Filter: Age Range -->
+            <!-- Filter: Age Range -->
             <div id="age-filter-group">
-                <label class="font-semibold text-gray-700">Age Range</label>
+                <label class="font-semibold text-gray-700">Filter by Age</label>
                 <div class="flex items-center space-x-2 mt-2">
                     <input type="number" id="min-age" value="0" min="0" max="100" class="w-1/2 p-2 border border-gray-300 rounded-md shadow-sm text-sm">
                     <span class="text-gray-600">to</span>
@@ -131,6 +141,14 @@
 
     </main>
 
+    <!-- 
+    FIX: JSON Script Data 
+    This is the robust way to pass data from Django to JS
+    -->
+    {{ all_data|json_script:"all-data-json" }}
+    {{ study_ids|json_script:"unique-studies-json" }}
+    {{ sample_types|json_script:"unique-samples-json" }}
+
     <!-- 3. JavaScript -->
     <script>
         // --- 1. Get Data from Django ---
@@ -140,10 +158,10 @@
         const statusMessage = document.getElementById('status-message');
 
         try {
-            // Use JSON.parse on the data passed from the view
-            ALL_DATA = JSON.parse('{{ all_data_json|safe }}');
-            UNIQUE_STUDIES = JSON.parse('{{ study_ids_json|safe }}');
-            UNIQUE_SAMPLES = JSON.parse('{{ sample_types_json|safe }}');
+            // --- FIX: Read from the json_script tags ---
+            ALL_DATA = JSON.parse(document.getElementById('all-data-json').textContent);
+            UNIQUE_STUDIES = JSON.parse(document.getElementById('unique-studies-json').textContent);
+            UNIQUE_SAMPLES = JSON.parse(document.getElementById('unique-samples-json').textContent);
             
             if (!ALL_DATA || ALL_DATA.length === 0) {
                  statusMessage.textContent = 'No data loaded from server.';
@@ -160,9 +178,9 @@
         const barPlotDiv = document.getElementById('timeDaysBarChart');
         const studyListDiv = document.getElementById('study-filter-list');
         const sampleListDiv = document.getElementById('sample-filter-list');
-        // NEW: Age filter inputs
         const minAgeInput = document.getElementById('min-age');
         const maxAgeInput = document.getElementById('max-age');
+        const colorBySelect = document.getElementById('color-by-select');
         
         const PLOTLY_COLORS = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf'];
 
@@ -170,7 +188,6 @@
          * Populates the filter checkboxes in the sidebar
          */
         function populateFilters() {
-            // Populate Studies
             UNIQUE_STUDIES.forEach(study => {
                 const label = document.createElement('label');
                 label.className = 'block font-normal text-sm cursor-pointer hover:bg-gray-200 rounded px-1';
@@ -178,7 +195,6 @@
                 studyListDiv.appendChild(label);
             });
 
-            // Populate Sample Types
             UNIQUE_SAMPLES.forEach(sample => {
                 const label = document.createElement('label');
                 label.className = 'block font-normal text-sm cursor-pointer hover:bg-gray-200 rounded px-1';
@@ -186,6 +202,7 @@
                 sampleListDiv.appendChild(label);
             });
 
+            // Handle empty filters
             if (UNIQUE_STUDIES.length === 0 && ALL_DATA.length > 0) {
                 studyListDiv.innerHTML = '<p class="text-sm text-gray-500 italic">No studies found in data.</p>';
             }
@@ -195,15 +212,32 @@
         }
 
         /**
+         * Helper function to get an age bin for a row
+         */
+        function getAgeBin(row) {
+            if (row.AgeRng1 === null) return "Unknown";
+            // Use the average age of the range for binning
+            const avgAge = (row.AgeRng1 + row.AgeRng2) / 2;
+            if (avgAge < 10) return "0-9";
+            if (avgAge < 20) return "10-19";
+            if (avgAge < 30) return "20-29";
+            if (avgAge < 40) return "30-39";
+            if (avgAge < 50) return "40-49";
+            if (avgAge < 60) return "50-59";
+            if (avgAge < 70) return "60-69";
+            return "70+";
+        }
+
+        /**
          * Main function to filter data and update both Plotly charts
          */
         function updatePlots() {
             // 1. Get selected filters
             const selectedStudies = Array.from(studyListDiv.querySelectorAll('input[type=checkbox]:checked')).map(cb => cb.value);
             const selectedSamples = Array.from(sampleListDiv.querySelectorAll('input[type=checkbox]:checked')).map(cb => cb.value);
-            // NEW: Get age filters
             const userMinAge = parseFloat(minAgeInput.value) || 0;
             const userMaxAge = parseFloat(maxAgeInput.value) || 100;
+            const colorBy = colorBySelect.value; 
 
             // 2. Filter the raw data
             const filteredData = ALL_DATA.filter(row => {
@@ -211,32 +245,56 @@
                 const studiesMatch = selectedStudies.includes(row.StudyID);
                 const samplesMatch = selectedSamples.includes(row.SampleType);
                 
-                // NEW: Filter by age range overlap
+                // Filter by age range overlap
                 const personMinAge = row.AgeRng1;
                 const personMaxAge = row.AgeRng2;
 
-                // If age data is missing for this row, it cannot overlap. Exclude it.
-                if (personMinAge === null || personMaxAge === null) {
-                    return false;
+                let ageMatch = true; // Default to true (include)
+                if (personMinAge !== null && personMaxAge !== null) {
+                    // If age is known, check for overlap
+                    ageMatch = (personMaxAge >= userMinAge) && (personMinAge <= userMaxAge);
+                } else {
+                    // If age is unknown, only include if user has *not* filtered
+                    // (i.e., if range is still default 0-100)
+                    if (userMinAge !== 0 || userMaxAge !== 100) {
+                        ageMatch = false; // Exclude if user is filtering by age
+                    }
                 }
                 
-                // This is the overlap logic: (PersonMax >= UserMin) AND (PersonMin <= UserMax)
-                const ageMatch = (personMaxAge >= userMinAge) && (personMinAge <= userMaxAge);
-                
-                // Return true only if all filters match
                 return studiesMatch && samplesMatch && ageMatch;
             });
 
             // 3. --- Prep Data for Scatter Plot (Stratified) ---
             const scatterTraces = {};
             let colorIndex = 0;
-            const sampleColorMap = {}; 
+            const colorMap = {}; // To assign a consistent color to each group
             
             filteredData.forEach(row => {
-                const traceName = row.SampleType;
+                // Ensure row has valid data for this plot
+                if (row.TimeDays === null || row.Log10VL === null) {
+                    return;
+                }
                 
-                if (!sampleColorMap[traceName]) {
-                    sampleColorMap[traceName] = PLOTLY_COLORS[colorIndex % PLOTLY_COLORS.length];
+                // Dynamically get the trace name based on the dropdown
+                let traceName;
+                switch (colorBy) {
+                    case 'StudyID':
+                        traceName = row.StudyID;
+                        break;
+                    case 'Age':
+                        traceName = getAgeBin(row);
+                        break;
+                    case 'SampleType':
+                    default:
+                        traceName = row.SampleType;
+                        break;
+                }
+                
+                if (traceName === null || traceName === undefined) traceName = "Unknown";
+
+                // Get or assign a color for this group
+                if (!colorMap[traceName]) {
+                    colorMap[traceName] = PLOTLY_COLORS[colorIndex % PLOTLY_COLORS.length];
                     colorIndex++;
                 }
 
@@ -250,7 +308,7 @@
                         marker: { 
                             size: 6, 
                             opacity: 0.7,
-                            color: sampleColorMap[traceName]
+                            color: colorMap[traceName] // Assign color
                         }
                     };
                 }
@@ -258,12 +316,19 @@
                 scatterTraces[traceName].y.push(row.Log10VL);
             });
             const scatterPlotData = Object.values(scatterTraces);
+            
+            // Sort traces if coloring by Age
+            if (colorBy === 'Age') {
+                scatterPlotData.sort((a, b) => a.name.localeCompare(b.name));
+            }
 
             // 4. --- Prep Data for Bar Plot ---
             const barCounts = {};
             filteredData.forEach(row => {
-                const day = Math.floor(row.TimeDays); 
-                barCounts[day] = (barCounts[day] || 0) + 1;
+                if (row.TimeDays !== null) {
+                    const day = Math.floor(row.TimeDays); 
+                    barCounts[day] = (barCounts[day] || 0) + 1;
+                }
             });
             const sortedDays = Object.keys(barCounts).map(Number).sort((a, b) => a - b);
             const barPlotData = [{
@@ -323,12 +388,11 @@
 
         // --- 3. Attach Event Listeners ---
         
-        // Add listeners to filter lists (using event delegation for efficiency)
         studyListDiv.addEventListener('change', updatePlots);
         sampleListDiv.addEventListener('change', updatePlots);
-        // NEW: Add listeners for age inputs
         minAgeInput.addEventListener('input', updatePlots);
         maxAgeInput.addEventListener('input', updatePlots);
+        colorBySelect.addEventListener('change', updatePlots);
 
         // "Select All/None" buttons
         document.getElementById('study-select-all').addEventListener('click', () => setCheckboxes('study-filter-list', true));

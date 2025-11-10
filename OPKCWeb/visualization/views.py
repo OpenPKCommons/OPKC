@@ -52,12 +52,14 @@ def chart_view(request):
         # Convert the plotting data to a list of dictionaries
         all_data_list = df_plot.to_dict(orient='records')
         
+        # --- FIX: Pass the raw Python objects, NOT JSON strings ---
         context = {
             'chart_title': 'Sample Data Dashboard',
-            'study_ids_json': json.dumps(study_ids),
-            'sample_types_json': json.dumps(sample_types),
-            'all_data_json': json.dumps(all_data_list),
+            'study_ids': study_ids,       # No more '_json'
+            'sample_types': sample_types, # No more '_json'
+            'all_data': all_data_list,  # No more '_json'
         }
+        # --- END FIX ---
 
         return render(request, 'visualization/data_chart.html', context)
         
