@@ -17,9 +17,10 @@ def load_and_format():
 
     # Rename columns to match schema: 
     df = df.rename(columns={
+        "PersonID": "PatientID",
         "InfectionEvent": "InfectionID",
         "TestDateIndex": "TimeDays",
-        "CtT1": "Log10VL",
+        "CtT1": "PathogenLoad",
         "LineageBroad": "Subtype"
         })
 
@@ -29,7 +30,7 @@ def load_and_format():
     df["PtSpecies"] = "Human"
     df["DOI"] = "10.1038/s41467-023-41941-z"
     df["Units"] = "Ct"
-    df["PlatformName"] = "RTqPCR"
+    df["PlatformType"] = "RTqPCR"
     df["PlatformTech"] = "cobas_target1"
     df["GEml_conversion_intercept"] = 11.34089
     df["GEml_conversion_slope"] = -0.2770306

@@ -64,12 +64,16 @@ graph LR
 
 #### Fields and definitions
 - StudyID: A unique identifier for the study from which the data comes
-- PersonID: A unique person identifier
+- PatientID: A unique person/patient/individual identifier
 - Pathogen: ["SARS2", "Flu", "Dengue", "WestNile"]
+    - Prefer shortest cleanest, high-level term
+    - Keep track of naming quirks here for consistency
 - PtSpecies: "Patient species" e.g. human, mosquito - the patient sampled in the particular study (not asking anything about possible vectors)
-- InfectionID: A unique infection identifier (in case multiple infections in a single person)
+    - Use naming convention per the paper or simple common name, rather than scientific names
+- InfectionID: A unique infection identifier (in case multiple infections in a single person, as needed)
 - SampleID: An identifier for the biological sample
 - TimeDays: Time in days since the infection's "time 0"
+    - or, for challenge studies, time since inoculation
 - Symptoms1: Symptom ICD code 1 OR granular symptomatic vs. asymptomatic data depending on the original study's level of detail
 - Symptoms2: Symptom ICD code 2
 - Symptoms3: Symptom ICD code 3
@@ -90,9 +94,9 @@ graph LR
 - AgeRng1: Lower end of the patient's age bracket
 - AgeRng2: Upper end of the patient's age bracket
 - Subtype: Pathogen subtype/strain/variant
-- PlatformName: Analytical test platform type (e.g. RT-qPCR, plaque-forming assay, antibody titer)
+- PlatformType: Analytical test platform type (e.g. RT-qPCR, plaque-forming assay, antibody titer)
 - DOI: DOI of the study or data repository
-- VL: log10 Viral load
+- PathogenLoad: Viral load or other pathogen concentration measurement (most commonly will be log10 viral load - but need to specify!)
 - Units: Viral load units (e.g., Ct, GE/ml)
 - GEml_conversion_intercept: Conversion intercept from viral load units to - GE/ml
 - GEml_conversion_slope: Conversion slope from viral load units to GE/ml
@@ -142,7 +146,7 @@ erDiagram
     }
     SAMPLE {
         string SampleID PK
-        string PersonID
+        string PatientID
         string InfectionID FK
         string PlaformID FK
         string StudyID FK
@@ -150,7 +154,7 @@ erDiagram
         int TimeDays
         string SampleSource
         string SampleMethod
-        float VL
+        float PathogenLoad
     }
     INFECTION {
         string InfectionID PK
@@ -178,7 +182,7 @@ erDiagram
     }
     PLATFORM {
         string PlatformID PK
-		string PlatformName
+		string PlatformType
 		string PlatformTech
         string Units
         float ConversionIntercept

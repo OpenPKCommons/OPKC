@@ -18,9 +18,9 @@ def load_and_format():
 
     # Rename columns to match schema: 
     df = df.rename(columns={
-        "PersonID": "PersonID",
+        "PersonID": "PatientID",
         "DaysPostInoculation": "TimeDays",
-        "GEml": "Log10VL", # is this log10?
+        "GEml": "PathogenLoad", # is log10VL
         "site": "SampleSource"
         })
 
@@ -29,8 +29,8 @@ def load_and_format():
     df["Pathogen"] = "SARS2"
     df["PtSpecies"] = "Human"
     df["DOI"] = "10.1126/sciimmunol.adj9285"
-    df["Units"] = "GEml"
-    df["PlatformName"] = "RT-qPCR"
+    df["Units"] = "GEml (log10VL)"
+    df["PlatformType"] = "RT-qPCR"
     df["SampleMethod"] = "flocked_swab_in_VTM"
 
     # For reference...

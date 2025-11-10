@@ -28,10 +28,11 @@ def load_and_format():
 
     # Rename columns to match schema: 
     df = df.rename(columns={
-        "Ind": "PersonID",
+        "Ind": "PatientID",
         "Time": "TimeDays",
         "Lineage": "Subtype",
-        "Age": "AgeRng1"
+        "Age": "AgeRng1",
+        "Log10VL": "PathogenLoad"
         })
 
     # Add additional columns with known but missing information:
@@ -50,7 +51,7 @@ def load_and_format():
         "nasal": "flocked_swab_in_VTM",
         "nasal antigen": "dry_swab"
         })
-    df["PlatformName"] = df["SampleSource"].map({
+    df["PlatformType"] = df["SampleSource"].map({
         "saliva": "RT-qPCR",
         "nasal": "RT-qPCR", #calibrated with ddPCR
         "nasal antigen": "Antigen"

@@ -75,7 +75,7 @@ def load_and_format():
     # update this map accordingly to preserve the TimeDays variable definition.
 
     rename_map = {
-        "participant": "PersonID",
+        "participant": "PatientID",
         "day": "TimeDays",
         "days_since_peak": "DaysSincePeak",
         "copy": "CopiesPerML",
@@ -98,14 +98,14 @@ def load_and_format():
     #   - Else if PFUPerML present: Log10VL = log10(PFU/mL), Units = "log10(PFU/mL)"
     #   - Else (no quantitative): keep Units as "Ct" only if you map Ct elsewhere (not present here); otherwise leave NA.
     if "CopiesPerML" in df.columns and df["CopiesPerML"].notna().any():
-        df["Log10VL"] = df["CopiesPerML"].apply(_safe_log10)
+        df["PathogenLoad"] = df["CopiesPerML"].apply(_safe_log10)
         df["Units"] = "log10(copies/mL)"
     elif "PFUPerML" in df.columns and df["PFUPerML"].notna().any():
-        df["Log10VL"] = df["PFUPerML"].apply(_safe_log10)
+        df["PathogenLoad"] = df["PFUPerML"].apply(_safe_log10)
         df["Units"] = "log10(PFU/mL)"
     else:
         # No quantitative load; leave Log10VL as NaN and Units unspecified.
-        df["Log10VL"] = float("nan")
+        df["PathogenLoad"] = float("nan")
         df["Units"] = pd.NA
 
     # 6) Fill study-level metadata lab schema expects
@@ -119,8 +119,8 @@ def load_and_format():
         df["SampleSource"] = "nose+throat"
     if "SampleMethod" not in df.columns:
         df["SampleMethod"] = "nose+throat_swabs_in_VTM"
-    if "PlatformName" not in df.columns:
-        df["PlatformName"] = "RT-qPCR"           # TODO: refine targets if I extract them later
+    if "PlatformType" not in df.columns:
+        df["PlatformType"] = "RT-qPCR"           # TODO: refine targets if I extract them later
 
     # Optional: normalize booleans
     if "LFD_Positive" in df.columns:
@@ -132,7 +132,7 @@ def load_and_format():
 
     # Keep DaysSincePeak as an extra variable if lab schema allows unknowns; else drop it
     # If enforce_schema drops unknown columns, store in a Notes column.
-    print(f"Loaded Hakki et al. 2022 — {len(df)} total rows.")
+    #print(f"Loaded Hakki et al. 2022 — {len(df)} total rows.")
     return df
 
 """

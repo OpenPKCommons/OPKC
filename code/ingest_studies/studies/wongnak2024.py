@@ -10,14 +10,14 @@ def load_and_format():
 
     # Rename columns to match the standard schema:
     df = df.rename(columns={
-        "ID": "PersonID",
+        "ID": "PatientID",
         "Time": "TimeDays",
         "Trt": "Treatment1",
         "Swab_ID": "SampleSource", #they specify which tonsil, but oropharyngeal would suffice
         "Age": "AgeRng1",
         "BARCODE": "SampleID", 
         "Variant": "Subtype",
-        "log10_viral_load": "Log10VL"
+        "log10_viral_load": "PathogenLoad"
         })
 
     # Since age is given as a single value, set the upper bound of the age range to be the same
@@ -28,9 +28,9 @@ def load_and_format():
     df["Pathogen"] = "SARS2"
     df["PtSpecies"] = "Human"
     df["DOI"] = "10.1016/S1473-3099(24)00183-X"
-    df["Units"] = "GEml"
+    df["Units"] = "GEml (log10VL)"
     df["SampleMethod"] = "flocked_OP_swab_in_VTM" #Swabs = Thermo Fisher MicroTest and COPAN FLOQSwabs, VTm = Thermo Fisher M4RT viral transport medium (3 mL)
-    df["PlatformName"] = "RT-qPCR"
+    df["PlatformType"] = "RT-qPCR"
     df["PlatformTech"] = "TaqCheckFastPCR"
     df["Targets"] = "N, S"
 

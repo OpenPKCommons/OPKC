@@ -26,12 +26,12 @@ def load_and_format():
 
     # Rename columns to match schema: 
     df = df.rename(columns={
-        "id": "PersonID",
+        "id": "PatientID",
         "swab_type": "SampleMethod",
         "VOC": "Subtype",
         "symptoms": "Symptoms1",
         "t": "TimeDays",
-        "ct_value": "Log10VL"
+        "ct_value": "PathogenLoad"
         })
     
     df["Targets"] = df["ct_type"].map({
@@ -54,7 +54,7 @@ def load_and_format():
     df["DOI"] = "10.1371/journal.pbio.3002463"
     df["Units"] = "Ct"
     df["SampleSource"] = "nasopharyngeal"
-    df["PlatformName"] = "RT-qPCR"
+    df["PlatformType"] = "RT-qPCR"
     df["PlatformTech"] = "QuantStudio 3"
 
     df = enforce_schema(df)
