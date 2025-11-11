@@ -54,9 +54,9 @@ graph LR
 	inbox[Inbox: 23]
 	mayexist[May exist: 40]
 	denea[Exists - not easy to access: 17]
-	exists[Exists: 10]
-	provingest[Provisional ingest: 1]
-	ingested[Ingested: 6]
+	exists[Exists: 9]
+	provingest[Provisional ingest: 2]
+	ingested[Ingested: 7.33]
 	exists --> provingest --> ingested
 ```
 

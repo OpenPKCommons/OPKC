@@ -35,25 +35,25 @@ Comprehensive, authoritative list of papers scanned for possible inclusion in op
 ### Datasets already downloaded (ingested) and formatted (digested)
 | DOI | PaperNameString | Status/Classification | Pathogen | Tags | By |
 |:---|:---|:---:|:---:|:---:|---:|
-| 10.1038/s41564-022-01105-z | Ke et al 2022 Daily | `DIGESTED` | `SARS2` | | Stephen |
-| 10.1038/s41467-023-41941-z | Kissler et al 2023 | `DIGESTED` | `SARS2` | | Stephen |
-| 10.1371/journal.pbio.3002463 | Russell et al 2024 | `DIGESTED` | `SARS2` | | Stephen |
-| 10.1126/sciimmunol.adj9285 | Wagstaffe et al 2024 | `DIGESTED` | `SARS2` | | Carrie |
-| 10.1016/S1473-3099(24)00183-X | Wongnak et al 2024 | `DIGESTED` | `SARS2` | | Stephen |
-| 10.1016/S2213-2600(22)00226-0 | Hakki et al 2022 | `DIGESTED` | `SARS2` | `VAX` `LAB`| Oliver | [github](https://github.com/HPRURespMed/SARS-CoV-2-viral-shedding-dynamics) |
-| 10.1128/jcm.01785-21 | Savela Winnett Romano et al 2022 | `Ingesting` | `SARS2` | | Oliver | [author site](https://data.caltech.edu/records/bv2tf-aap55) |
+| 10.1038/s41564-022-01105-z | Ke2022daily | `DIGESTED` | `SARS2` | | Stephen |
+| 10.1038/s41467-023-41941-z | Kissler2023 | `DIGESTED` | `SARS2` | | Stephen |
+| 10.1371/journal.pbio.3002463 | Russell2024 | `DIGESTED` | `SARS2` | | Stephen |
+| 10.1126/sciimmunol.adj9285 | Wagstaffe2024 | `DIGESTED` | `SARS2` | | Carrie |
+| 10.1016/S1473-3099(24)00183-X | Wongnak2024 | `DIGESTED` | `SARS2` | | Stephen |
+| 10.1016/S2213-2600(22)00226-0 | Hakki2022 | `DIGESTED` | `SARS2` | `VAX` `LAB`| Oliver | [github](https://github.com/HPRURespMed/SARS-CoV-2-viral-shedding-dynamics) |
+| 10.1128/jcm.01785-21 | Savela2022 | `DIGESTED` | `SARS2` | | Oliver | [author site](https://data.caltech.edu/records/bv2tf-aap55) |
 
-Count = 7
+Count = 7.33
 
 ### DE = DATA EXISTS (in priority order)
 | DOI | PaperNameString | Status/Classification | Pathogen | Tags | INGEST-IN-PROGRESS-BY? | Data link |
 |:---|:---|:---:|:---:|:---:|:---|:---|
-| 10.1101/2025.02.01.636082v1 | Eales et al 2025 | `DE` | `H5N1` | | Ellen | [github](https://github.com/Eales96/H5N1_viral_kinetics) |
-| 10.1038/s41564-024-01668-z | Waickman et al 2024 | `DE` | `Dengue` | `LAB` | UNCLAIMED | [data at paper](https://www-nature-com.colorado.idm.oclc.org/articles/s41564-024-01668-z) |
-| 10.7554/eLife.92606.3 | Vuong et al 2024 | `DE` | `Dengue` | `LAB` | UNCLAIMED | [github](https://github.com/Nguyenlamvuong/Dengue_Viremia_Kinetics_eLife_2024/blob/main/Viremia%20and%20outcomes%20240522.Rdata) |
+| 10.1101/2025.02.01.636082v1 | Eales et al 2025 | `Ingesting - Baker done(1/3)` | `H5N1` | | Ellen | [github](https://github.com/Eales96/H5N1_viral_kinetics) |
+| 10.1038/s41564-024-01668-z | Waickman et al 2024 | `Ingesting` | `Dengue` | `LAB` | Oliver | [data at paper](https://www-nature-com.colorado.idm.oclc.org/articles/s41564-024-01668-z) |
+| 10.7554/eLife.92606.3 | Vuong et al 2024 | `DE` | `Dengue` | `LAB` | Oliver | [github](https://github.com/Nguyenlamvuong/Dengue_Viremia_Kinetics_eLife_2024/blob/main/Viremia%20and%20outcomes%20240522.Rdata) |
 | 10.7326/M20-1495 | Kucirka et al 2020 | `DE` | `SARS2` | `MA` | UNCLAIMED | [github](https://github.com/HopkinsIDD/covidRTPCR) |
-| 10.1038/s41591-022-01816-0 | Puhach et al 2022 | `DE` | `SARS2` | | Carrie | [Extended data at paper](https://www-nature-com.colorado.idm.oclc.org/articles/s41591-022-01816-0#Sec18) |
-| 10.1126/science.abi5273 | Jones et al 2021 | `DE` | `SARS2` | | Carrie | [github](https://github.com/VirologyCharite/SARS-CoV-2-VL-paper/tree/main) |
+| 10.1038/s41591-022-01816-0 | Puhach et al 2022 | `Ingesting` | `SARS2` | | Carrie | [Extended data at paper](https://www-nature-com.colorado.idm.oclc.org/articles/s41591-022-01816-0#Sec18) |
+| 10.1126/science.abi5273 | Jones et al 2021 | `Ingesting` | `SARS2` | | Carrie | [github](https://github.com/VirologyCharite/SARS-CoV-2-VL-paper/tree/main) |
 | 10.1038/s41467-020-20568-4 | van Kampen et al 2021 | `DE` | `SARS2` | `LAB` | UNCLAIMED | [Source data at paper](https://www-nature-com.colorado.idm.oclc.org/articles/s41467-020-20568-4#Sec12) |
 | 10.1101/2025.07.02.662782 | Alahakoon et al 2025 Tracking West Nile | `DE` | `WestNile` | `mosq` `birds` | UNCLAIMED | [github](https://github.com/PunyaAlahakoon/west_nile_virus_abm/tree/main/3_figure_generation/data) |
 | 10.1038/s41467-025-61553-z | Peña-Mosca et al 2025  | `DE` | `Flu` |`H5N1` `cows` | Ellen | [github](https://github.com/fepenamosca/hpai_impact_dairies/tree/fd5f303f4aae47ef3a6259e7e7b94284f8c3af67/data) |
