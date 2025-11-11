@@ -75,7 +75,7 @@ def load_and_format():
     # update this map accordingly to preserve the TimeDays variable definition.
 
     rename_map = {
-        "participant": "PatientID",
+        "participant": "IndivID",
         "day": "TimeDays",
         "days_since_peak": "DaysSincePeak",
         "copy": "CopiesPerML",
@@ -111,7 +111,7 @@ def load_and_format():
     # 6) Fill study-level metadata lab schema expects
     df["StudyID"] = "hakki2022"
     df["Pathogen"] = "SARS2"
-    df["PtSpecies"] = "Human"
+    df["IndSpecies"] = "Human"
     df["DOI"] = "10.1016/S2213-2600(22)00226-0"
     df["Targets"] = "ORF1ab"
     # SampleType/Platform - set conservative defaults; refine from Methods later if needed

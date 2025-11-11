@@ -64,11 +64,11 @@ graph LR
 
 #### Fields and definitions
 - StudyID: A unique identifier for the study from which the data comes
-- PatientID: A unique person/patient/individual identifier
+- IndivID: A unique individual identifier
 - Pathogen: ["SARS2", "Flu", "Dengue", "WestNile"]
     - Prefer shortest cleanest, high-level term
     - Keep track of naming quirks here for consistency
-- PtSpecies: "Patient species" e.g. human, mosquito - the patient sampled in the particular study (not asking anything about possible vectors)
+- IndSpecies: Spcies (corresponding to the individual subject of study) e.g. human, dairy cow
     - Use naming convention per the paper or simple common name, rather than scientific names
 - InfectionID: A unique infection identifier (in case multiple infections in a single person, as needed)
 - SampleID: An identifier for the biological sample

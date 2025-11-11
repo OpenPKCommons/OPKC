@@ -18,7 +18,7 @@ def load_and_format():
 
     # Rename columns to match schema: 
     df = df.rename(columns={
-        "PersonID": "PatientID",
+        "PersonID": "IndivID",
         "DaysPostInoculation": "TimeDays",
         "GEml": "PathogenLoad", # is log10VL
         "site": "SampleSource"
@@ -27,7 +27,7 @@ def load_and_format():
     # Add additional columns with known but missing information:
     df["StudyID"] = "wagstaffe2024"
     df["Pathogen"] = "SARS2"
-    df["PtSpecies"] = "Human"
+    df["IndSpecies"] = "Human"
     df["DOI"] = "10.1126/sciimmunol.adj9285"
     df["Units"] = "GEml (log10VL)"
     df["PlatformType"] = "RT-qPCR"

@@ -10,7 +10,7 @@ def load_and_format():
 
     # Rename columns to match the standard schema:
     df = df.rename(columns={
-        "ID": "PatientID",
+        "ID": "IndivID",
         "Time": "TimeDays",
         "Trt": "Treatment1",
         "Swab_ID": "SampleSource", #they specify which tonsil, but oropharyngeal would suffice
@@ -26,7 +26,7 @@ def load_and_format():
     # Add additional columns with known but missing information:
     df["StudyID"] = "wongnak2024"
     df["Pathogen"] = "SARS2"
-    df["PtSpecies"] = "Human"
+    df["IndSpecies"] = "Human"
     df["DOI"] = "10.1016/S1473-3099(24)00183-X"
     df["Units"] = "GEml (log10VL)"
     df["SampleMethod"] = "flocked_OP_swab_in_VTM" #Swabs = Thermo Fisher MicroTest and COPAN FLOQSwabs, VTm = Thermo Fisher M4RT viral transport medium (3 mL)

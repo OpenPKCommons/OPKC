@@ -1,7 +1,7 @@
 import pandas as pd
 
 STANDARD_SCHEMA = [
-    "StudyID", "PatientID", "Pathogen", "PtSpecies",
+    "StudyID", "IndivID", "Pathogen", "IndSpecies",
     "InfectionID", "SampleID", "TimeDays",
     "Symptoms1", "Symptoms2", "Symptoms3", "Symptoms4",
     "Comorbidity1", "Comorbidity2", "Comorbidity3", "Comorbidity4",
@@ -23,7 +23,7 @@ def coerce_types(df):
     for col in numeric_cols:
         df[col] = pd.to_numeric(df[col], errors="coerce")
 
-    string_cols = ["StudyID", "PatientID", "Pathogen", "PtSpecies", "InfectionID", "SampleID", "Symptoms1", "Symptoms2", "Symptoms3", "Symptoms4", "Comorbidity1", "Comorbidity2", "Comorbidity3", "Comorbidity4", "Treatment1", "Treatment2", "Treatment3", "Treatment4", "SampleSource", "SampleMethod", "Subtype", "PlatformType", "DOI", "Units", "Targets", "PlatformTech"]
+    string_cols = ["StudyID", "IndivID", "Pathogen", "IndSpecies", "InfectionID", "SampleID", "Symptoms1", "Symptoms2", "Symptoms3", "Symptoms4", "Comorbidity1", "Comorbidity2", "Comorbidity3", "Comorbidity4", "Treatment1", "Treatment2", "Treatment3", "Treatment4", "SampleSource", "SampleMethod", "Subtype", "PlatformType", "DOI", "Units", "Targets", "PlatformTech"]
     df[string_cols] = df[string_cols].astype(str)
 
     return df

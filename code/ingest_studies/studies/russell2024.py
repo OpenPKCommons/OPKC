@@ -26,7 +26,7 @@ def load_and_format():
 
     # Rename columns to match schema: 
     df = df.rename(columns={
-        "id": "PatientID",
+        "id": "IndivID",
         "swab_type": "SampleMethod",
         "VOC": "Subtype",
         "symptoms": "Symptoms1",
@@ -50,7 +50,7 @@ def load_and_format():
     # Add additional columns with known but missing information:
     df["StudyID"] = "russell2024"
     df["Pathogen"] = "SARS2"
-    df["PtSpecies"] = "Human"
+    df["IndSpecies"] = "Human"
     df["DOI"] = "10.1371/journal.pbio.3002463"
     df["Units"] = "Ct"
     df["SampleSource"] = "nasopharyngeal"
