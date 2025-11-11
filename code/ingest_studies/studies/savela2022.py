@@ -106,10 +106,10 @@ def load_savela2022_infection(data_dir: str) -> pd.DataFrame:
 
         # Clean and standardize
         df = raw.rename(columns={
-            "Participant": "PersonID",
+            "Participant": "IndivID",
             "Days Post-Enrollment": "TimeDays",
-            "Viral Load N1 (copies/mL)": "Target1",
-            "Viral Load N2 (copies/mL)": "Target2",
+            "Viral Load N1 (copies/mL)": "Target1", # will copy below to PathogenLoad
+            "Viral Load N2 (copies/mL)": "Target2", # will copy below to PathogenLoad
         })
 
         # Parse Sample Type
@@ -120,10 +120,10 @@ def load_savela2022_infection(data_dir: str) -> pd.DataFrame:
 
         # Metadata
         df["StudyID"] = "savela2022"
-        df["Pathogen"] = "SARS-CoV-2"
-        df["PtSpecies"] = "Human"
+        df["Pathogen"] = "SARS2"
+        df["IndSpecies"] = "Human"
         df["Units"] = "copies/mL"
-        df["PlatformName"] = "RT-qPCR"
+        df["PlatformType"] = "RT-qPCR"
         df["PlatformTech"] = "Bio-Rad CFX96"
         df["DOI"] = "10.1128/JCM.01785-21"
 
@@ -139,21 +139,21 @@ def load_savela2022_infection(data_dir: str) -> pd.DataFrame:
         # N1 rows
         df_n1 = df.copy(deep=True)
         df_n1["Targets"] = "N1"
-        df_n1["Log10VL"] = df_n1["Target1"].apply(
+        df_n1["PathogenLoad"] = df_n1["Target1"].apply(
             lambda x: math.log10(x) if pd.notna(x) and x > 0 else np.nan
         )
 
         # N2 rows
         df_n2 = df.copy(deep=True)
         df_n2["Targets"] = "N2"
-        df_n2["Log10VL"] = df_n2["Target2"].apply(
+        df_n2["PathogenLoad"] = df_n2["Target2"].apply(
             lambda x: math.log10(x) if pd.notna(x) and x > 0 else np.nan
         )
 
         use_cols = [
-            "StudyID", "PersonID", "Pathogen", "PtSpecies", "TimeDays",
-            "SampleSource", "SampleMethod", "AgeRng1", "AgeRng2", "PlatformName", "PlatformTech", "DOI",
-            "Targets", "Log10VL", "Units"
+            "StudyID", "IndivID", "Pathogen", "IndSpecies", "TimeDays",
+            "SampleSource", "SampleMethod", "AgeRng1", "AgeRng2", "PlatformType", "PlatformTech", "DOI",
+            "Targets", "PathogenLoad", "Units"
         ]
 
         frames.append(df_n1[use_cols])
@@ -164,13 +164,13 @@ def load_savela2022_infection(data_dir: str) -> pd.DataFrame:
 
     # Re-baseline TimeDays
     def first_detected_day(g):
-        mask = g["Log10VL"].notna() & g["TimeDays"].notna()
+        mask = g["PathogenLoad"].notna() & g["TimeDays"].notna()
         if mask.any():
             return g.loc[mask, "TimeDays"].min()
         return np.nan
 
-    shifts = out.groupby("PersonID", dropna=False).apply(first_detected_day).rename("t0")
-    out = out.merge(shifts, on="PersonID", how="left")
+    shifts = out.groupby("IndivID", dropna=False).apply(first_detected_day, include_groups=False).rename("t0")
+    out = out.merge(shifts, on="IndivID", how="left")
     out["TimeDays"] = pd.to_numeric(out["TimeDays"], errors="coerce") - pd.to_numeric(out["t0"], errors="coerce")
     out.drop(columns=["t0"], inplace=True)
 
@@ -191,10 +191,12 @@ def load_and_format(base_dir=None):
 
     data_dir = os.path.join(base_dir, "data")
     df_infection = load_savela2022_infection(data_dir)
-    print(f"Loaded Savela et al. 2022 — {len(df_infection)} total rows.")
+    #print(f"Loaded Savela et al. 2022 — {len(df_infection)} total rows.")
     return df_infection
 
-
+"""
+# Test block
 if __name__ == "__main__":
     df = load_and_format()
     print(df.head(15))
+"""
