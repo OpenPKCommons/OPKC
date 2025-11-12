@@ -14,9 +14,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_FILE_PATH = os.path.join(BASE_DIR, 'visualization', 'data', 'combined_cleaned_data.csv')
 
 # --- 2. DEFINE YOUR FEATURED PAPERS ---
-# Add as many papers as you like to this list.
-# Make sure the 'image_name' matches a file in:
-# visualization/static/visualization/images/
+# (This section is unchanged)
 FEATURED_PAPERS_LIST = [
     {
         'title': 'Daily longitudinal sampling of SARS-CoV-2 infection reveals substantial heterogeneity in infectiousness',
@@ -43,12 +41,6 @@ FEATURED_PAPERS_LIST = [
         'image_name': 'eales2025.png',
         'url': 'https://doi.org/10.1101/2025.02.01.636082'
     },
-    # Add another paper screenshot here
-    # {
-    #     'title': 'Another Great Paper Title',
-    #     'image_name': 'another_paper.jpg',
-    #     'url': 'https://doi.org/...'
-    # },
 ]
 
 
@@ -105,17 +97,27 @@ def chart_view(request):
         study_ids = df['StudyID'].dropna().unique().tolist()
         study_ids.sort()
         
-        # Use new 'SampleSource' column
         sample_types = df['SampleSource'].dropna().unique().tolist()
         sample_types.sort()
+        
+        # --- NEW: Get Pathogens and Subtypes ---
+        pathogens = df['Pathogen'].dropna().unique().tolist()
+        pathogens.sort()
+        
+        subtypes = df['Subtype'].dropna().unique().tolist()
+        subtypes.sort()
+        # --- End NEW ---
 
         # --- 3. Prepare ALL Data for JS ---
-        # Use new column names
-        plot_columns = ['StudyID', 'SampleSource', 'TimeDays', 'PathogenLoad', 'AgeRng1', 'AgeRng2']
-        core_plot_cols = ['StudyID', 'SampleSource', 'TimeDays', 'PathogenLoad']
+        
+        # --- MODIFIED: Add Pathogen and Subtype to columns ---
+        plot_columns = ['StudyID', 'SampleSource', 'TimeDays', 'PathogenLoad', 'AgeRng1', 'AgeRng2', 'Pathogen', 'Subtype']
+        # --- MODIFIED: Add Pathogen to core columns ---
+        core_plot_cols = ['StudyID', 'SampleSource', 'TimeDays', 'PathogenLoad', 'Pathogen']
+        
         df_plot = df[plot_columns].dropna(subset=core_plot_cols, how='any')
 
-        # ROBUST FIX for NaN
+        # ROBUST FIX for NaN (converts remaining NaNs to None for JSON)
         df_plot = df_plot.astype(object).where(pd.notnull(df_plot), None)
         
         all_data_list = df_plot.to_dict(orient='records')
@@ -123,7 +125,9 @@ def chart_view(request):
         context = {
             'chart_title': 'Sample Data Dashboard',
             'study_ids': study_ids,
-            'sample_types': sample_types, # This key is used by the JS
+            'sample_types': sample_types,
+            'pathogens': pathogens, # <-- NEW
+            'subtypes': subtypes,     # <-- NEW
             'all_data': all_data_list,
         }
 
@@ -137,6 +141,7 @@ def chart_view(request):
 
 
 # --- STUB VIEWS for other pages ---
+# (This section is unchanged)
 
 def data_standard_view(request):
     return render(request, 'visualization/data_standard.html', {})
