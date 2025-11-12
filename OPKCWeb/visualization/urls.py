@@ -1,20 +1,21 @@
-# visualization/urls.py  <-- THIS IS THE NEW FILE
+# visualization/urls.py
 
 from django.urls import path
 from . import views
 
-# The variable 'app_name' is used by Django's template tags (e.g., {% url 'visualization:time_days_bar' %})
+# The variable 'app_name' is used by Django's template tags
 app_name = 'visualization' 
 
 urlpatterns = [
-
-    # This makes 'home_view' render at the app's root URL
-    # and gives it the name 'index'
+    # Path for your home page
     path('', views.home_view, name='index'),
 
-    # Path for your first chart view
+    # Path for your interactive data chart
     path('time_days/', views.chart_view, name='time_days_bar'),
     
-    # If you later add a second chart view called 'viral_load_line_chart'
-    # path('viral_load/', views.viral_load_line_chart, name='viral_load_line'),
+    # --- NEW: Paths for your new static pages ---
+    path('data_standard/', views.data_standard_view, name='data_standard'),
+    path('docs/', views.docs_view, name='docs'),
+    path('why_kinetics/', views.why_kinetics_view, name='why_kinetics'),
+    path('add_dataset/', views.add_dataset_view, name='add_dataset'),
 ]

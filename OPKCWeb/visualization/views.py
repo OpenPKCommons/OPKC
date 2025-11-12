@@ -44,9 +44,6 @@ def chart_view(request):
         df_plot = df[plot_columns].dropna(subset=core_plot_cols, how='any')
 
         # --- ROBUST FIX for NaN: ---
-        # 1. Convert DataFrame to 'object' type. This allows 'None' to be stored.
-        # 2. Replace all remaining 'NaN' (and 'NaT') with Python's 'None'.
-        # 3. 'json.dumps()' will then correctly serialize 'None' to 'null'.
         df_plot = df_plot.astype(object).where(pd.notnull(df_plot), None)
         
         # Convert the plotting data to a list of dictionaries
@@ -68,3 +65,29 @@ def chart_view(request):
         
     except Exception as e:
         return HttpResponse(f"An error occurred during data processing: {e}", status=500)
+
+# --- NEW: Stub views for your new pages ---
+
+def data_standard_view(request):
+    """
+    Renders the data standard page.
+    """
+    return render(request, 'visualization/data_standard.html', {})
+
+def docs_view(request):
+    """
+    Renders the docs page.
+    """
+    return render(request, 'visualization/docs.html', {})
+
+def why_kinetics_view(request):
+    """
+    Renders the 'Why Kinetics' page.
+    """
+    return render(request, 'visualization/why_kinetics.html', {})
+
+def add_dataset_view(request):
+    """
+    Renders the 'Add Dataset' page.
+    """
+    return render(request, 'visualization/add_dataset.html', {})
