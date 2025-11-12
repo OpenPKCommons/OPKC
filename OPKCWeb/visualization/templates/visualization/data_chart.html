@@ -359,7 +359,7 @@
 
             // 5. --- Define Layouts ---
             const scatterLayout = {
-                xaxis: { title: 'Time (Days)', gridcolor: '#f3f4f6', zeroline: true, zerolinecolor: '#d1d5db' },
+                xaxis: { title: 'Infection day', gridcolor: '#f3f4f6', zeroline: true, zerolinecolor: '#d1d5db' },
                 yaxis: { title: 'Pathogen Load (Log10)', gridcolor: '#f3f4f6', zeroline: true, zerolinecolor: '#d1d5db', autorange: 'reversed' },
                 hovermode: 'closest',
                 margin: { l: 60, r: 30, t: 60, b: 80 }, 
@@ -370,7 +370,7 @@
             };
             
             const barLayout = {
-                xaxis: { title: 'Infection day (Day 0 often reflects symptom onset or peak viral load)', automargin: true, gridcolor: '#f3f4f6', zeroline: false },
+                xaxis: { title: 'Infection day', automargin: true, gridcolor: '#f3f4f6', zeroline: false },
                 yaxis: { title: 'Sample Count', zeroline: true, rangemode: 'tozero', gridcolor: '#f3f4f6' },
                 paper_bgcolor: 'rgba(0,0,0,0)',
                 plot_bgcolor: 'rgba(0,0,0,0)',
