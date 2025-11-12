@@ -23,7 +23,13 @@
         .modebar-btn.toggle { background-color: #f8fafc !important; }
         .modebar-btn.toggle:hover, .modebar-btn.toggle.active { background-color: #e2e8f0 !important; }
         .plotly-tooltip { background-color: white !important; border: 1px solid #e2e8f0 !important; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); color: #1e293b !important; }
-        .modebar-btn svg path { fill: #334155 !important; }
+        
+        /* FIX: Force Plotly icons to be a visible color */
+        .modebar-btn svg path {
+            fill: #334155 !important; /* A dark slate gray */
+        }
+
+        /* Custom scrollbar for filter lists */
         .filter-list::-webkit-scrollbar { width: 5px; }
         .filter-list::-webkit-scrollbar-track { background: #f1f5f9; }
         .filter-list::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 5px; }
@@ -47,7 +53,6 @@
             <div>
                 <label for="color-by-select" class="font-semibold text-gray-700">Color Scatter By</label>
                 <select id="color-by-select" class="w-full p-2 mt-2 border border-gray-300 rounded-md shadow-sm text-sm bg-white">
-                    <!-- FIXED: Changed SampleType to SampleSource -->
                     <option value="SampleSource">Sample Source</option>
                     <option value="StudyID">Study</option>
                     <option value="Age">Age</option>
@@ -67,7 +72,7 @@
                 </div>
             </div>
 
-            <!-- FIXED: Filter: Sample Source (was Sample Type) -->
+            <!-- Filter: Sample Source -->
             <div id="samplesource-filter-group">
                 <div class="flex justify-between items-center mb-2">
                     <label class="font-semibold text-gray-700">Filter by Sample Source</label>
@@ -76,7 +81,6 @@
                         <button id="sample-select-none" class="text-xs font-medium text-blue-600 hover:underline">None</button>
                     </div>
                 </div>
-                <!-- FIXED: Updated ID -->
                 <div id="samplesource-filter-list" class="filter-list h-24 max-h-24 overflow-y-auto space-y-1 rounded-md border border-gray-300 p-3 bg-gray-50">
                 </div>
             </div>
@@ -162,7 +166,6 @@
             console.error("Error parsing JSON data:", e);
             statusMessage.textContent = 'Error loading data.';
             document.getElementById('study-filter-list').innerHTML = '<p class="text-red-500">Error loading filters.</p>';
-            // FIXED: Update ID
             document.getElementById('samplesource-filter-list').innerHTML = '<p class="text-red-500">Error loading filters.</p>';
         }
         
@@ -170,7 +173,6 @@
         const scatterPlotDiv = document.getElementById('vlScatterPlot');
         const barPlotDiv = document.getElementById('timeDaysBarChart');
         const studyListDiv = document.getElementById('study-filter-list');
-        // FIXED: Update ID
         const sampleListDiv = document.getElementById('samplesource-filter-list');
         const minAgeInput = document.getElementById('min-age');
         const maxAgeInput = document.getElementById('max-age');
@@ -185,15 +187,16 @@
             UNIQUE_STUDIES.forEach(study => {
                 const label = document.createElement('label');
                 label.className = 'block font-normal text-sm cursor-pointer hover:bg-gray-200 rounded px-1';
+                // Store the value in the input
                 label.innerHTML = `<input type="checkbox" class="filter-checkbox" data-filter-type="study" value="${study}" checked> ${study}`;
                 studyListDiv.appendChild(label);
             });
 
-            // FIXED: Populate Sample Sources
             UNIQUE_SAMPLES.forEach(sample => {
                 const label = document.createElement('label');
-                label.className = 'block font-normal text-sm cursor-pointer hover:bg-gray-200 rounded px-1';
-                // FIXED: data-filter-type
+                // NEW: Add 'sample-source-label' class and 'data-value'
+                label.className = 'block font-normal text-sm cursor-pointer hover:bg-gray-200 rounded px-1 sample-source-label';
+                label.dataset.value = sample;
                 label.innerHTML = `<input type="checkbox" class="filter-checkbox" data-filter-type="sample" value="${sample}" checked> ${sample}`;
                 sampleListDiv.appendChild(label);
             });
@@ -204,6 +207,36 @@
             if (UNIQUE_SAMPLES.length === 0 && ALL_DATA.length > 0) {
                 sampleListDiv.innerHTML = '<p class="text-sm text-gray-500 italic">No sample sources found in data.</p>';
             }
+        }
+
+        /**
+         * NEW: Function to dynamically hide/show sample source filters
+         */
+        function updateDynamicSampleFilter() {
+            const selectedStudies = Array.from(studyListDiv.querySelectorAll('input[type=checkbox]:checked')).map(cb => cb.value);
+
+            // Find all valid sample sources for the selected studies
+            const validSampleSources = new Set();
+            ALL_DATA.forEach(row => {
+                if (selectedStudies.includes(row.StudyID)) {
+                    validSampleSources.add(row.SampleSource);
+                }
+            });
+
+            // Loop through all sample source labels
+            sampleListDiv.querySelectorAll('.sample-source-label').forEach(label => {
+                const sampleValue = label.dataset.value;
+                const checkbox = label.querySelector('input');
+
+                if (validSampleSources.has(sampleValue)) {
+                    // This sample source is valid, show it
+                    label.style.display = 'block';
+                } else {
+                    // This sample source is not in the selected studies, hide it and uncheck it
+                    label.style.display = 'none';
+                    checkbox.checked = false;
+                }
+            });
         }
 
         /**
@@ -228,7 +261,6 @@
         function updatePlots() {
             // 1. Get selected filters
             const selectedStudies = Array.from(studyListDiv.querySelectorAll('input[type=checkbox]:checked')).map(cb => cb.value);
-            // FIXED: Get selections from new list
             const selectedSamples = Array.from(sampleListDiv.querySelectorAll('input[type=checkbox]:checked')).map(cb => cb.value);
             const userMinAge = parseFloat(minAgeInput.value) || 0;
             const userMaxAge = parseFloat(maxAgeInput.value) || 100;
@@ -236,14 +268,13 @@
 
             // 2. Filter the raw data
             const filteredData = ALL_DATA.filter(row => {
-                // FIXED: Filter by SampleSource
                 const studiesMatch = selectedStudies.includes(row.StudyID);
                 const samplesMatch = selectedSamples.includes(row.SampleSource);
                 
                 const personMinAge = row.AgeRng1;
                 const personMaxAge = row.AgeRng2;
 
-                let ageMatch = true;
+                let ageMatch = true; 
                 if (personMinAge !== null && personMaxAge !== null) {
                     ageMatch = (personMaxAge >= userMinAge) && (personMinAge <= userMaxAge);
                 } else {
@@ -261,7 +292,6 @@
             const colorMap = {};
             
             filteredData.forEach(row => {
-                // FIXED: Use PathogenLoad
                 if (row.TimeDays === null || row.PathogenLoad === null) {
                     return;
                 }
@@ -274,7 +304,6 @@
                     case 'Age':
                         traceName = getAgeBin(row);
                         break;
-                    // FIXED: Use SampleSource
                     case 'SampleSource':
                     default:
                         traceName = row.SampleSource;
@@ -303,7 +332,6 @@
                     };
                 }
                 scatterTraces[traceName].x.push(row.TimeDays);
-                // FIXED: Use PathogenLoad
                 scatterTraces[traceName].y.push(row.PathogenLoad);
             });
             const scatterPlotData = Object.values(scatterTraces);
@@ -332,7 +360,6 @@
             // 5. --- Define Layouts ---
             const scatterLayout = {
                 xaxis: { title: 'Time (Days)', gridcolor: '#f3f4f6', zeroline: true, zerolinecolor: '#d1d5db' },
-                // FIXED: Use PathogenLoad
                 yaxis: { title: 'Pathogen Load (Log10)', gridcolor: '#f3f4f6', zeroline: true, zerolinecolor: '#d1d5db', autorange: 'reversed' },
                 hovermode: 'closest',
                 margin: { l: 60, r: 30, t: 60, b: 80 }, 
@@ -368,28 +395,43 @@
         }
         
         /**
+         * NEW: Handler for when the STUDY filter changes
+         */
+        function handleStudyFilterChange() {
+            updateDynamicSampleFilter(); // Update the sample list first
+            updatePlots(); // Then update the plots
+        }
+        
+        /**
          * Helper function for "Select All" / "Select None" buttons
          */
         function setCheckboxes(containerId, isChecked) {
             document.querySelectorAll(`#${containerId} input[type=checkbox]`).forEach(cb => {
                 cb.checked = isChecked;
             });
-            updatePlots(); // Re-draw the plot after changing
+            
+            // NEW: Manually trigger the correct update handler
+            if (containerId === 'study-filter-list') {
+                handleStudyFilterChange();
+            } else {
+                updatePlots();
+            }
         }
 
         // --- 3. Attach Event Listeners ---
         
-        studyListDiv.addEventListener('change', updatePlots);
-        // FIXED: Listen to new list ID
+        // NEW: Study list uses the new handler
+        studyListDiv.addEventListener('change', handleStudyFilterChange);
+        
+        // Other filters update plots directly
         sampleListDiv.addEventListener('change', updatePlots);
         minAgeInput.addEventListener('input', updatePlots);
         maxAgeInput.addEventListener('input', updatePlots);
         colorBySelect.addEventListener('change', updatePlots);
 
-        // "Select All/None" buttons
+        // "Select All/None" buttons (no change, `setCheckboxes` handles the logic)
         document.getElementById('study-select-all').addEventListener('click', () => setCheckboxes('study-filter-list', true));
         document.getElementById('study-select-none').addEventListener('click', () => setCheckboxes('study-filter-list', false));
-        // FIXED: Use new list ID
         document.getElementById('sample-select-all').addEventListener('click', () => setCheckboxes('samplesource-filter-list', true));
         document.getElementById('sample-select-none').addEventListener('click', () => setCheckboxes('samplesource-filter-list', false));
 
@@ -397,6 +439,8 @@
         document.addEventListener('DOMContentLoaded', () => {
             if (ALL_DATA.length > 0) {
                 populateFilters();
+                // NEW: Call the dynamic filter on first load
+                updateDynamicSampleFilter();
                 updatePlots();
             } else {
                  scatterPlotDiv.innerHTML = '<div class="w-full h-full flex items-center justify-center text-gray-500 italic">No data to display.</div>';
