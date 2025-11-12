@@ -67,16 +67,19 @@ def home_view(request):
         total_data_points = df['PathogenLoad'].dropna().count()
         total_studies = df['StudyID'].nunique()
         total_pathogens = df['Pathogen'].nunique()
+        total_people = df['IndivID'].nunique()
 
         context['total_data_points'] = f"{total_data_points:,}"
         context['total_studies'] = f"{total_studies:,}"
         context['total_pathogens'] = f"{total_pathogens:,}"
+        context['total_people'] = f"{total_people:,}"
         
     except Exception as e:
         print(f"Error in home_view while reading CSV: {e}")
         context['total_data_points'] = "N/A"
         context['total_studies'] = "N/A"
         context['total_pathogens'] = "N/A"
+        context['total_people'] = "N/A"
 
     # --- 3. "Featured Paper" Logic ---
     try:
