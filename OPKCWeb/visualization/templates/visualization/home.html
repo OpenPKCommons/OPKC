@@ -1,3 +1,4 @@
+{% load static %} <!-- 1. LOAD THE STATIC FILES TAG -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -32,11 +33,12 @@
             </h1>
 
             <p class="text-lg text-gray-700 mb-8">
-                <b>Welcome to OpenPKCommons.</b> Our mission is to accelerate pathogen research and strengthen outbreak response by compiling, standardizing, and visualizing pathogen kinetics data.
+                Welcome to the OpenPKCommons project. This platform is dedicated to compiling, standardizing, and visualizing pathogen kinetics (PK) data to accelerate scientific research and outbreak response.
             </p>
 
             <!-- This is the button from your script -->
-            <a href="{% url 'visualization:time_days_bar' %}" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow transition duration-150 text-lg">
+            <!-- 2. FIXED: Point the button to the 'index' view in the 'visualization' app -->
+            <a href="{% url 'visualization:index' %}" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow transition duration-150 text-lg">
                 Go to Dashboard
             </a>
         </section>
@@ -56,95 +58,78 @@
                 <!-- Contributor 1 -->
                 <!-- Changed: Reduced padding from p-6 to p-4 -->
                 <div class="bg-white p-4 rounded-lg shadow-md border border-gray-200 text-center">
-                    <!-- 
-                    Replace this placeholder URL with your image 
-                    (e.g., from /static/images/jane.jpg or an external URL) 
-                    -->
-                    <!-- Changed: Reduced image size from w-24 h-24 to w-20 h-20 and mb-4 to mb-3 -->
-                    <img src="https://placehold.co/100x100/E0E7FF/4F46E5?text=SK" 
-                         alt="Contributor Photo" 
+                    <!-- 3. FIXED: Use the static tag to load your images -->
+                    <img src="{% static 'visualization/images/stephen_kissler.jpg' %}" 
+                         alt="Stephen Kissler" 
+                         onerror="this.src='https://placehold.co/100x100/E0E7FF/4F46E5?text=SK'"
                          class="w-20 h-20 rounded-full mx-auto mb-3 object-cover border-2 border-blue-100">
-                    <!-- Changed: Reduced text size from text-xl to text-lg -->
                     <h3 class="text-lg font-semibold text-gray-900">Stephen Kissler</h3>
-                    <!-- Changed: Reduced text size from text-base to text-sm -->
                     <p class="text-sm text-blue-600 font-medium">Professor, University of Colorado Boulder</p>
                 </div>
 
                 <!-- Contributor 2 -->
-                <!-- Changed: Reduced padding from p-6 to p-4 -->
                 <div class="bg-white p-4 rounded-lg shadow-md border border-gray-200 text-center">
-                    <!-- Changed: Reduced image size from w-24 h-24 to w-20 h-20 and mb-4 to mb-3 -->
-                    <img src="https://placehold.co/100x100/DBEAFE/1D4ED8?text=DL" 
-                         alt="Contributor Photo" 
+                    <!-- 3. FIXED: Use the static tag to load your images -->
+                    <img src="{% static 'visualization/images/dan_larremore.jpg' %}" 
+                         alt="Dan Larremore" 
+                         onerror="this.src='https://placehold.co/100x100/DBEAFE/1D4ED8?text=DL'"
                          class="w-20 h-20 rounded-full mx-auto mb-3 object-cover border-2 border-blue-100">
-                    <!-- Changed: Reduced text size from text-xl to text-lg -->
                     <h3 class="text-lg font-semibold text-gray-900">Dan Larremore</h3>
-                    <!-- Changed: Reduced text size from text-base to text-sm -->
                     <p class="text-sm text-blue-600 font-medium">Professor, University of Colorado Boulder</p>
                 </div>
 
                 <!-- Contributor 3 -->
-                <!-- Changed: Reduced padding from p-6 to p-4 -->
                 <div class="bg-white p-4 rounded-lg shadow-md border border-gray-200 text-center">
-                    <!-- Changed: Reduced image size from w-24 h-24 to w-20 h-20 and mb-4 to mb-3 -->
-                    <img src="https://placehold.co/100x100/DBEAFE/1D4ED8?text=ED" 
-                         alt="Contributor Photo" 
+                    <!-- 3. FIXED: Use the static tag to load your images -->
+                    <img src="{% static 'visualization/images/ellen_degennaro.jpg' %}" 
+                         alt="Ellen DeGennaro"
+                         onerror="this.src='https://placehold.co/100x100/DBEAFE/1D4ED8?text=ED'"
                          class="w-20 h-20 rounded-full mx-auto mb-3 object-cover border-2 border-blue-100">
-                    <!-- Changed: Reduced text size from text-xl to text-lg -->
                     <h3 class="text-lg font-semibold text-gray-900">Ellen DeGennaro</h3>
-                    <!-- Changed: Reduced text size from text-base to text-sm -->
                     <p class="text-sm text-blue-600 font-medium">Postdoctoral Fellow, University of Colorado Boulder</p>
                 </div>
 
                 <!-- Contributor 4 -->
-                <!-- Changed: Reduced padding from p-6 to p-4 -->
                 <div class="bg-white p-4 rounded-lg shadow-md border border-gray-200 text-center">
-                    <!-- Changed: Reduced image size from w-24 h-24 to w-20 h-20 and mb-4 to mb-3 -->
-                    <img src="https://placehold.co/100x100/DBEAFE/1D4ED8?text=RP" 
-                         alt="Contributor Photo" 
+                    <!-- 3. FIXED: Use the static tag to load your images -->
+                    <img src="{% static 'visualization/images/remy_pasco.jpg' %}" 
+                         alt="Rémy Pasco"
+                         onerror="this.src='https://placehold.co/100x100/DBEAFE/1D4ED8?text=RP'"
                          class="w-20 h-20 rounded-full mx-auto mb-3 object-cover border-2 border-blue-100">
-                    <!-- Changed: Reduced text size from text-xl to text-lg -->
                     <h3 class="text-lg font-semibold text-gray-900">Rémy Pasco</h3>
-                    <!-- Changed: Reduced text size from text-base to text-sm -->
                     <p class="text-sm text-blue-600 font-medium">Research Associate, University of Colorado Boulder</p>
                 </div>
 
                 <!-- Contributor 5 -->
-                <!-- Changed: Reduced padding from p-6 to p-4 -->
                 <div class="bg-white p-4 rounded-lg shadow-md border border-gray-200 text-center">
-                    <!-- Changed: Reduced image size from w-24 h-24 to w-20 h-20 and mb-4 to mb-3 -->
-                    <img src="https://placehold.co/100x100/DBEAFE/1D4ED8?text=ED" 
-                         alt="Contributor Photo" 
+                    <!-- 3. FIXED: Use the static tag to load your images -->
+                    <img src="{% static 'visualization/images/carolyn_fulton.jpg' %}" 
+                         alt="Carolyn Fulton"
+                         onerror="this.src='https://placehold.co/100x100/DBEAFE/1D4ED8?text=CF'"
                          class="w-20 h-20 rounded-full mx-auto mb-3 object-cover border-2 border-blue-100">
-                    <!-- Changed: Reduced text size from text-xl to text-lg -->
                     <h3 class="text-lg font-semibold text-gray-900">Carolyn Fulton</h3>
-                    <!-- Changed: Reduced text size from text-base to text-sm -->
                     <p class="text-sm text-blue-600 font-medium">Graduate Student, University of Colorado Boulder</p>
                 </div>
 
                 <!-- Contributor 6 -->
-                <!-- Changed: Reduced padding from p-6 to p-4 -->
                 <div class="bg-white p-4 rounded-lg shadow-md border border-gray-200 text-center">
-                    <!-- Changed: Reduced image size from w-24 h-24 to w-20 h-20 and mb-4 to mb-3 -->
-                    <img src="https://placehold.co/100x100/DBEAFE/1D4ED8?text=OK" 
-                         alt="Contributor Photo" 
+                    <!-- 3. FIXED: Use the static tag to load your images -->
+                    <img src="{% static 'visualization/images/oliver_kipp.jpg' %}" 
+                         alt="Oliver Kipp"
+                         onerror="this.src='https://placehold.co/100x100/DBEAFE/1D4ED8?text=OK'"
                          class="w-20 h-20 rounded-full mx-auto mb-3 object-cover border-2 border-blue-100">
-                    <!-- Changed: Reduced text size from text-xl to text-lg -->
                     <h3 class="text-lg font-semibold text-gray-900">Oliver Kipp</h3>
-                    <!-- Changed: Reduced text size from text-base to text-sm -->
                     <p class="text-sm text-blue-600 font-medium">Graduate Student, University of Colorado Boulder</p>
                 </div>
 
                 <!-- Contributor 7 -->
-                <!-- Changed: Reduced padding from p-6 to p-4 -->
                 <div class="bg-white p-4 rounded-lg shadow-md border border-gray-200 text-center">
-                    <!-- Changed: Reduced image size from w-24 h-24 to w-20 h-20 and mb-4 to mb-3 -->
-                    <img src="https://placehold.co/100x100/DBEAFE/1D4ED8?text=VR" 
-                         alt="Contributor Photo" 
+                    <!-- 3. FIXED: Use the static tag to load your images -->
+                    <img src="{% static 'visualization/images/violet_ross.jpg' %}" 
+                         alt="Violet Ross"
+                         onerror="this.src='https://placehold.co/100x100/DBEAFE/1D4ED8?text=VR'"
                          class="w-20 h-20 rounded-full mx-auto mb-3 object-cover border-2 border-blue-100">
-                    <!-- Changed: Reduced text size from text-xl to text-lg -->
                     <h3 class="text-lg font-semibold text-gray-900">Violet Ross</h3>
-                    <!-- Changed: Reduced text size from text-base to text-sm -->
                     <p class="text-sm text-blue-600 font-medium">Graduate Student, University of Colorado Boulder</p>
                 </div>
 
@@ -168,7 +153,7 @@
                 <a href="mailto:stephen.kissler@colorado.edu" 
                    class="flex items-center justify-center w-full sm:w-auto max-w-xs mx-auto bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow transition duration-150 text-lg">
                     <!-- Simple Mail SVG Icon -->
-                    <svg xmlns="http://www.w.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                     </svg>
                     Email the Team
