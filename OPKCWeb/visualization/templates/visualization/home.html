@@ -232,6 +232,36 @@
             </div>
         </section>
 
+        <!-- 
+        (c) NEW: Funding Section (Nextstrain-style)
+        Replaces the old card-style section
+        -->
+        <section id="funding-section" class="mt-16 md:mt-24 pt-10 -mt-10">
+            
+            <!-- Small title -->
+            <h3 class="text-lg text-gray-600 font-semibold mb-6 text-center">
+                OpenPKCommons is supported by
+            </h3>
+            
+            <!-- Logo row -->
+            <div class="flex justify-center items-center space-x-8">
+                <!-- NSF Logo -->
+                <div class="h-16 w-16"> <!-- Constrained height and width -->
+                    <img src="{% static 'visualization/images/nsf_logo.png' %}" 
+                         alt="National Science Foundation Logo" 
+                         class="h-full w-auto object-contain">
+                </div>
+                <!-- You can add other logos here, e.g. -->
+                <!-- 
+                <div class="h-16 w-auto">
+                    <img src="{% static 'visualization/images/other_funder.png' %}" alt="Other Funder" class="h-full w-auto object-contain">
+                </div> 
+                -->
+            </div>
+            
+        </section>
+
+
     </div>
 </body>
 </html>
