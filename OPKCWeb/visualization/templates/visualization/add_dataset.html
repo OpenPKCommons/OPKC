@@ -1,34 +1,92 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add a Dataset - OPKC</title>
+    <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 
+    NEW: Load the Typography plugin 
+    This gives us the 'prose' class for beautiful article styling 
+    -->
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', '"Helvetica Neue"', 'Arial', '"Noto Sans"', 'sans-serif'],
+                    },
+                },
+            },
+        }
+    </script>
 </head>
 <body class="font-sans text-gray-800 bg-gray-50">
     
-    <div class="container mx-auto p-8 max-w-4xl py-12 md:py-20">
+    <!-- Using a wider container for article-style content -->
+    <div class="container mx-auto p-8 max-w-5xl py-12 md:py-20">
         
         <p class="mb-8">
-            <a href="{% url 'visualization:index' %}" class="inline-flex items-center text-blue-600 hover:text-blue-800 hover:underline font-medium transition duration-150">
+            <a href="{% url 'visualization:index' %}" class="inline-flex items-center text-blue-600 hover:text-blue-800 hover:underline font-medium transition duration-150 no-underline">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
                 Back to Home
             </a>
         </p>
 
-        <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-            Add or Suggest a Dataset
-        </h1>
+        <!-- 
+        NEW: Wrapper with Tailwind 'prose' class 
+        This automatically styles all h1, h2, h3, p, etc.
+        -->
+        <article class="prose prose-lg max-w-none prose-blue">
 
-        <div class="prose prose-lg max-w-none text-gray-700">
+            <h1>Add or Suggest a Dataset</h1>
+            
+            <p class="lead">The Open Pathogen Kinetics Commons is a community-driven resource. We rely on contributions from researchers, public health agencies, and diagnostic labs to grow this collective library. We welcome all contributions, from large datasets to single, well-documented kinetic profiles.</p>
+            
+            <h2>How to Contribute</h2>
+            <p>We are currently formalizing our data ingestion pipeline. For now, the best way to contribute is to ensure your data is formatted according to our standard and to get in touch with our team.</p>
+
+            <h3>1. Review the Data Standard</h3>
             <p>
-                This page will contain instructions or a form for contributing new data to the commons.
+                To make standardization as smooth as possible, please review our 
+                <!-- FIXED: Added link to data standard page -->
+                <a href="{% url 'visualization:data_standard' %}">OPKC Data Standard</a>.
+                At a minimum, we require all <strong>Essential Fields</strong>. Datasets that also include <strong>Encouraged Fields</strong> are especially valuable as they allow for richer, more detailed stratified analysis.
             </p>
+
+            <h3>2. Prepare Your Data</h3>
+            <p>The ideal format for contribution is a simple <code>.csv</code> file where each row represents a single sample measurement and each column corresponds to one of our defined data fields.</p>
+
+            <h3>3. Get in Touch</h3>
             <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.
+                Once you have a dataset (or even just an idea for a dataset to include), please reach out to our team. We can help answer questions about formatting and coordinate the data transfer.
             </p>
-        </div>
+
+            <!-- 
+            NEW: "Not-prose" section for a styled button 
+            This breaks out of the article styling for a custom component
+            -->
+            <div class="not-prose mt-12">
+                <div class="bg-white rounded-lg shadow-md border border-gray-200 p-8 max-w-lg mx-auto text-center">
+                    <p class="text-lg text-gray-700 mb-8">
+                        Ready to contribute, or have questions about our standard?
+                    </p>
+                    <!-- FIXED: Added functional mailto link -->
+                    <a href="mailto:stephen.kissler@colorado.edu" 
+                       class="flex items-center justify-center w-full sm:w-auto max-w-xs mx-auto bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow transition duration-150 text-lg no-underline">
+                        <!-- Simple Mail SVG Icon -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                        Email the Team
+                    </a>
+                </div>
+            </div>
+
+        </article>
 
     </div>
 </body>

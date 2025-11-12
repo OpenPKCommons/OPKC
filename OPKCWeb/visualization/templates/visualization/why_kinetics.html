@@ -1,34 +1,83 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Why Study Pathogen Kinetics? - OPKC</title>
+    <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 
+    NEW: Load the Typography plugin 
+    This gives us the 'prose' class for beautiful article styling 
+    -->
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', '"Helvetica Neue"', 'Arial', '"Noto Sans"', 'sans-serif'],
+                    },
+                },
+            },
+        }
+    </script>
 </head>
 <body class="font-sans text-gray-800 bg-gray-50">
     
-    <div class="container mx-auto p-8 max-w-4xl py-12 md:py-20">
+    <!-- Using a wider container for article-style content -->
+    <div class="container mx-auto p-8 max-w-5xl py-12 md:py-20">
         
         <p class="mb-8">
-            <a href="{% url 'visualization:index' %}" class="inline-flex items-center text-blue-600 hover:text-blue-800 hover:underline font-medium transition duration-150">
+            <a href="{% url 'visualization:index' %}" class="inline-flex items-center text-blue-600 hover:text-blue-800 hover:underline font-medium transition duration-150 no-underline">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
                 Back to Home
             </a>
         </p>
 
-        <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-            Why study pathogen kinetics?
-        </h1>
+        <!-- 
+        NEW: Wrapper with Tailwind 'prose' class 
+        This automatically styles all h1, h2, h3, p, etc.
+        -->
+        <article class="prose prose-lg max-w-none prose-blue">
 
-        <div class="prose prose-lg max-w-none text-gray-700">
-            <p>
-                This page will provide scientific background and motivation for the project.
-            </p>
-            <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.
-            </p>
-        </div>
+            <h1>Why study pathogen kinetics?</h1>
+            
+            <p class="lead"><b>Pathogen kinetics</b>—how pathogen load changes in the body over the course of an infection—can reveal crucial insights into the biology and epidemiology of infectious diseases. </p>
+            
+            <p>Pathogen kinetics provide the <strong>key link between the microbiological and the epidemiological scales.</strong> By measuring pathogen kinetics, we can peer into the dynamics of pathogen replication and the immune response – and simultaneously learn about the timing and intensity of infectiousness. By examining pathogen kinetics across diverse pathogen and host populations, we can answer fundamental questions that are essential for a robust outbreak response.</p>
+            
+            <!-- 
+            Section 1: Key Applications
+            (Adapted from Box 1 in the manuscript)
+            -->
+            <h2>Key Applications of Pathogen Kinetics</h2>
+
+            <h3>Informing Epidemiological Parameters</h3>
+            <p>The shape of a pathogen kinetics curve directly informs our estimates of an person's infectious period. From these curves, we can derive population-level parameters like the <strong>generation time</strong>, which is a cornerstone of epidemiological modeling and forecasting.</p>
+
+            <h3>Guiding Diagnostic Strategies</h3>
+            <p>How long after exposure does a rapid test become positive? How long does it stay positive? Pathogen kinetics data is essential for defining the <strong>window of diagnostic test positivity</strong> (e.g., for PCR vs. rapid antigen tests) and informing evidence-based testing strategies for schools, travel, and healthcare settings.</p>
+
+            <h3>Accelerating Therapeutics Development</h3>
+            <p>Measuring the <strong>efficacy of treatments</strong> depends on quantifying their impact on pathogen replication and clearance. A deep library of baseline kinetic data allows for the rapid evaluation of new therapeutics and helps define the optimal timing of treatment.</p>
+
+            <h3>Evaluating Vaccines</h3>
+            <p>Pathogen kinetics help us understand the <strong>mechanisms of vaccine-induced protection</strong>. Do vaccines reduce peak pathogen load? Do they accelerate pathogen clearance? Answering these questions is vital for understanding how vaccines prevent severe disease and reduce transmission, especially in the context of breakthrough infections.</p>
+
+            <h3>Guiding Public Health Policy</h3>
+            <p>Data-driven policy is the cornerstone of an effective pandemic response. Pathogen kinetics data provides the direct evidence needed to set rational <strong>isolation and quarantine periods</strong>, establish testing policies for travel, and guide return-to-work criteria.</p>
+
+            <!-- 
+            Section 2: The Need for a Centralized Commons
+            -->
+            <h2 class="mt-16">The Need for a Centralized Commons</h2>
+            <p>Historically, our understanding of pathogen kinetics has been limited to retrospective analyses, convenience samples, and bespoke, one-off models. Data has been fragmented across institutions, published in inconsistent formats (or not at all), and collected with varying metadata, making large-scale comparison nearly impossible.</p>
+            <p>The COVID-19 pandemic highlighted the power of pathogen kinetics surveillance but also exposed the urgent need for a unified approach. The <strong>Open Pathogen Kinetics Commons (OPKC)</strong> is our response to this challenge.</p>
+            <p>By building a living library of standardized data, we can enable the development of open-source modeling tools, improve study designs, and create a global resource that strengthens our response to both ongoing and future outbreaks.</p>
+
+        </article>
 
     </div>
 </body>
