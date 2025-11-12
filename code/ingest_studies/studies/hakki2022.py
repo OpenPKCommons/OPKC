@@ -27,10 +27,8 @@ Notes:
 ------
 - Viral load (`copy`) and infectious titre (`pfu`) were reported in units per mL.
 - `Log10VL` is computed from these raw values (non-positive values → NaN).
-- Default assumptions: SampleType = "combined_nose_throat_swab", Platform = "RT-qPCR"
+- Default assumptions: SampleSource = "nose+throat", SampleMethod = "swab in VTM", Platform = "RT-qPCR"
   (update if further methodological details confirm otherwise).
-  - Sampling involved combined nose-and-throat (URT) swabs, treated as "combined_nose_throat_swab"
-  for schema consistency across datasets.
 """
 
 import math
@@ -77,7 +75,7 @@ def load_and_format():
     # update this map accordingly to preserve the TimeDays variable definition.
 
     rename_map = {
-        "participant": "PersonID",
+        "participant": "IndivID",
         "day": "TimeDays",
         "days_since_peak": "DaysSincePeak",
         "copy": "CopiesPerML",
@@ -100,26 +98,29 @@ def load_and_format():
     #   - Else if PFUPerML present: Log10VL = log10(PFU/mL), Units = "log10(PFU/mL)"
     #   - Else (no quantitative): keep Units as "Ct" only if you map Ct elsewhere (not present here); otherwise leave NA.
     if "CopiesPerML" in df.columns and df["CopiesPerML"].notna().any():
-        df["Log10VL"] = df["CopiesPerML"].apply(_safe_log10)
+        df["PathogenLoad"] = df["CopiesPerML"].apply(_safe_log10)
         df["Units"] = "log10(copies/mL)"
     elif "PFUPerML" in df.columns and df["PFUPerML"].notna().any():
-        df["Log10VL"] = df["PFUPerML"].apply(_safe_log10)
+        df["PathogenLoad"] = df["PFUPerML"].apply(_safe_log10)
         df["Units"] = "log10(PFU/mL)"
     else:
         # No quantitative load; leave Log10VL as NaN and Units unspecified.
-        df["Log10VL"] = float("nan")
+        df["PathogenLoad"] = float("nan")
         df["Units"] = pd.NA
 
     # 6) Fill study-level metadata lab schema expects
     df["StudyID"] = "hakki2022"
     df["Pathogen"] = "SARS2"
-    df["PtSpecies"] = "Human"
+    df["IndSpecies"] = "Human"
     df["DOI"] = "10.1016/S2213-2600(22)00226-0"
+    df["Targets"] = "ORF1ab"
     # SampleType/Platform - set conservative defaults; refine from Methods later if needed
-    if "SampleType" not in df.columns:
-        df["SampleType"] = "combined_nose_throat_swab"
-    if "Platform" not in df.columns:
-        df["Platform"] = "RT-qPCR"           # TODO: refine targets if I extract them later
+    if "SampleSource" not in df.columns:
+        df["SampleSource"] = "nose+throat"
+    if "SampleMethod" not in df.columns:
+        df["SampleMethod"] = "nose+throat_swabs_in_VTM"
+    if "PlatformType" not in df.columns:
+        df["PlatformType"] = "RT-qPCR"           # TODO: refine targets if I extract them later
 
     # Optional: normalize booleans
     if "LFD_Positive" in df.columns:
@@ -131,7 +132,7 @@ def load_and_format():
 
     # Keep DaysSincePeak as an extra variable if lab schema allows unknowns; else drop it
     # If enforce_schema drops unknown columns, store in a Notes column.
-    print(f"Loaded Hakki et al. 2022 — {len(df)} total rows.")
+    #print(f"Loaded Hakki et al. 2022 — {len(df)} total rows.")
     return df
 
 """

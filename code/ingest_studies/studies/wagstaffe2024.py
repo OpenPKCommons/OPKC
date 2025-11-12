@@ -12,24 +12,26 @@ def load_and_format():
 
     # Map the contents of column site (to be SampleType) to standard names: 
     df["site"] = df["site"].replace({
-        "nose": "nasal",
-        "throat": "throat" # need to confirm vs oropharyngeal -> see issue
+        "nose": "nose", # interchangeable refer to this as mid-turbinate
+        "throat": "throat" # need to confirm vs oropharyngeal -> see issue. Killingley et al also not any more specific
         })
 
     # Rename columns to match schema: 
     df = df.rename(columns={
-        "PersonID": "PersonID",
+        "PersonID": "IndivID",
         "DaysPostInoculation": "TimeDays",
-        "GEml": "Log10VL", # is this log10?
-        "site": "SampleType"
+        "GEml": "PathogenLoad", # is log10VL
+        "site": "SampleSource"
         })
 
     # Add additional columns with known but missing information:
     df["StudyID"] = "wagstaffe2024"
     df["Pathogen"] = "SARS2"
-    df["PtSpecies"] = "Human"
+    df["IndSpecies"] = "Human"
     df["DOI"] = "10.1126/sciimmunol.adj9285"
-    df["Units"] = "GEml"
+    df["Units"] = "GEml (log10VL)"
+    df["PlatformType"] = "RT-qPCR"
+    df["SampleMethod"] = "flocked_swab_in_VTM"
 
     # For reference...
     # ACTIVATION TIME
