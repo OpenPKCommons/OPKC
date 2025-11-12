@@ -28,7 +28,7 @@ def home_view(request):
         # We define "data points" as rows with a valid Log10VL
         total_data_points = df['Log10VL'].dropna().count()
         total_studies = df['StudyID'].nunique()
-        total_pathogens = df['Pathogen'].nunique() # Assumes you have a 'Pathogen' column
+        total_pathogens = 1 # Assumes you have a 'Pathogen' column
 
         # Format numbers with commas
         context['total_data_points'] = f"{total_data_points:,}"
