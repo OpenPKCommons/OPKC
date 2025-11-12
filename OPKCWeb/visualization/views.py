@@ -17,8 +17,32 @@ DATA_FILE_PATH = os.path.join(BASE_DIR, 'visualization', 'data', 'combined_clean
 def home_view(request):
     """
     Renders the simple home page template.
+    This view now also calculates stats for the "At a Glance" section.
     """
-    return render(request, 'visualization/home.html', {})
+    context = {}
+    try:
+        # Read the CSV file to calculate stats
+        df = pd.read_csv(DATA_FILE_PATH, na_values=['<NA>'])
+        
+        # Calculate stats
+        # We define "data points" as rows with a valid Log10VL
+        total_data_points = df['Log10VL'].dropna().count()
+        total_studies = df['StudyID'].nunique()
+        total_pathogens = df['Pathogen'].nunique() # Assumes you have a 'Pathogen' column
+
+        # Format numbers with commas
+        context['total_data_points'] = f"{total_data_points:,}"
+        context['total_studies'] = f"{total_studies:,}"
+        context['total_pathogens'] = f"{total_pathogens:,}"
+        
+    except Exception as e:
+        print(f"Error in home_view while reading CSV: {e}")
+        # Provide fallback values
+        context['total_data_points'] = "N/A"
+        context['total_studies'] = "N/A"
+        context['total_pathogens'] = "N/A"
+
+    return render(request, 'visualization/home.html', context)
 
 def chart_view(request):
     """
@@ -66,28 +90,17 @@ def chart_view(request):
     except Exception as e:
         return HttpResponse(f"An error occurred during data processing: {e}", status=500)
 
-# --- NEW: Stub views for your new pages ---
+
+# --- STUB VIEWS for other pages ---
 
 def data_standard_view(request):
-    """
-    Renders the data standard page.
-    """
     return render(request, 'visualization/data_standard.html', {})
 
 def docs_view(request):
-    """
-    Renders the docs page.
-    """
     return render(request, 'visualization/docs.html', {})
 
 def why_kinetics_view(request):
-    """
-    Renders the 'Why Kinetics' page.
-    """
     return render(request, 'visualization/why_kinetics.html', {})
 
 def add_dataset_view(request):
-    """
-    Renders the 'Add Dataset' page.
-    """
     return render(request, 'visualization/add_dataset.html', {})
