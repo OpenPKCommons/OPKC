@@ -25,10 +25,10 @@ def home_view(request):
         df = pd.read_csv(DATA_FILE_PATH, na_values=['<NA>'])
         
         # Calculate stats
-        # We define "data points" as rows with a valid Log10VL
-        total_data_points = df['Log10VL'].dropna().count()
+        # --- FIXED: Use new column names 'PathogenLoad' and 'Pathogen' ---
+        total_data_points = df['PathogenLoad'].dropna().count()
         total_studies = df['StudyID'].nunique()
-        total_pathogens = 1 # Assumes you have a 'Pathogen' column
+        total_pathogens = df['Pathogen'].nunique()
 
         # Format numbers with commas
         context['total_data_points'] = f"{total_data_points:,}"
@@ -54,17 +54,19 @@ def chart_view(request):
         df = pd.read_csv(DATA_FILE_PATH, na_values=['<NA>'])
 
         # --- 2. Get Unique IDs for Filters ---
+        # --- FIXED: Use new 'SampleSource' column ---
         study_ids = df['StudyID'].dropna().unique().tolist()
         study_ids.sort()
         
-        sample_types = df['SampleType'].dropna().unique().tolist()
+        sample_types = df['SampleSource'].dropna().unique().tolist()
         sample_types.sort()
 
         # --- 3. Prepare ALL Data for JS ---
-        plot_columns = ['StudyID', 'SampleType', 'TimeDays', 'Log10VL', 'AgeRng1', 'AgeRng2']
+        # --- FIXED: Use new column names 'SampleSource' and 'PathogenLoad' ---
+        plot_columns = ['StudyID', 'SampleSource', 'TimeDays', 'PathogenLoad', 'AgeRng1', 'AgeRng2']
         
         # We need the core plot columns to be present.
-        core_plot_cols = ['StudyID', 'SampleType', 'TimeDays', 'Log10VL']
+        core_plot_cols = ['StudyID', 'SampleSource', 'TimeDays', 'PathogenLoad']
         df_plot = df[plot_columns].dropna(subset=core_plot_cols, how='any')
 
         # --- ROBUST FIX for NaN: ---
@@ -76,9 +78,9 @@ def chart_view(request):
         # --- FIX: Pass the raw Python objects, NOT JSON strings ---
         context = {
             'chart_title': 'Sample Data Dashboard',
-            'study_ids': study_ids,       # No more '_json'
-            'sample_types': sample_types, # No more '_json'
-            'all_data': all_data_list,  # No more '_json'
+            'study_ids': study_ids,
+            'sample_types': sample_types, # This key is used by the JS
+            'all_data': all_data_list,
         }
         # --- END FIX ---
 

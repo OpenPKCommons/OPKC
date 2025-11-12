@@ -74,7 +74,7 @@
                     </p>
                 </div>
                 <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg group transition-all duration-300 hover:shadow-md overflow-hidden">
-                    <h4 class="text-base font-semibold text-blue-800 m-0">Viral Load</h4>
+                    <h4 class="text-base font-semibold text-blue-800 m-0">Pathogen Load</h4>
                     <p class="text-sm text-blue-900 max-h-0 opacity-0 transition-all duration-300 ease-out group-hover:max-h-40 group-hover:opacity-100 group-hover:mt-2 overflow-hidden">
                         The measured pathogen load. We prefer Log10(copies/mL).
                     </p>
@@ -119,6 +119,12 @@
                     <h4 class="text-base font-semibold text-green-800 m-0">StudyID</h4>
                     <p class="text-sm text-green-900 max-h-0 opacity-0 transition-all duration-300 ease-out group-hover:max-h-40 group-hover:opacity-100 group-hover:mt-2 overflow-hidden">
                         A short, unique identifier for the study (e.g., "ke2022").
+                    </p>
+                </div>
+                <div class="p-4 bg-green-50 border border-green-200 rounded-lg group transition-all duration-300 hover:shadow-md overflow-hidden">
+                    <h4 class="text-base font-semibold text-green-800 m-0">InfectionID</h4>
+                    <p class="text-sm text-green-900 max-h-0 opacity-0 transition-all duration-300 ease-out group-hover:max-h-40 group-hover:opacity-100 group-hover:mt-2 overflow-hidden">
+                        An identifier for the infection, helpful if the same person underoges multiple infections. 
                     </p>
                 </div>
                 <div class="p-4 bg-green-50 border border-green-200 rounded-lg group transition-all duration-300 hover:shadow-md overflow-hidden">
@@ -188,34 +194,41 @@
                     </p>
                 </div>
                 <div class="p-4 bg-gray-50 border border-gray-200 rounded-lg group transition-all duration-300 hover:shadow-md overflow-hidden">
-                    <h4 class="text-base font-semibold text-gray-800 m-0">Death</h4>
+                    <h4 class="text-base font-semibold text-gray-800 m-0">Subtype</h4>
                     <p class="text-sm text-gray-900 max-h-0 opacity-0 transition-all duration-300 ease-out group-hover:max-h-40 group-hover:opacity-100 group-hover:mt-2 overflow-hidden">
-                        Indicator of patient mortality.
+                        Pathogen variant (e.g., A/H1N1 or BA.1)
                     </p>
                 </div>
             </div>
 
             <!-- 
             Section 2: Database Architecture
+            (Unchanged)
             -->
-            <h2 class="mt-16">Database Architecture</h2>
-
-            <div class="not-prose"> <!-- Disable prose for this custom component -->
-                <div class="border-2 border-dashed border-gray-400 rounded-lg p-12 bg-gray-50 text-center text-gray-500">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                    </svg>
-                    <p class="mt-4 font-semibold text-lg text-gray-600">Crow's Foot Diagram Coming Soon</p>
-                    <p class="mt-2 text-sm">We are finalizing our database schema. A detailed entity-relationship diagram (ERD) will be available here shortly.</p>
+            <h2>Database Architecture</h2>
+            <p>Our goal is to eventually transition this flat-file commons into a queryable relational database. A preliminary sketch of this architecture is shown below. This structure will allow for more efficient querying and linking of studies, individuals, and samples.</p>
+            
+            <!-- Placeholder for Crow's Foot Diagram -->
+            <div class="not-prose bg-white rounded-lg shadow-md border border-gray-200 p-8 my-8">
+                <div class="border-4 border-dashed border-gray-300 rounded-lg h-96 flex items-center justify-center">
+                    <div class="text-center text-gray-500">
+                        <p class="mt-4 text-xl font-semibold">Database Schema Diagram</p>
+                    </div>
                 </div>
             </div>
 
             <!-- 
             Section 3: Rationale
+            (Unchanged)
             -->
-            <h2 class="mt-16">Our Rationale: Balancing Detail with Simplicity</h2>
-            <p>The data standard is designed to capture the <strong>minimum essential information</strong> required for robust pathogen kinetic modeling. Our 'Essential' fields (like <code>Time</code>, <code>Viral Load</code>, and <code>Patient Identifier</code>) create the fundamental dataset needed to plot viral load over time. 'Encouraged' fields (like <code>SampleType</code> and <code>Platform</code>) add critical context that allows for stratified analysis, which is key to understanding sources of variation.</p>
-            <p>You may notice that detailed clinical data (like specific symptoms, comorbidities, or treatments) are listed as 'Accepted' but not 'Essential'. This is an intentional design choice. The OPKC is not intended to be a comprehensive clinical database, but rather a specialized repository for <em>kinetic</em> data. By focusing on the core variables for modeling, we can standardize and accept a much wider variety of datasets, many of which may not have collected deep clinical information. This focus allows for greater scalability and broader inclusion of data from diverse research settings.</p>
+            <h2>Our Rationale</h2>
+            <p>This data standard is a pragmatic balance between <strong>comprehensiveness</strong> and <strong>usability</strong>. We want to capture the rich biological, clinical, and epidemiological context of each sample, but we also recognize that overly complex standards are a barrier to contribution. </p>
+            
+            <h3>Why these fields?</h3>
+            <p>Our <strong>Essential Fields</strong> are the minimum set required to plot a single kinetic trajectory and link it to its source. Our <strong>Encouraged Fields</strong> were chosen because they are the most common and powerful variables used for stratification (e.g., comparing viral loads by sample source, or by assay target). The <strong>Accepted Fields</strong> provide deeper clinical context that is invaluable for specific research questions, such as linking viral kinetics to disease severity.</p>
+
+            <h3>What's omitted?</h3>
+            <p>We have intentionally omitted fields that are difficult to standardize, such as detailed clinical symptom scoring, or fields that are often protected by privacy regulations and require complex data use agreements, such as specific locations or full dates. Our focus is on creating a public-ready dataset that can be shared and used broadly with minimal friction.</p>
 
         </article>
 
