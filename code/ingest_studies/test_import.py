@@ -4,7 +4,7 @@ import pandas as pd
 
 def main():
     #df_wongnak2024 = wongnak2024.load_and_format()
-    df_to_test = savela2022.load_and_format()
+    df_to_test = eales2025.load_and_format()
     
     #df_wongnak2024.to_csv("output/test_import.csv", index=False)
     df_to_test.to_csv("output/test_import.csv", index=False)
