@@ -3,44 +3,34 @@ Waickman et al. 2024 (DOI: 10.1038/s41564-024-01668-z)
 ====================================================================
 Study summary:
 ---------------
-This controlled human infection model (CHIM) study evaluated immune
-and virologic responses to Dengue virus serotype-1 (DENV-1) strain
-CH53489 challenge in vaccinated and unvaccinated participants.
-The goal was to identify correlates of protection by comparing
-post-challenge viral kinetics, NS5-specific ELISPOT responses,
-and other immunological endpoints.
+This dengue human infection model (DHIM) study examined the viral,
+infectious, and NS1 antigenemia kinetics following subcutaneous
+challenge of adults with Dengue virus serotype-3 (DENV-3) strain CH53489.
 
-Dataset included here corresponds to Fig. 6a–d: correlation between
-peak viremia (PFU mL⁻¹, log₁₀) and NS5 ELISPOT counts (SFC per 10⁶ PBMC).
+Dataset corresponds to Fig. 1 (viral kinetics):
+• Figure 1B: DENV-3 RNAemia (RT-qPCR)
+• Figure 1C: Infectious viraemia (Vero plaque assay)
+• Figure 1D: NS1 antigenemia (ELISA)
+
+Excluded: Figure 1E–F (onset/peak summaries; not longitudinal).
 
 Temporal variable:
 -------------------
-• Time variable is not explicitly included — each row represents a
-  single participant-level summary point (peak viremia vs. day 90 ELISPOT).
+• TimeDays = days post-inoculation.
 
 Data source:
 ------------
-Raw dataset: Supplementary Data 6 (Excel file: “41564_2024_1668_MOESM6_ESM.xlsx”;
-locally renamed to `waickman2024.xlsx`), available from 
-https://www.nature.com/articles/s41564-024-01668-z under "Source Data."
-Listed as “Statistical source data for Figs. 1–6 and Extended Figs. 1–2 and 5.”
+Raw dataset: “waickman2024.xlsx”
+("Source Data" from Waickman et al. 2024, Nat Microbiol).
 
-Key variables:
---------------
-• Viremia — peak viral load (log₁₀ PFU mL⁻¹)
-• NS5 ELISPOT — NS5-specific IFN-γ spot-forming cells (SFC per 10⁶ PBMC)
-
-Notes:
-------
-• Participants 301–309 correspond to nine individuals included in the challenge cohort.
-• Data derived from Fig. 6a–d (Waickman et al. 2024, Nat Microbiol).
-• Each row = one participant; no longitudinal component.
+• Symptoms and treatments not time-resolved; excluded per schema.
+• Values of 1 represent “below limit of detection” and are set to NA.
 """
 
 import os, sys
 import pandas as pd
 
-# Make parent folder importable to import schema.py
+# Make parent folder importable for schema
 THIS_DIR = os.path.dirname(__file__)
 PARENT_DIR = os.path.abspath(os.path.join(THIS_DIR, ".."))
 if PARENT_DIR not in sys.path:
@@ -49,81 +39,69 @@ if PARENT_DIR not in sys.path:
 from schema import enforce_schema, coerce_types
 
 
-def load_and_format(base_dir=None):
-    """Load correlation dataset between viremia and NS5 ELISPOT (Fig. 6a–d)."""
-    if base_dir is None:
-        base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.."))
+def _load_sheet(base_dir, sheet_name, platform_type, units, platform_tech, targets):
     xlsx_path = os.path.join(base_dir, "data", "waickman2024.xlsx")
-    df_raw = pd.read_excel(xlsx_path)
-
-    # Drop empty rows and reshape wide-to-long
+    df_raw = pd.read_excel(xlsx_path, sheet_name=sheet_name)
     df_raw = df_raw.dropna(how="all")
-   # Reshape from wide to long format
     df_raw.columns = df_raw.columns.map(str)
-    df = df_raw.melt(id_vars="Day", var_name="PersonID", value_name="Log10VL")
-    df = df.dropna(subset=["Log10VL"])
-    df["PersonID"] = df["PersonID"].astype(int)
+    df_raw = df_raw.loc[:, ~df_raw.columns.str.contains("^Unnamed")]
+    id_cols = [c for c in df_raw.columns if c.isdigit()]
+
+    df = df_raw.melt(id_vars="Day", value_vars=id_cols, var_name="IndivID", value_name="PathogenLoad")
     df["TimeDays"] = df["Day"]
     df = df.drop(columns=["Day"])
 
-    # Replace 1.0 baseline (non-detectable) values with NaN
-    df.loc[df["Log10VL"] <= 1.0, "Log10VL"] = pd.NA
+    # Replace BLOD / non-detectable values ≤1 with NaN
+    df["PathogenLoad"] = pd.to_numeric(df["PathogenLoad"], errors="coerce")
+    df.loc[df["PathogenLoad"] <= 1.0, "PathogenLoad"] = pd.NA
 
     # Core metadata
     df["StudyID"] = "waickman2024"
     df["Pathogen"] = "Dengue"
-    df["PtSpecies"] = "human"
-    df["InfectionID"] = pd.NA
-    df["SampleID"] = pd.NA
-    # Symptomatic status reported at cohort level (fever, headache, rash, fatigue), data not available per participant
-    # df["Symptoms1"] = "R21" #ICD10 R21 Rash
-    # df["Symptoms2"] = "R53" #ICD10 R53 Fatigue
-    # df["Symptoms3"] = "R51" #ICD10 R51 Headache
-    # df["Symptoms4"] = "R50.9" #ICD10 R50.9 Fever
-    df["Comorbidity1"] = pd.NA
-    df["Comorbidity2"] = pd.NA
-    df["Comorbidity3"] = pd.NA
-    df["Comorbidity4"] = pd.NA
-    df["Treatment1"] = "Acetaminophen"
-    df["Treatment2"] = "Oral fluids"
-    df["Treatment3"] = pd.NA
-    df["Treatment4"] = pd.NA
+    df["IndSpecies"] = "human"
+    # df["Symptoms1"] = "R51"     # Headache
+    # df["Symptoms2"] = "R21"     # Rash
+    # df["Symptoms3"] = "R50.9"   # Fever
+    # df["Symptoms4"] = "R53.83"   # Fatigue
     df["SampleSource"] = "serum"
     df["SampleMethod"] = "blood draw (serum)"
     df["AgeRng1"] = 18
     df["AgeRng2"] = 45
     df["Subtype"] = "DENV-3 CH53489"
-    df["PlatformName"] = "RT-qPCR"
+    df["PlatformType"] = platform_type
     df["DOI"] = "10.1038/s41564-024-01668-z"
-    df["Units"] = "GE/ml"
-    df["GEml_conversion_intercept"] = pd.NA
-    df["GEml_conversion_slope"] = pd.NA
-    df["Targets"] = "DENV-3 genome (RNA)"
-    df["PlatformTech"] = "In-house qRT-PCR, Vero plaque assay"
+    df["Units"] = units
+    df["Targets"] = targets
+    df["PlatformTech"] = platform_tech
 
-    # Hospitalization status (from Supplemental Table 4)
-    hospitalized_map = {
-        301: "N", 302: "Y", 303: "Y", 304: "Y", 305: "Y",
-        306: "N", 307: "N", 308: "Y", 309: "Y"
-    }
-    df["Hospitalized"] = df["PersonID"].map(hospitalized_map)
-
-    # Optional: Peak viral load (GE/mL) from Supplemental Table 4
-    peak_vl = {
-        301: 1.37e5, 302: 7.02e8, 303: 6.89e7, 304: 3.65e7,
-        305: 3.51e8, 306: 2.94e5, 307: 3.13e4, 308: 7.41e5, 309: 4.57e7
-    }
-    df["PeakVL_GEml"] = df["PersonID"].map(peak_vl)
-
-# Note: RNAseq transcriptomic profiling was performed in a parallel analysis
-# (host gene expression study, Supplementary Table 4) but is not included here,
-# as this ingestion represents qRT-PCR-derived viral load measurements only.
-
-    # Apply schema checks
     df = enforce_schema(df)
     df = coerce_types(df)
-
     return df
+
+
+def load_and_format(base_dir=None):
+    """
+    Load viral kinetics dataset for Waickman 2024 (Fig 1B–D).
+    """
+    if base_dir is None:
+        base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.."))
+
+    sheets = [
+        ("Figure 1B", "RT-qPCR", "GE/ml", "In-house RT-qPCR",
+         "DENV-3 genome (RNA)"),
+        ("Figure 1C", "plaque-forming assay", "PFU/ml", "Vero cell plaque assay",
+         "Infectious DENV-3 particles"),
+        ("Figure 1D", "ELISA", "OD (ELISA units)", "NS1 capture ELISA",
+         "DENV-3 NS1 protein"),
+    ]
+
+    dfs = []
+    for sheet, platform_type, units, platform_tech, targets in sheets:
+        dfs.append(_load_sheet(base_dir, sheet, platform_type, units, platform_tech, targets))
+
+    df_all = pd.concat(dfs, ignore_index=True)
+    return df_all
+
 
 if __name__ == "__main__":
     df = load_and_format()
