@@ -42,14 +42,15 @@ Comprehensive, authoritative list of papers scanned for possible inclusion in op
 | 10.1016/S1473-3099(24)00183-X | Wongnak2024 | `DIGESTED` | `SARS2` | | Stephen |
 | 10.1016/S2213-2600(22)00226-0 | Hakki2022 | `DIGESTED` | `SARS2` | `VAX` `LAB`| Oliver | [github](https://github.com/HPRURespMed/SARS-CoV-2-viral-shedding-dynamics) |
 | 10.1128/jcm.01785-21 | Savela2022 | `DIGESTED` | `SARS2` | | Oliver | [author site](https://data.caltech.edu/records/bv2tf-aap55) |
+| 10.1126/scitranslmed.abo5019 | Waickman2022 | `DIGESTED` | `Dengue` | `LAB` | Oliver | [data at paper](https://www.science.org/doi/10.1126/scitranslmed.abo5019) |
+| 10.1038/s41564-024-01668-z | Waickman2024 | `DIGESTED` | `Dengue` | `LAB` | Oliver | [data at paper](https://www-nature-com.colorado.idm.oclc.org/articles/s41564-024-01668-z) |
 
-Count = 7.33
+Count = 9.33
 
 ### DE = DATA EXISTS (in priority order)
 | DOI | PaperNameString | Status/Classification | Pathogen | Tags | INGEST-IN-PROGRESS-BY? | Data link |
 |:---|:---|:---:|:---:|:---:|:---|:---|
 | 10.1101/2025.02.01.636082v1 | Eales et al 2025 | `Ingesting - Baker done(1/3)` | `H5N1` | | Ellen | [github](https://github.com/Eales96/H5N1_viral_kinetics) |
-| 10.1038/s41564-024-01668-z | Waickman et al 2024 | `Ingesting` | `Dengue` | `LAB` | Oliver | [data at paper](https://www-nature-com.colorado.idm.oclc.org/articles/s41564-024-01668-z) |
 | 10.7554/eLife.92606.3 | Vuong et al 2024 | `DE` | `Dengue` | `LAB` | Oliver | [github](https://github.com/Nguyenlamvuong/Dengue_Viremia_Kinetics_eLife_2024/blob/main/Viremia%20and%20outcomes%20240522.Rdata) |
 | 10.7326/M20-1495 | Kucirka et al 2020 | `DE` | `SARS2` | `MA` | UNCLAIMED | [github](https://github.com/HopkinsIDD/covidRTPCR) |
 | 10.1038/s41591-022-01816-0 | Puhach et al 2022 | `Ingesting` | `SARS2` | | Carrie | [Extended data at paper](https://www-nature-com.colorado.idm.oclc.org/articles/s41591-022-01816-0#Sec18) |
