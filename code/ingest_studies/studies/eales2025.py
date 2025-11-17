@@ -42,7 +42,35 @@ Baker et al:
     - they also monitored and recorded clinical signs see Baker Extended Data Table 5
         - including body temperature with a thermal microchip, respiratory effort and rate, nasal and ocular discharge, and faecal consistency
         - not ingested here but could be included in v2
+
+Halwe et al:
+    - data is in "Eales_Halwe_Fig.csv" which is from Eales repo, extracted with PlotDigitizer from Halwe Fig 3C
+        - H5N1 viral genome load over time in milk samples from 6 experimentally infected lactating cows (Halwe1 to Halwe6)
+        - RT-qPCR (max cycles = 38)
+        - Eales did not extract antibody level (S/N%) which was also in that figure
+    - columns: [x, y, ID]
+        - x = time after infection (days)
+        - y = viral load, Cq (38 - 10)
+        - ID = Halwe1:Halwe6
+            - Halwe1-3 are subtype H5N1 B3.13 (US), and Hawe4-6 are H5N1 edDG (EU) according to inoculation groups, my assignment from Halwe text
+    
 """
+# %%
+import pandas as pd
+import sys
+from pathlib import Path
+
+# Make parent folder importable to import schema.py
+import os, sys
+THIS_DIR = os.path.dirname(__file__)
+PARENT_DIR = os.path.abspath(os.path.join(THIS_DIR, ".."))  # .../ingest_studies
+if PARENT_DIR not in sys.path:
+    sys.path.insert(0, PARENT_DIR)
+
+from schema import enforce_schema, coerce_types
+
+base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.."))
+# %%
 
 """ Baker import pseudocode
 
@@ -74,29 +102,15 @@ Baker et al:
 [x] coerce types
 
 """
-# %%
-import pandas as pd
-import sys
-from pathlib import Path
 
-# Make parent folder importable to import schema.py
-import os, sys
-THIS_DIR = os.path.dirname(__file__)
-PARENT_DIR = os.path.abspath(os.path.join(THIS_DIR, ".."))  # .../ingest_studies
-if PARENT_DIR not in sys.path:
-    sys.path.insert(0, PARENT_DIR)
-
-from schema import enforce_schema, coerce_types
-
-def load_and_format(): # may want to make this just for Baker and then have a higher level load_and_format that pools all Eales data
+def baker():
     # Load the raw data with relative path
-    base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.."))
     csv_path = os.path.join(base_dir, "data", "Eales_Baker_Fig.csv")
     df = pd.read_csv(csv_path, usecols=["Animal ID", "Day post inoculation", "Sample", "IAV RT-qPCR Ct"]) # only load needed columns for now
 
     # Rename columns to match schema:
     df = df.rename(columns={
-        "Animal ID": "PatientID",
+        "Animal ID": "IndivID",
         "Day post inoculation": "TimeDays",
         "IAV RT-qPCR Ct": "PathogenLoad"
         # "VI": "TBD"  # "viral isolation", may want to include in v2, a la viral culture
@@ -131,8 +145,8 @@ def load_and_format(): # may want to make this just for Baker and then have a hi
     df["SampleSource_Code"] = df["SampleSource"].map(opkc_id_map)
     df["SampleSource_Code"] = df["SampleSource_Code"].astype("Int64")
 
-    # Create SampleID from PatientID, TimeDays, first word in SampleMethod, and SampleSource_Code (SampleSource too verbose)
-    df["SampleID"] = df["PatientID"].astype(str) + "_" + df["TimeDays"].astype(str) + "_" + df["SampleMethod"].str.split().str[0] + "_" + df["SampleSource_Code"].astype(str)
+    # Create SampleID from IndivID, TimeDays, first word in SampleMethod, and SampleSource_Code (SampleSource too verbose)
+    df["SampleID"] = df["IndivID"].astype(str) + "_" + df["TimeDays"].astype(str) + "_" + df["SampleMethod"].str.split().str[0] + "_" + df["SampleSource_Code"].astype(str)
     # replace _antemorem with _AM for brevity
     df["SampleID"] = df["SampleID"].str.replace("_antemortem", "_AM", regex=False)
 
@@ -143,8 +157,8 @@ def load_and_format(): # may want to make this just for Baker and then have a hi
     df["StudyID"] = "Eales2025_Baker"
     df["Pathogen"] = "Flu"
     df["Subtype"] = "H5N1"
-    df["PtSpecies"] = "Dairy cattle"
-    df["DOI"] = "10.1101/2025.02.01.636082v1"
+    df["IndivSpecies"] = "Dairy cattle"
+    df["DOI"] = "10.1101/2025.02.01.636082v1" # Eales et al
     df["Units"] = "Ct (max 40)"
     df["PlatformName"] = "RT-qPCR"
 
@@ -155,4 +169,46 @@ def load_and_format(): # may want to make this just for Baker and then have a hi
     df
 # %%
     return df
+# %%
+
+# Halwe et al is much more straightforward - only thing is that Eales extracted from Figure 3C with PlotDigitizer
+
+def halwe():
+    csv_path = os.path.join(base_dir, "data", "Eales_Halwe_Fig.csv")
+    df = pd.read_csv(csv_path)
+
+    df = df.rename(columns={
+        "x": "TimeDays",
+        "y": "PathogenLoad",
+        "ID": "IndivID"
+    })
+
+    # %%
+
+    # Halwe1-3 are subtype H5N1 B3.13 (US), and Hawe4-6 are H5N1 edDG (EU)
+    df["Subtype"] = df["IndivID"].apply(lambda x: "H5N1 B3.13" if x in ["Halwe1", "Halwe2", "Halwe3"] else "H5N1 edDG")
+
+    # Additional columns with known information:
+    df["StudyID"] = "Eales2025_Halwe"
+    df["Pathogen"] = "Flu"
+    df["IndivSpecies"] = "Dairy cattle"
+    df["DOI"] = "10.1101/2025.02.01.636082v1" # Eales et al
+    df["Units"] = "Ct (max 38) WITH PLOTDIGITIZER"
+    df["PlatformName"] = "RT-qPCR"
+    df["SampleSource"] = "milk"
+    df["SampleMethod"] = "milk sample"
+    df["PlatformTech"] = "BioRad CFX Maestro 1.1 with AgPath-ID One-Step RT-PCR kit"
+
+    return df
+
+def load_and_format():
+    # For now, just Baker data
+    df_baker = baker()
+    df_caserta = None # to be added
+    df_halwe = halwe()
+    
+    # combine all dataframes
+    df_eales = pd.concat([df_baker, df_caserta, df_halwe], ignore_index=False)
+
+    return df_eales
 # %%
