@@ -17,22 +17,27 @@ def load_and_format():
 
     # Rename columns to match schema: 
     df = df.rename(columns={
+        "PersonID": "IndivID",
         "InfectionEvent": "InfectionID",
         "TestDateIndex": "TimeDays",
-        "CtT1": "Log10VL",
+        "CtT1": "PathogenLoad",
         "LineageBroad": "Subtype"
         })
 
     # Add additional columns with known but missing information:
     df["StudyID"] = "kissler2023"
     df["Pathogen"] = "SARS2"
-    df["PtSpecies"] = "Human"
+    df["IndSpecies"] = "Human"
     df["DOI"] = "10.1038/s41467-023-41941-z"
     df["Units"] = "Ct"
-    df["Platform"] = "cobas_target1"
+    df["PlatformType"] = "RTqPCR"
+    df["PlatformTech"] = "cobas_target1"
     df["GEml_conversion_intercept"] = 11.34089
     df["GEml_conversion_slope"] = -0.2770306
-    df["SampleType"] = "nasal_oropharyngeal"
+    df["SampleSource"] = "nasal+oropharyngeal"
+    df["SampleMethod"] = "swab in VTM"
+    df["Targets"] = "E484K, N501Y, delHV-69/70"
+    
 
     df = enforce_schema(df)
     df = coerce_types(df)
