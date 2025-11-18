@@ -1,5 +1,5 @@
-# WIP - Carolyn
-# NEED TO DO: Pull data from https://github.com/VirologyCharite/SARS-CoV-2-VL-paper/tree/main/data
+# Jones 2021
+# Data source: https://github.com/VirologyCharite/SARS-CoV-2-VL-paper/tree/main
 
 import pandas as pd
 from schema import enforce_schema, coerce_types

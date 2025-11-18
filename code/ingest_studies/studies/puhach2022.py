@@ -1,12 +1,12 @@
-# WIP - Carolyn
-# NEED TO DO: Pull data from https://www-nature-com.colorado.idm.oclc.org/articles/s41591-022-01816-0#Sec18
+# Puhach 2022
+# Data source (supplementary information): https://www-nature-com.colorado.idm.oclc.org/articles/s41591-022-01816-0#Sec19
 
 import pandas as pd
 from schema import enforce_schema, coerce_types
 
 def load_and_format():
     # Import the raw data:
-    df = pd.read_csv("data/ke2022.csv")
+    df = pd.read_csv("data/puhach2022.csv")
 
     # Keep only the columns we need: 
     df = df[['Ind', 'Time', 'Lineage', 'Nasal_CN', 'Saliva_Ct', 'Antigen', 'Age']]
@@ -38,7 +38,7 @@ def load_and_format():
         })
 
     # Add additional columns with known but missing information:
-    df["StudyID"] = "ke2022"
+    df["StudyID"] = "puhach2022"
     df["AgeRng2"] = df["AgeRng1"]
     df["DOI"] = "10.1038/s41564-022-01105-z"
     df["Units"] = df["SampleType"].map({
