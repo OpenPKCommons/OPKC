@@ -55,8 +55,8 @@ graph LR
 	mayexist[May exist: 40]
 	denea[Exists - not easy to access: 17]
 	exists[Exists: 9]
-	provingest[Provisional ingest: 2]
-	ingested[Ingested: 7.33]
+	provingest[Provisional ingest: 3]
+	ingested[Ingested: 9.66]
 	exists --> provingest --> ingested
 ```
 

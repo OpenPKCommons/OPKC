@@ -1,10 +1,10 @@
-from studies import ke2022, kissler2023, russell2024, wagstaffe2024, wongnak2024, hakki2022, eales2025, savela2022
+from studies import ke2022, kissler2023, russell2024, wagstaffe2024, wongnak2024, hakki2022, eales2025, savela2022, waickman2022, waickman2024
 from schema import enforce_schema, coerce_types
 import pandas as pd
 
 def main():
     #df_wongnak2024 = wongnak2024.load_and_format()
-    df_to_test = eales2025.load_and_format()
+    df_to_test = waickman2024.load_and_format()
     
     #df_wongnak2024.to_csv("output/test_import.csv", index=False)
     df_to_test.to_csv("output/test_import.csv", index=False)
