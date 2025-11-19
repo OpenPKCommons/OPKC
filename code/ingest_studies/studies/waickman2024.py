@@ -53,7 +53,7 @@ def _load_sheet(base_dir, sheet_name, platform_type, units, platform_tech, targe
 
     # Replace BLOD / non-detectable values ≤1 with NaN
     df["PathogenLoad"] = pd.to_numeric(df["PathogenLoad"], errors="coerce")
-    df.loc[df["PathogenLoad"] <= 1.0, "PathogenLoad"] = pd.NA
+    df.loc[df["PathogenLoad"] <= 1.0, "PathogenLoad"] = pd.NA # or zero?
 
     # Core metadata
     df["StudyID"] = "waickman2024"
@@ -87,7 +87,7 @@ def load_and_format(base_dir=None):
         base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.."))
 
     sheets = [
-        ("Figure 1B", "RT-qPCR", "GE/ml", "In-house RT-qPCR",
+        ("Figure 1B", "RT-qPCR", "GE/ml (log10)", "fluorogenic dengue type-specific RT-qPCR",
          "DENV-3 genome (RNA)"),
         ("Figure 1C", "plaque-forming assay", "PFU/ml", "Vero cell plaque assay",
          "Infectious DENV-3 particles"),
@@ -102,7 +102,8 @@ def load_and_format(base_dir=None):
     df_all = pd.concat(dfs, ignore_index=True)
     return df_all
 
-
+"""
 if __name__ == "__main__":
     df = load_and_format()
     print(df.head(10))
+"""

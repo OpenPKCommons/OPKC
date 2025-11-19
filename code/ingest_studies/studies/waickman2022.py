@@ -95,7 +95,7 @@ def load_and_format(base_dir=None, include_onset=False):
         base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.."))
 
     sheets = [
-        ("Figure 1a PCR", "RT-qPCR", "GE/ml", "In-house RT-qPCR",
+        ("Figure 1a PCR", "RT-qPCR", "GE/ml (log10)", "fluorogenic dengue type-specific RT-qPCR",
          "DENV-1 genome (RNA)"),
         ("Figure 1b Plaque", "plaque-forming assay","PFU/ml", "Vero cell plaque assay",
          "Infectious DENV-1 particles"),
@@ -110,7 +110,8 @@ def load_and_format(base_dir=None, include_onset=False):
     df_all = pd.concat(dfs, ignore_index=True)
     return df_all
 
-
+"""
 if __name__ == "__main__":
     df = load_and_format(include_onset=False)
     print(df.head(10))
+"""

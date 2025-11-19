@@ -102,7 +102,7 @@ base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.."))
 [x] coerce types
 
 """
-
+# %%
 def baker():
     # Load the raw data with relative path
     csv_path = os.path.join(base_dir, "data", "Eales_Baker_Fig.csv")
@@ -157,33 +157,35 @@ def baker():
     df["StudyID"] = "Eales2025_Baker"
     df["Pathogen"] = "Flu"
     df["Subtype"] = "H5N1"
-    df["IndivSpecies"] = "Dairy cattle"
+    df["IndSpecies"] = "Dairy cattle"
     df["DOI"] = "10.1101/2025.02.01.636082v1" # Eales et al
     df["Units"] = "Ct (max 40)"
-    df["PlatformName"] = "RT-qPCR"
+    df["PlatformType"] = "RT-qPCR"
 
     # Enforce schema and coerce types
     df = enforce_schema(df)
     df = coerce_types(df)
 
     df
-# %%
+
     return df
 # %%
 
 # Halwe et al is much more straightforward - only thing is that Eales extracted from Figure 3C with PlotDigitizer
-
+# %% 
 def halwe():
     csv_path = os.path.join(base_dir, "data", "Eales_Halwe_Fig.csv")
     df = pd.read_csv(csv_path)
 
+    # strip whitespace from column names
+    df.columns = df.columns.str.strip()
+
+    #then rename columns according to schema
     df = df.rename(columns={
         "x": "TimeDays",
         "y": "PathogenLoad",
         "ID": "IndivID"
     })
-
-    # %%
 
     # Halwe1-3 are subtype H5N1 B3.13 (US), and Hawe4-6 are H5N1 edDG (EU)
     df["Subtype"] = df["IndivID"].apply(lambda x: "H5N1 B3.13" if x in ["Halwe1", "Halwe2", "Halwe3"] else "H5N1 edDG")
@@ -191,16 +193,17 @@ def halwe():
     # Additional columns with known information:
     df["StudyID"] = "Eales2025_Halwe"
     df["Pathogen"] = "Flu"
-    df["IndivSpecies"] = "Dairy cattle"
+    df["IndSpecies"] = "Dairy cattle"
     df["DOI"] = "10.1101/2025.02.01.636082v1" # Eales et al
     df["Units"] = "Ct (max 38) WITH PLOTDIGITIZER"
-    df["PlatformName"] = "RT-qPCR"
+    df["PlatformType"] = "RT-qPCR"
     df["SampleSource"] = "milk"
     df["SampleMethod"] = "milk sample"
     df["PlatformTech"] = "BioRad CFX Maestro 1.1 with AgPath-ID One-Step RT-PCR kit"
 
     return df
 
+# %%
 def load_and_format():
     # For now, just Baker data
     df_baker = baker()
