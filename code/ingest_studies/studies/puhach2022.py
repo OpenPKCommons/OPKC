@@ -31,6 +31,9 @@ def load_and_format():
     df["IndSpecies"] = "Human"
     df["Units"] = "GEml (log10VL)"
     df["DOI"] = "10.1038/s41591-022-01816-0"
+    df["PlatformType"] = "RT-qPCR"
+    df["PlatformTech"] = "Roche cobas 6800/"
+    df["Targets"] = "E-gene, S-gene"
 
     df = enforce_schema(df)
     df = coerce_types(df)

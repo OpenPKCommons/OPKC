@@ -12,7 +12,7 @@ def load_and_format():
     df = pd.read_csv("data/jones2021.csv")
 
     # Keep only the columns we need: 
-    df = df[['personHash', 'onset', 'date', 'viralLoad', 'age']] # redo patient ID to numerical instead of alphabetical - needed?
+    df = df[['personHash', 'onset', 'B117', 'date', 'viralLoad', 'age']] # redo patient ID to numerical instead of alphabetical - needed?
 
     # Compute the days of the infection based on 'onset' and 'date'
     # convert datetime format
@@ -32,15 +32,23 @@ def load_and_format():
         # This is a new column with the difference from the first value
         df['computedTimeDays'] = (df_subset['date'] - givenOnset).dt.days
     # delete 'onset', 'date' columns (or keep them?)
-    df = df[['personHash', 'computedTimeDays', 'viralLoad', 'age']]
+    df = df[['personHash', 'computedTimeDays', 'viralLoad', 'age', 'B117']]
 
     # Rename columns to match schema: 
     df = df.rename(columns={
         "personHash": "PersonID",
-        "computedTimeDays": "TimeDays" 
+        "computedTimeDays": "TimeDays",
         "viralLoad": "PathogenLoad", 
         "age": "AgeRng1"
         })
+    
+    # for rows where "B117" is TRUE, df["Subtype"] = "B.1.1.7", else leave blank
+    df["Subtype"] = ""
+    df.loc[df["B117"] == True, "Subtype"] = "B.1.1.7"
+
+    #and for thoes rows where df["Subtype"] == "B.1.1.7", df["Targets"] = "N501Y, del69/70 spike protein AA"
+    df["Targets"] = ""
+    df.loc[df["Subtype"] == "B.1.1.7", "Targets"] = "N501Y, del69/70 spike protein AA"
 
     # Add additional columns with known but missing information:
     df["StudyID"] = "jones2021"
@@ -48,6 +56,9 @@ def load_and_format():
     df["IndSpecies"] = "Human"
     df["Units"] = "GEml (log10VL)" # intercepts available in supplemental material
     df["DOI"] = "10.1126/science.abi5273"
+    df["PlatformType"] = "RT-qPCR"
+    df["PlatformTech"] = "Roche Light Cycler 480, or Roche cobas 6800/8800"
+
 
     df = enforce_schema(df)
     df = coerce_types(df)
