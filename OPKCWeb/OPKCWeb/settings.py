@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-j8yh&jwk85ynn+(*8k*@jrj+unt4nf-on3ytfg+85z6xp^$4=$
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = [openpkcommons.org,www.openpkcommons.org]
+ALLOWED_HOSTS = ['openpkcommons.org','www.openpkcommons.org']
 
 
 # Application definition
