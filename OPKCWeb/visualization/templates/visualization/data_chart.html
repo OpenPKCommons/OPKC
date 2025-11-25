@@ -3,64 +3,572 @@
 <head>
     <title>{{ chart_title }}</title>
     <script src="https://cdn.plot.ly/plotly-2.31.1.min.js"></script>
-</head>
-<body>
-    <p>
-        <a href="{% url 'home' %}" 
-           style="text-decoration: none; 
-                  color: #007bff; 
-                  border: 1px solid #007bff; 
-                  padding: 5px 10px; 
-                  border-radius: 3px;">
-            ← Back to Home
-        </a>
-    </p>
-    <h1>{{ chart_title }}</h1>
-
-    <div id="timeDaysBarChart" style="width: 80%; height: 500px; margin: auto;"></div>
-
+    <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        // Data passed from Django is still available in the context
-        const labels = JSON.parse('{{ chart_labels|safe }}');
-        const data = JSON.parse('{{ chart_data|safe }}');
-        const title = '{{ chart_title|safe }}';
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', '"Helvetica Neue"', 'Arial', '"Noto Sans"', 'sans-serif'],
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        /* All your <style> content is identical */
+        .modebar { background: transparent !important; }
+        .modebar-group { background-color: white !important; border-radius: 6px !important; border: 1px solid #e2e8f0 !important; }
+        .modebar-btn.active, .modebar-btn:hover { background-color: #f1f5f9 !important; }
+        .modebar-btn.toggle { background-color: #f8fafc !important; }
+        .modebar-btn.toggle:hover, .modebar-btn.toggle.active { background-color: #e2e8f0 !important; }
+        .plotly-tooltip { background-color: white !important; border: 1px solid #e2e8f0 !important; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); color: #1e293b !important; }
+        .modebar-btn svg path { fill: #334155 !important; }
+        .filter-list::-webkit-scrollbar { width: 5px; }
+        .filter-list::-webkit-scrollbar-track { background: #f1f5f9; }
+        .filter-list::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 5px; }
+        .filter-list::-webkit-scrollbar-thumb:hover { background: #475569; }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans text-gray-800 flex flex-col lg:flex-row h-screen overflow-hidden">
 
-        // 3. Define the data trace for the bar chart
-        const chartData = [{
-            x: labels, // X-axis data (Time Days)
-            y: data,   // Y-axis data (Sample Counts)
-            type: 'bar',
-            name: 'Sample Count',
-            marker: {
-                color: 'rgb(55, 128, 191)' // Blue color for bars
+    <aside class="w-full lg:w-1/4 h-1/2 lg:h-full bg-white shadow-lg border-r border-gray-200 flex flex-col">
+        <div class="p-6 border-b border-gray-200">
+            <h1 class="text-2xl font-bold text-blue-700">Sample Explorer</h1>
+            <p class="text-sm text-gray-600 mt-1">Filter & Stratify Data</p>
+        </div>
+        
+        <div class="flex-grow overflow-y-auto p-6 space-y-6">
+            
+            <div>
+                <label for="color-by-select" class="font-semibold text-gray-700">Color Scatter By</label>
+                <select id="color-by-select" class="w-full p-2 mt-2 border border-gray-300 rounded-md shadow-sm text-sm bg-white">
+                    <option value="SampleSource">Sample Source</option>
+                    <option value="StudyID">Study</option>
+                    <option value="Pathogen">Pathogen</option>
+                    <option value="Subtype">Subtype</option>
+                    <option value="Age">Age</option>
+                </select>
+            </div>
+
+            <div id="study-filter-group">
+                <div class="flex justify-between items-center mb-2">
+                    <label class="font-semibold text-gray-700">Filter by Study</label>
+                    <div>
+                        <button id="study-select-all" class="text-xs font-medium text-blue-600 hover:underline">All</button> |
+                        <button id="study-select-none" class="text-xs font-medium text-blue-600 hover:underline">None</button>
+                    </div>
+                </div>
+                <div id="study-filter-list" class="filter-list h-32 max-h-32 overflow-y-auto space-y-1 rounded-md border border-gray-300 p-3 bg-gray-50">
+                </div>
+            </div>
+
+            <div id="pathogen-filter-group">
+                <div class="flex justify-between items-center mb-2">
+                    <label class="font-semibold text-gray-700">Filter by Pathogen</label>
+                    <div>
+                        <button id="pathogen-select-all" class="text-xs font-medium text-blue-600 hover:underline">All</button> |
+                        <button id="pathogen-select-none" class="text-xs font-medium text-blue-600 hover:underline">None</button>
+                    </div>
+                </div>
+                <div id="pathogen-filter-list" class="filter-list h-24 max-h-24 overflow-y-auto space-y-1 rounded-md border border-gray-300 p-3 bg-gray-50">
+                </div>
+            </div>
+            <div id="subtype-filter-group">
+                <div class="flex justify-between items-center mb-2">
+                    <label class="font-semibold text-gray-700">Filter by Subtype</label>
+                    <div>
+                        <button id="subtype-select-all" class="text-xs font-medium text-blue-600 hover:underline">All</button> |
+                        <button id="subtype-select-none" class="text-xs font-medium text-blue-600 hover:underline">None</button>
+                    </div>
+                </div>
+                <div id="subtype-filter-list" class="filter-list h-24 max-h-24 overflow-y-auto space-y-1 rounded-md border border-gray-300 p-3 bg-gray-50">
+                </div>
+            </div>
+            <div id="samplesource-filter-group">
+                <div class="flex justify-between items-center mb-2">
+                    <label class="font-semibold text-gray-700">Filter by Sample Source</label>
+                    <div>
+                        <button id="sample-select-all" class="text-xs font-medium text-blue-600 hover:underline">All</button> |
+                        <button id="sample-select-none" class="text-xs font-medium text-blue-600 hover:underline">None</button>
+                    </div>
+                </div>
+                <div id="samplesource-filter-list" class="filter-list h-24 max-h-24 overflow-y-auto space-y-1 rounded-md border border-gray-300 p-3 bg-gray-50">
+                </div>
+            </div>
+
+            <div id="age-filter-group">
+                <label class="font-semibold text-gray-700">Filter by Age</label>
+                <div class="flex items-center space-x-2 mt-2">
+                    <input type="number" id="min-age" value="0" min="0" max="100" class="w-1/2 p-2 border border-gray-300 rounded-md shadow-sm text-sm">
+                    <span class="text-gray-600">to</span>
+                    <input type="number" id="max-age" value="100" min="0" max="100" class="w-1/2 p-2 border border-gray-300 rounded-md shadow-sm text-sm">
+                </div>
+            </div>
+
+            <div id="status-message" class="text-sm text-gray-600 italic text-center">
+                Loading...
+            </div>
+
+        </div>
+        
+        <div class="p-4 border-t border-gray-200 bg-gray-50">
+             <a href="{% url 'visualization:index' %}" 
+               class="inline-flex items-center text-blue-600 hover:text-blue-800 hover:underline font-medium transition duration-150">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                </svg>
+                Back to Home
+            </a>
+        </div>
+    </aside>
+
+    <main class="w-full lg:w-3/4 h-1/2 lg:h-full p-4 lg:p-8 flex flex-col space-y-6 overflow-y-auto">
+        <div class="bg-white rounded-lg shadow-md border border-gray-200 p-4 md:p-6 flex-shrink-0">
+            <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-6">
+                Pathogen Load vs. Time
+            </h2>
+            <div id="vlScatterPlot" class="w-full h-[500px]">
+                </div>
+        </div>
+        
+        <div class="bg-white rounded-lg shadow-md border border-gray-200 p-4 md:p-6 flex-shrink-0">
+            <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-6">
+                Sample Count by Day
+            </h2>
+            <div id="timeDaysBarChart" class="w-full h-[500px]">
+                </div>
+        </div>
+    </main>
+
+    {{ all_data|json_script:"all-data-json" }}
+    {{ study_ids|json_script:"unique-studies-json" }}
+    {{ sample_types|json_script:"unique-samples-json" }}
+    {{ pathogens|json_script:"unique-pathogens-json" }}
+    {{ subtypes|json_script:"unique-subtypes-json" }}
+    <script>
+        // --- 1. Get Data from Django ---
+        let ALL_DATA = [];
+        let UNIQUE_STUDIES = [];
+        let UNIQUE_SAMPLES = [];
+        // --- NEW: Add Pathogen and Subtype variables ---
+        let UNIQUE_PATHOGENS = [];
+        let UNIQUE_SUBTYPES = [];
+        // --- End NEW ---
+        const statusMessage = document.getElementById('status-message');
+
+        try {
+            ALL_DATA = JSON.parse(document.getElementById('all-data-json').textContent);
+            UNIQUE_STUDIES = JSON.parse(document.getElementById('unique-studies-json').textContent);
+            UNIQUE_SAMPLES = JSON.parse(document.getElementById('unique-samples-json').textContent);
+            // --- NEW: Parse Pathogen and Subtype JSON ---
+            UNIQUE_PATHOGENS = JSON.parse(document.getElementById('unique-pathogens-json').textContent);
+            UNIQUE_SUBTYPES = JSON.parse(document.getElementById('unique-subtypes-json').textContent);
+            // --- End NEW ---
+            
+            if (!ALL_DATA || ALL_DATA.length === 0) {
+                 statusMessage.textContent = 'No data loaded from server.';
             }
-        }];
+        } catch (e) {
+            console.error("Error parsing JSON data:", e);
+            statusMessage.textContent = 'Error loading data.';
+            document.getElementById('study-filter-list').innerHTML = '<p class="text-red-500">Error loading filters.</p>';
+            document.getElementById('samplesource-filter-list').innerHTML = '<p class="text-red-500">Error loading filters.</p>';
+            // --- NEW: Add error state for new filters ---
+            document.getElementById('pathogen-filter-list').innerHTML = '<p class="text-red-500">Error loading filters.</p>';
+            document.getElementById('subtype-filter-list').innerHTML = '<p class="text-red-500">Error loading filters.</p>';
+            // --- End NEW ---
+        }
+        
+        // --- 2. Get DOM References ---
+        const scatterPlotDiv = document.getElementById('vlScatterPlot');
+        const barPlotDiv = document.getElementById('timeDaysBarChart');
+        const studyListDiv = document.getElementById('study-filter-list');
+        const sampleListDiv = document.getElementById('samplesource-filter-list');
+        // --- NEW: Add DOM refs for new filters ---
+        const pathogenListDiv = document.getElementById('pathogen-filter-list');
+        const subtypeListDiv = document.getElementById('subtype-filter-list');
+        // --- End NEW ---
+        const minAgeInput = document.getElementById('min-age');
+        const maxAgeInput = document.getElementById('max-age');
+        const colorBySelect = document.getElementById('color-by-select');
+        
+        const PLOTLY_COLORS = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf'];
 
-        // 4. Define the layout configuration
-        const layout = {
-            title: {
-                text: title,
-                font: {
-                    size: 24 // Larger font size for main title
+        /**
+         * Populates the filter checkboxes in the sidebar
+         */
+        function populateFilters() {
+            UNIQUE_STUDIES.forEach(study => {
+                const label = document.createElement('label');
+                label.className = 'block font-normal text-sm cursor-pointer hover:bg-gray-200 rounded px-1 study-label';
+                label.dataset.value = study; // Add data-value for dynamic filtering
+                label.innerHTML = `<input type="checkbox" class="filter-checkbox" data-filter-type="study" value="${study}" checked> ${study}`;
+                studyListDiv.appendChild(label);
+            });
+            
+            // --- NEW: Populate Pathogens ---
+            UNIQUE_PATHOGENS.forEach(pathogen => {
+                const label = document.createElement('label');
+                label.className = 'block font-normal text-sm cursor-pointer hover:bg-gray-200 rounded px-1 pathogen-label';
+                label.dataset.value = pathogen;
+                label.innerHTML = `<input type="checkbox" class="filter-checkbox" data-filter-type="pathogen" value="${pathogen}" checked> ${pathogen}`;
+                pathogenListDiv.appendChild(label);
+            });
+            // --- End NEW ---
+
+            // --- NEW: Populate Subtypes ---
+            UNIQUE_SUBTYPES.forEach(subtype => {
+                const label = document.createElement('label');
+                label.className = 'block font-normal text-sm cursor-pointer hover:bg-gray-200 rounded px-1 subtype-label';
+                label.dataset.value = subtype;
+                label.innerHTML = `<input type="checkbox" class="filter-checkbox" data-filter-type="subtype" value="${subtype}" checked> ${subtype}`;
+                subtypeListDiv.appendChild(label);
+            });
+            // --- End NEW ---
+
+            UNIQUE_SAMPLES.forEach(sample => {
+                const label = document.createElement('label');
+                label.className = 'block font-normal text-sm cursor-pointer hover:bg-gray-200 rounded px-1 sample-source-label';
+                label.dataset.value = sample;
+                label.innerHTML = `<input type="checkbox" class="filter-checkbox" data-filter-type="sample" value="${sample}" checked> ${sample}`;
+                sampleListDiv.appendChild(label);
+            });
+
+            // (Error message logic is unchanged)
+        }
+
+        /**
+         * Dynamically hide/show sample source filters based on selected studies
+         */
+        function updateDynamicSampleFilter() {
+            const selectedStudies = Array.from(studyListDiv.querySelectorAll('input[type=checkbox]:checked')).map(cb => cb.value);
+            const validSampleSources = new Set();
+            ALL_DATA.forEach(row => {
+                if (selectedStudies.includes(row.StudyID)) {
+                    validSampleSources.add(row.SampleSource);
                 }
-            },
-            xaxis: {
-                title: 'Days Relative to Symptom Onset/Infection',
-                automargin: true // Ensures long labels don't get cut off
-            },
-            yaxis: {
-                title: 'Sample Count',
-                zeroline: true, // Show the zero line
-                rangemode: 'tozero' // Start the y-axis at zero
-            },
-            responsive: true // Makes the chart fit the container
-        };
+            });
 
-        // 5. Render the chart using Plotly.plot()
-        Plotly.newPlot('timeDaysBarChart', chartData, layout, {
-            displayModeBar: true // Show the Plotly toolbar for export, zoom, etc.
+            sampleListDiv.querySelectorAll('.sample-source-label').forEach(label => {
+                const sampleValue = label.dataset.value;
+                const checkbox = label.querySelector('input');
+                if (validSampleSources.has(sampleValue)) {
+                    label.style.display = 'block';
+                } else {
+                    label.style.display = 'none';
+                    checkbox.checked = false;
+                }
+            });
+        }
+        
+        /**
+         * --- NEW: Dynamically hide/show pathogen filters based on selected studies
+         */
+        function updateDynamicPathogenFilter() {
+            const selectedStudies = Array.from(studyListDiv.querySelectorAll('input[type=checkbox]:checked')).map(cb => cb.value);
+            const validPathogens = new Set();
+            ALL_DATA.forEach(row => {
+                if (selectedStudies.includes(row.StudyID)) {
+                    validPathogens.add(row.Pathogen);
+                }
+            });
+
+            pathogenListDiv.querySelectorAll('.pathogen-label').forEach(label => {
+                const pathogenValue = label.dataset.value;
+                const checkbox = label.querySelector('input');
+                if (validPathogens.has(pathogenValue)) {
+                    label.style.display = 'block';
+                } else {
+                    label.style.display = 'none';
+                    checkbox.checked = false;
+                }
+            });
+        }
+        
+        /**
+         * --- NEW: Dynamically hide/show subtype filters based on selected pathogens
+         */
+        function updateDynamicSubtypeFilter() {
+            const selectedPathogens = Array.from(pathogenListDiv.querySelectorAll('input[type=checkbox]:checked')).map(cb => cb.value);
+            const validSubtypes = new Set();
+            ALL_DATA.forEach(row => {
+                if (selectedPathogens.includes(row.Pathogen)) {
+                    validSubtypes.add(row.Subtype);
+                }
+            });
+
+            subtypeListDiv.querySelectorAll('.subtype-label').forEach(label => {
+                const subtypeValue = label.dataset.value;
+                const checkbox = label.querySelector('input');
+                // Also check for null/undefined, which may not be in the 'validSubtypes' set but should be hidden
+                if (validSubtypes.has(subtypeValue) && subtypeValue !== null) {
+                    label.style.display = 'block';
+                } else {
+                    label.style.display = 'none';
+                    checkbox.checked = false;
+                }
+            });
+        }
+
+        /**
+         * Helper function to get an age bin for a row
+         */
+        function getAgeBin(row) {
+            // (This function is unchanged)
+            if (row.AgeRng1 === null) return "Unknown";
+            const avgAge = (row.AgeRng1 + row.AgeRng2) / 2;
+            if (avgAge < 10) return "0-9";
+            if (avgAge < 20) return "10-19";
+            if (avgAge < 30) return "20-29";
+            if (avgAge < 40) return "30-39";
+            if (avgAge < 50) return "40-49";
+            if (avgAge < 60) return "50-59";
+            if (avgAge < 70) return "60-69";
+            return "70+";
+        }
+
+        /**
+         * Main function to filter data and update both Plotly charts
+         */
+        function updatePlots() {
+            // 1. Get selected filters
+            const selectedStudies = Array.from(studyListDiv.querySelectorAll('input[type=checkbox]:checked')).map(cb => cb.value);
+            const selectedSamples = Array.from(sampleListDiv.querySelectorAll('input[type=checkbox]:checked')).map(cb => cb.value);
+            // --- NEW: Get Pathogen and Subtype filters ---
+            const selectedPathogens = Array.from(pathogenListDiv.querySelectorAll('input[type=checkbox]:checked')).map(cb => cb.value);
+            const selectedSubtypes = Array.from(subtypeListDiv.querySelectorAll('input[type=checkbox]:checked')).map(cb => cb.value);
+            // --- End NEW ---
+            const userMinAge = parseFloat(minAgeInput.value) || 0;
+            const userMaxAge = parseFloat(maxAgeInput.value) || 100;
+            const colorBy = colorBySelect.value; 
+
+            // 2. Filter the raw data
+            const filteredData = ALL_DATA.filter(row => {
+                const studiesMatch = selectedStudies.includes(row.StudyID);
+                const samplesMatch = selectedSamples.includes(row.SampleSource);
+                // --- NEW: Add Pathogen and Subtype match logic ---
+                const pathogensMatch = selectedPathogens.includes(row.Pathogen);
+                const subtypesMatch = selectedSubtypes.includes(row.Subtype);
+                // --- End NEW ---
+                
+                const personMinAge = row.AgeRng1;
+                const personMaxAge = row.AgeRng2;
+                let ageMatch = true; 
+                if (personMinAge !== null && personMaxAge !== null) {
+                    ageMatch = (personMaxAge >= userMinAge) && (personMinAge <= userMaxAge);
+                } else {
+                    if (userMinAge !== 0 || userMaxAge !== 100) {
+                        ageMatch = false; 
+                    }
+                }
+                
+                // --- MODIFIED: Add new matches to return statement ---
+                return studiesMatch && samplesMatch && ageMatch && pathogensMatch && subtypesMatch;
+            });
+
+            // 3. --- Prep Data for Scatter Plot (Stratified) ---
+            const scatterTraces = {};
+            let colorIndex = 0;
+            const colorMap = {};
+            
+            filteredData.forEach(row => {
+                if (row.TimeDays === null || row.PathogenLoad === null) {
+                    return;
+                }
+                
+                let traceName;
+                switch (colorBy) {
+                    case 'StudyID':
+                        traceName = row.StudyID;
+                        break;
+                    // --- NEW: Add Pathogen and Subtype cases ---
+                    case 'Pathogen':
+                        traceName = row.Pathogen;
+                        break;
+                    case 'Subtype':
+                        traceName = row.Subtype;
+                        break;
+                    // --- End NEW ---
+                    case 'Age':
+                        traceName = getAgeBin(row);
+                        break;
+                    case 'SampleSource':
+                    default:
+                        traceName = row.SampleSource;
+                        break;
+                }
+                
+                if (traceName === null || traceName === undefined) traceName = "Unknown";
+
+                if (!colorMap[traceName]) {
+                    colorMap[traceName] = PLOTLY_COLORS[colorIndex % PLOTLY_COLORS.length];
+                    colorIndex++;
+                }
+
+                if (!scatterTraces[traceName]) {
+                    scatterTraces[traceName] = {
+                        x: [],
+                        y: [],
+                        mode: 'markers',
+                        type: 'scatter',
+                        name: traceName,
+                        marker: { 
+                            size: 6, 
+                            opacity: 0.7,
+                            color: colorMap[traceName]
+                        }
+                    };
+                }
+                scatterTraces[traceName].x.push(row.TimeDays);
+                scatterTraces[traceName].y.push(row.PathogenLoad);
+            });
+            const scatterPlotData = Object.values(scatterTraces);
+            
+            if (colorBy === 'Age') {
+                scatterPlotData.sort((a, b) => a.name.localeCompare(b.name));
+            }
+
+            // 4. --- Prep Data for Bar Plot ---
+            // (This section is unchanged)
+            const barCounts = {};
+            filteredData.forEach(row => {
+                if (row.TimeDays !== null) {
+                    const day = Math.floor(row.TimeDays); 
+                    barCounts[day] = (barCounts[day] || 0) + 1;
+                }
+            });
+            const sortedDays = Object.keys(barCounts).map(Number).sort((a, b) => a - b);
+            const barPlotData = [{
+                x: sortedDays,
+                y: sortedDays.map(day => barCounts[day]),
+                type: 'bar',
+                name: 'Sample Count',
+                marker: { color: 'rgb(37, 99, 235)' }
+            }];
+
+            // 5. --- Define Layouts ---
+            // (This section is unchanged)
+            const scatterLayout = {
+                xaxis: { title: 'Infection day', gridcolor: '#f3f4f6', zeroline: true, zerolinecolor: '#d1d5db' },
+                yaxis: { title: 'Pathogen Load (Log10)', gridcolor: '#f3f4f6', zeroline: true, zerolinecolor: '#d1d5db', autorange: 'reversed' },
+                hovermode: 'closest',
+                margin: { l: 60, r: 30, t: 60, b: 80 }, 
+                paper_bgcolor: 'rgba(0,0,0,0)',
+                plot_bgcolor: 'rgba(0,0,0,0)',
+                showlegend: true,
+                legend: { orientation: 'h', y: -0.2, yanchor: 'top', x: 0.5, xanchor: 'center' }
+            };
+            const barLayout = {
+                xaxis: { title: 'Infection day', automargin: true, gridcolor: '#f3f4f6', zeroline: false },
+                yaxis: { title: 'Sample Count', zeroline: true, rangemode: 'tozero', gridcolor: '#f3f4f6' },
+                paper_bgcolor: 'rgba(0,0,0,0)',
+                plot_bgcolor: 'rgba(0,0,0,0)',
+                margin: { l: 60, r: 30, t: 60, b: 50 }, 
+            };
+
+            // 6. --- Redraw Plots ---
+            // (This section is unchanged)
+            if (scatterPlotData.length > 0) {
+                Plotly.react(scatterPlotDiv, scatterPlotData, scatterLayout, { displayModeBar: true, responsive: true });
+            } else {
+                Plotly.react(scatterPlotDiv, [], {title: 'No data to display for selected filters'}, { responsive: true });
+            }
+            if (barPlotData[0].x.length > 0) {
+                Plotly.react(barPlotDiv, barPlotData, barLayout, { displayModeBar: true, responsive: true });
+            } else {
+                Plotly.react(barPlotDiv, [], {title: 'No data to display for selected filters'}, { responsive: true });
+            }
+
+            // 7. Update status message
+            statusMessage.textContent = `${filteredData.length} data points shown.`;
+        }
+        
+        /**
+         * MODIFIED: Handler for when the STUDY filter changes
+         */
+        function handleStudyFilterChange() {
+            updateDynamicSampleFilter(); // Update samples
+            updateDynamicPathogenFilter(); // Update pathogens
+            updateDynamicSubtypeFilter(); // Update subtypes (cascades from pathogens)
+            updatePlots(); // Then update the plots
+        }
+        
+        /**
+         * --- NEW: Handler for when the PATHOGEN filter changes
+         */
+        function handlePathogenFilterChange() {
+            updateDynamicSubtypeFilter(); // Update subtypes
+            updatePlots(); // Then update the plots
+        }
+        
+        /**
+         * Helper function for "Select All" / "Select None" buttons
+         */
+        function setCheckboxes(containerId, isChecked) {
+            document.querySelectorAll(`#${containerId} input[type=checkbox]`).forEach(cb => {
+                // --- MODIFIED: Only check visible checkboxes ---
+                if (cb.closest('label').style.display !== 'none') {
+                    cb.checked = isChecked;
+                }
+                // --- End MODIFIED ---
+            });
+            
+            // Manually trigger the correct update handler
+            if (containerId === 'study-filter-list') {
+                handleStudyFilterChange();
+            } else if (containerId === 'pathogen-filter-list') {
+                handlePathogenFilterChange();
+            } else {
+                updatePlots();
+            }
+        }
+
+        // --- 3. Attach Event Listeners ---
+        
+        // Study list uses the new handler
+        studyListDiv.addEventListener('change', handleStudyFilterChange);
+        
+        // --- NEW: Add listeners for new filters ---
+        pathogenListDiv.addEventListener('change', handlePathogenFilterChange);
+        subtypeListDiv.addEventListener('change', updatePlots);
+        // --- End NEW ---
+        
+        // Other filters update plots directly
+        sampleListDiv.addEventListener('change', updatePlots);
+        minAgeInput.addEventListener('input', updatePlots);
+        maxAgeInput.addEventListener('input', updatePlots);
+        colorBySelect.addEventListener('change', updatePlots);
+
+        // "Select All/None" buttons
+        document.getElementById('study-select-all').addEventListener('click', () => setCheckboxes('study-filter-list', true));
+        document.getElementById('study-select-none').addEventListener('click', () => setCheckboxes('study-filter-list', false));
+        document.getElementById('sample-select-all').addEventListener('click', () => setCheckboxes('samplesource-filter-list', true));
+        document.getElementById('sample-select-none').addEventListener('click', () => setCheckboxes('samplesource-filter-list', false));
+        // --- NEW: Add listeners for new "All/None" buttons ---
+        document.getElementById('pathogen-select-all').addEventListener('click', () => setCheckboxes('pathogen-filter-list', true));
+        document.getElementById('pathogen-select-none').addEventListener('click', () => setCheckboxes('pathogen-filter-list', false));
+        document.getElementById('subtype-select-all').addEventListener('click', () => setCheckboxes('subtype-filter-list', true));
+        document.getElementById('subtype-select-none').addEventListener('click', () => setCheckboxes('subtype-filter-list', false));
+        // --- End NEW ---
+
+        // --- 4. Initial Page Load ---
+        document.addEventListener('DOMContentLoaded', () => {
+            if (ALL_DATA.length > 0) {
+                populateFilters();
+                // --- MODIFIED: Call all dynamic filters on first load ---
+                updateDynamicSampleFilter();
+                updateDynamicPathogenFilter();
+                updateDynamicSubtypeFilter();
+                // --- End MODIFIED ---
+                updatePlots();
+            } else {
+                 scatterPlotDiv.innerHTML = '<div class="w-full h-full flex items-center justify-center text-gray-500 italic">No data to display.</div>';
+                 barPlotDiv.innerHTML = '<div class="w-full h-full flex items-center justify-center text-gray-500 italic">No data to display.</div>';
+            }
         });
 
     </script>
+
 </body>
 </html>

@@ -1,0 +1,237 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Standard - OPKC</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 
+    NEW: Load the Typography plugin 
+    This gives us the 'prose' class for beautiful article styling 
+    -->
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', '"Helvetica Neue"', 'Arial', '"Noto Sans"', 'sans-serif'],
+                    },
+                },
+            },
+        }
+    </script>
+</head>
+<body class="font-sans text-gray-800 bg-gray-50">
+    
+    <!-- Using a wider container for article-style content -->
+    <div class="container mx-auto p-8 max-w-5xl py-12 md:py-20">
+        
+        <p class="mb-8">
+            <a href="{% url 'visualization:index' %}" class="inline-flex items-center text-blue-600 hover:text-blue-800 hover:underline font-medium transition duration-150 no-underline">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
+                Back to Home
+            </a>
+        </p>
+
+        <!-- 
+        NEW: Wrapper with Tailwind 'prose' class 
+        This automatically styles all h1, h2, h3, p, code, etc.
+        -->
+        <article class="prose prose-lg max-w-none prose-blue">
+            
+            <h1>OPKC Data Standard</h1>
+            
+            <p class="lead">The Open Pathogen Kinetics Commons is built on a simple, flexible data standard designed to maximize data contribution while ensuring the core variables for kinetic modeling are always present.</p>
+            
+            <p>Our standard is built on a tiered system: "Essential," "Encouraged," and "Accepted" data fields. This structure allows us to incorporate datasets from a wide variety of sources, from detailed clinical studies to broader surveillance programs.</p>
+
+            <!-- 
+            Section 1: Data Fields 
+            -->
+            <h2>Data Field Definitions</h2>
+
+            <!-- Essential Fields -->
+            <h3 class="border-l-4 border-blue-600 pl-3">Essential Fields</h3>
+            <p>These fields are the bare minimum required for a dataset to be included in the database. They establish the fundamental links between a patient, a time point, and a measurement.</p>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 not-prose">
+                <!-- Using 'not-prose' to disable prose styles for this grid -->
+                <!-- ADDED: 'group', 'transition-all', 'duration-300', 'hover:shadow-md', 'overflow-hidden' -->
+                <!-- ADDED: New <p> tag with hover logic -->
+                
+                <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg group transition-all duration-300 hover:shadow-md overflow-hidden">
+                    <h4 class="text-base font-semibold text-blue-800 m-0">Pathogen</h4>
+                    <p class="text-sm text-blue-900 max-h-0 opacity-0 transition-all duration-300 ease-out group-hover:max-h-40 group-hover:opacity-100 group-hover:mt-2 overflow-hidden">
+                        The specific pathogen, e.g., "SARS-CoV-2".
+                    </p>
+                </div>
+                <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg group transition-all duration-300 hover:shadow-md overflow-hidden">
+                    <h4 class="text-base font-semibold text-blue-800 m-0">Time</h4>
+                    <p class="text-sm text-blue-900 max-h-0 opacity-0 transition-all duration-300 ease-out group-hover:max-h-40 group-hover:opacity-100 group-hover:mt-2 overflow-hidden">
+                        Time of sample collection, in days, relative to an event (e.g., symptom onset).
+                    </p>
+                </div>
+                <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg group transition-all duration-300 hover:shadow-md overflow-hidden">
+                    <h4 class="text-base font-semibold text-blue-800 m-0">Pathogen Load</h4>
+                    <p class="text-sm text-blue-900 max-h-0 opacity-0 transition-all duration-300 ease-out group-hover:max-h-40 group-hover:opacity-100 group-hover:mt-2 overflow-hidden">
+                        The measured pathogen load. We prefer Log10(copies/mL).
+                    </p>
+                </div>
+                <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg group transition-all duration-300 hover:shadow-md overflow-hidden">
+                    <h4 class="text-base font-semibold text-blue-800 m-0">Platform Type</h4>
+                    <p class="text-sm text-blue-900 max-h-0 opacity-0 transition-all duration-300 ease-out group-hover:max-h-40 group-hover:opacity-100 group-hover:mt-2 overflow-hidden">
+                        Category of platform used to measure pathogen load (e.g., "RT-qPCR", "rapid antigen")
+                    </p>
+                </div>
+                <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg group transition-all duration-300 hover:shadow-md overflow-hidden">
+                    <h4 class="text-base font-semibold text-blue-800 m-0">Units</h4>
+                    <p class="text-sm text-blue-900 max-h-0 opacity-0 transition-all duration-300 ease-out group-hover:max-h-40 group-hover:opacity-100 group-hover:mt-2 overflow-hidden">
+                        The units for the viral load, e.g., "Ct", "Log10 copies/mL".
+                    </p>
+                </div>
+                <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg group transition-all duration-300 hover:shadow-md overflow-hidden">
+                    <h4 class="text-base font-semibold text-blue-800 m-0">DOI</h4>
+                    <p class="text-sm text-blue-900 max-h-0 opacity-0 transition-all duration-300 ease-out group-hover:max-h-40 group-hover:opacity-100 group-hover:mt-2 overflow-hidden">
+                        Digital Object Identifier for the source publication.
+                    </p>
+                </div>
+                <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg group transition-all duration-300 hover:shadow-md overflow-hidden">
+                    <h4 class="text-base font-semibold text-blue-800 m-0">Patient Identifier</h4>
+                    <p class="text-sm text-blue-900 max-h-0 opacity-0 transition-all duration-300 ease-out group-hover:max-h-40 group-hover:opacity-100 group-hover:mt-2 overflow-hidden">
+                        An anonymized, unique ID for each patient.
+                    </p>
+                </div>
+                <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg group transition-all duration-300 hover:shadow-md overflow-hidden">
+                    <h4 class="text-base font-semibold text-blue-800 m-0">Patient Species</h4>
+                    <p class="text-sm text-blue-900 max-h-0 opacity-0 transition-all duration-300 ease-out group-hover:max-h-40 group-hover:opacity-100 group-hover:mt-2 overflow-hidden">
+                        The species of the patient (e.g., "Homo sapiens").
+                    </p>
+                </div>
+            </div>
+
+            <!-- Encouraged Fields -->
+            <h3 class="border-l-4 border-green-600 pl-3 mt-8">Encouraged Fields</h3>
+            <p>These fields provide critical context that enables more powerful and stratified analyses. We strongly encourage contributors to include these fields whenever possible.</p>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 not-prose">
+                <div class="p-4 bg-green-50 border border-green-200 rounded-lg group transition-all duration-300 hover:shadow-md overflow-hidden">
+                    <h4 class="text-base font-semibold text-green-800 m-0">StudyID</h4>
+                    <p class="text-sm text-green-900 max-h-0 opacity-0 transition-all duration-300 ease-out group-hover:max-h-40 group-hover:opacity-100 group-hover:mt-2 overflow-hidden">
+                        A short, unique identifier for the study (e.g., "ke2022").
+                    </p>
+                </div>
+                <div class="p-4 bg-green-50 border border-green-200 rounded-lg group transition-all duration-300 hover:shadow-md overflow-hidden">
+                    <h4 class="text-base font-semibold text-green-800 m-0">InfectionID</h4>
+                    <p class="text-sm text-green-900 max-h-0 opacity-0 transition-all duration-300 ease-out group-hover:max-h-40 group-hover:opacity-100 group-hover:mt-2 overflow-hidden">
+                        An identifier for the infection, helpful if the same person underoges multiple infections. 
+                    </p>
+                </div>
+                <div class="p-4 bg-green-50 border border-green-200 rounded-lg group transition-all duration-300 hover:shadow-md overflow-hidden">
+                    <h4 class="text-base font-semibold text-green-800 m-0">Sample Source</h4>
+                    <p class="text-sm text-green-900 max-h-0 opacity-0 transition-all duration-300 ease-out group-hover:max-h-40 group-hover:opacity-100 group-hover:mt-2 overflow-hidden">
+                        The anatomical source of the sample (e.g., "nasal", "saliva").
+                    </p>
+                </div>
+                <div class="p-4 bg-green-50 border border-green-200 rounded-lg group transition-all duration-300 hover:shadow-md overflow-hidden">
+                    <h4 class="text-base font-semibold text-green-800 m-0">Sample Method</h4>
+                    <p class="text-sm text-green-900 max-h-0 opacity-0 transition-all duration-300 ease-out group-hover:max-h-40 group-hover:opacity-100 group-hover:mt-2 overflow-hidden">
+                        How the sample was collected (e.g., "swab", "wash").
+                    </p>
+                </div>
+                <div class="p-4 bg-green-50 border border-green-200 rounded-lg group transition-all duration-300 hover:shadow-md overflow-hidden">
+                    <h4 class="text-base font-semibold text-green-800 m-0">GE/mL Conversion</h4>
+                    <p class="text-sm text-green-900 max-h-0 opacity-0 transition-all duration-300 ease-out group-hover:max-h-40 group-hover:opacity-100 group-hover:mt-2 overflow-hidden">
+                        Parameters (e.g., intercept, slope) to convert from Ct to copies/mL.
+                    </p>
+                </div>
+                <div class="p-4 bg-green-50 border border-green-200 rounded-lg group transition-all duration-300 hover:shadow-md overflow-hidden">
+                    <h4 class="text-base font-semibold text-green-800 m-0">Targets</h4>
+                    <p class="text-sm text-green-900 max-h-0 opacity-0 transition-all duration-300 ease-out group-hover:max-h-40 group-hover:opacity-100 group-hover:mt-2 overflow-hidden">
+                        The specific gene target(s) of the assay (e.g., "N gene", "S gene").
+                    </p>
+                </div>
+                <div class="p-4 bg-green-50 border border-green-200 rounded-lg group transition-all duration-300 hover:shadow-md overflow-hidden">
+                    <h4 class="text-base font-semibold text-green-800 m-0">Platform Tech</h4>
+                    <p class="text-sm text-green-900 max-h-0 opacity-0 transition-all duration-300 ease-out group-hover:max-h-40 group-hover:opacity-100 group-hover:mt-2 overflow-hidden">
+                        The specific underlying technology of the assay (e.g., "Alinity", "cobas").
+                    </p>
+                </div>
+            </div>
+
+            <!-- Accepted Fields -->
+            <h3 class="border-l-4 border-gray-500 pl-3 mt-8">Accepted Fields</h3>
+            <p>These fields represent valuable clinical and demographic metadata. While not required, they are gratefully accepted and will be incorporated into the database to allow for highly specific data filtering.</p>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 not-prose">
+                <div class="p-4 bg-gray-50 border border-gray-200 rounded-lg group transition-all duration-300 hover:shadow-md overflow-hidden">
+                    <h4 class="text-base font-semibold text-gray-800 m-0">Age</h4>
+                    <p class="text-sm text-gray-900 max-h-0 opacity-0 transition-all duration-300 ease-out group-hover:max-h-40 group-hover:opacity-100 group-hover:mt-2 overflow-hidden">
+                        Patient age. We prefer a range (AgeRng1, AgeRng2) for privacy.
+                    </p>
+                </div>
+                <div class="p-4 bg-gray-50 border border-gray-200 rounded-lg group transition-all duration-300 hover:shadow-md overflow-hidden">
+                    <h4 class="text-base font-semibold text-gray-800 m-0">Symptoms</h4>
+                    <p class="text-sm text-gray-900 max-h-0 opacity-0 transition-all duration-300 ease-out group-hover:max-h-40 group-hover:opacity-100 group-hover:mt-2 overflow-hidden">
+                        Presence, absence, or description of symptoms (e.g., "fever", "cough").
+                    </p>
+                </div>
+                <div class="p-4 bg-gray-50 border border-gray-200 rounded-lg group transition-all duration-300 hover:shadow-md overflow-hidden">
+                    <h4 class="text-base font-semibold text-gray-800 m-0">Treatments</h4>
+                    <p class="text-sm text-gray-900 max-h-0 opacity-0 transition-all duration-300 ease-out group-hover:max-h-40 group-hover:opacity-100 group-hover:mt-2 overflow-hidden">
+                        Any treatments administered (e.g., "Paxlovid", "Remdesivir").
+                    </p>
+                </div>
+                <div class="p-4 bg-gray-50 border border-gray-200 rounded-lg group transition-all duration-300 hover:shadow-md overflow-hidden">
+                    <h4 class="text-base font-semibold text-gray-800 m-0">Comorbidities</h4>
+                    <p class="text-sm text-gray-900 max-h-0 opacity-0 transition-all duration-300 ease-out group-hover:max-h-40 group-hover:opacity-100 group-hover:mt-2 overflow-hidden">
+                        Pre-existing conditions (e.g., "diabetes", "hypertension").
+                    </p>
+                </div>
+                <div class="p-4 bg-gray-50 border border-gray-200 rounded-lg group transition-all duration-300 hover:shadow-md overflow-hidden">
+                    <h4 class="text-base font-semibold text-gray-800 m-0">Hospitalization</h4>
+                    <p class="text-sm text-gray-900 max-h-0 opacity-0 transition-all duration-300 ease-out group-hover:max-h-40 group-hover:opacity-100 group-hover:mt-2 overflow-hidden">
+                        Indicator of whether the patient was hospitalized.
+                    </p>
+                </div>
+                <div class="p-4 bg-gray-50 border border-gray-200 rounded-lg group transition-all duration-300 hover:shadow-md overflow-hidden">
+                    <h4 class="text-base font-semibold text-gray-800 m-0">Subtype</h4>
+                    <p class="text-sm text-gray-900 max-h-0 opacity-0 transition-all duration-300 ease-out group-hover:max-h-40 group-hover:opacity-100 group-hover:mt-2 overflow-hidden">
+                        Pathogen variant (e.g., A/H1N1 or BA.1)
+                    </p>
+                </div>
+            </div>
+
+            <!-- 
+            Section 2: Database Architecture
+            (Unchanged)
+            -->
+            <h2>Database Architecture</h2>
+            <p>Our goal is to eventually transition this flat-file commons into a queryable relational database. A preliminary sketch of this architecture is shown below. This structure will allow for more efficient querying and linking of studies, individuals, and samples.</p>
+            
+            <!-- Placeholder for Crow's Foot Diagram -->
+            <div class="not-prose bg-white rounded-lg shadow-md border border-gray-200 p-8 my-8">
+                <div class="border-4 border-dashed border-gray-300 rounded-lg h-96 flex items-center justify-center">
+                    <div class="text-center text-gray-500">
+                        <p class="mt-4 text-xl font-semibold">Database Schema Diagram</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 
+            Section 3: Rationale
+            (Unchanged)
+            -->
+            <h2>Our Rationale</h2>
+            <p>This data standard is a pragmatic balance between <strong>comprehensiveness</strong> and <strong>usability</strong>. We want to capture the rich biological, clinical, and epidemiological context of each sample, but we also recognize that overly complex standards are a barrier to contribution. </p>
+            
+            <h3>Why these fields?</h3>
+            <p>Our <strong>Essential Fields</strong> are the minimum set required to plot a single kinetic trajectory and link it to its source. Our <strong>Encouraged Fields</strong> were chosen because they are the most common and powerful variables used for stratification (e.g., comparing viral loads by sample source, or by assay target). The <strong>Accepted Fields</strong> provide deeper clinical context that is invaluable for specific research questions, such as linking viral kinetics to disease severity.</p>
+
+            <h3>What's omitted?</h3>
+            <p>We have intentionally omitted fields that are difficult to standardize, such as detailed clinical symptom scoring, or fields that are often protected by privacy regulations and require complex data use agreements, such as specific locations or full dates. Our focus is on creating a public-ready dataset that can be shared and used broadly with minimal friction.</p>
+
+        </article>
+
+    </div>
+</body>
+</html>
