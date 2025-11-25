@@ -57,6 +57,9 @@ def load_and_format():
     df["Units"] = "GEml (log10VL)" # intercepts available in supplemental material
     df["DOI"] = "10.1126/science.abi5273"
     df["PlatformType"] = "RT-qPCR"
+    # note that in data/jones2021_rawfiles, empirical culture data is recorded, confusingly labeled as "probabiliity"
+    ## these were used to calculate the culture probability in the source paper, they are not simulated data
+    ## not currently ingested here but could be added in future versions
     df["PlatformTech"] = "Roche Light Cycler 480, or Roche cobas 6800/8800"
 
 
