@@ -54,9 +54,9 @@ graph LR
 	inbox[Inbox: 23]
 	mayexist[May exist: 40]
 	denea[Exists - not easy to access: 17]
-	exists[Exists: 9]
-	provingest[Provisional ingest: 3]
-	ingested[Ingested: 11.66]
+	exists[Exists: 4]
+	provingest[Provisional ingest: 2]
+	ingested[Ingested: 14]
 	exists --> provingest --> ingested
 ```
 
@@ -68,7 +68,7 @@ graph LR
 - Pathogen: ["SARS2", "Flu", "Dengue", "WestNile"]
     - Prefer shortest cleanest, high-level term
     - Keep track of naming quirks here for consistency
-- IndSpecies: Spcies (corresponding to the individual subject of study) e.g. human, dairy cow
+- IndSpecies: Spcies (corresponding to the individual subject of study) e.g. human, dairy cattle
     - Use naming convention per the paper or simple common name, rather than scientific names
 - InfectionID: A unique infection identifier (in case multiple infections in a single person, as needed)
 - SampleID: An identifier for the biological sample
