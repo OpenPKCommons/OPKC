@@ -42,12 +42,11 @@
             
             <div>
                 <label for="color-by-select" class="font-semibold text-gray-700">Color Scatter By</label>
-                <select id="color-by-select" class="w-full p-2 mt-2 border border-gray-300 rounded-md shadow-sm text-sm bg-white">
+                <select id="color-by-select" class="w-full bg-white border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="StudyID" selected>Study</option>
                     <option value="SampleSource">Sample Source</option>
-                    <option value="StudyID">Study</option>
                     <option value="Pathogen">Pathogen</option>
                     <option value="Subtype">Subtype</option>
-                    <option value="Age">Age</option>
                 </select>
             </div>
 
@@ -202,8 +201,13 @@
             UNIQUE_STUDIES.forEach(study => {
                 const label = document.createElement('label');
                 label.className = 'block font-normal text-sm cursor-pointer hover:bg-gray-200 rounded px-1 study-label';
-                label.dataset.value = study; // Add data-value for dynamic filtering
-                label.innerHTML = `<input type="checkbox" class="filter-checkbox" data-filter-type="study" value="${study}" checked> ${study}`;
+                label.dataset.value = study; 
+                
+                // CHANGE: Check if the study is 'ke2022'. 
+                // If you want multiple defaults, you could use: ['ke2022', 'other'].includes(study)
+                const isChecked = (study === 'ke2022') ? 'checked' : '';
+
+                label.innerHTML = `<input type="checkbox" class="filter-checkbox" data-filter-type="study" value="${study}" ${isChecked}> ${study}`;
                 studyListDiv.appendChild(label);
             });
             
