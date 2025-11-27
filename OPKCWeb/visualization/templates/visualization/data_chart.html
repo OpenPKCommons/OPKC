@@ -89,8 +89,8 @@
                 <div class="flex justify-between items-center mb-2">
                     <label class="font-semibold text-gray-700">Filter by Sample Source</label>
                     <div>
-                        <button id="sample-select-all" class="text-xs font-medium text-blue-600 hover:underline">All</button> |
-                        <button id="sample-select-none" class="text-xs font-medium text-blue-600 hover:underline">None</button>
+                        <button id="samplesource-select-all" class="text-xs font-medium text-blue-600 hover:underline">All</button> |
+                        <button id="samplesource-select-none" class="text-xs font-medium text-blue-600 hover:underline">None</button>
                     </div>
                 </div>
                 <div id="samplesource-filter-list" class="filter-list h-24 max-h-24 overflow-y-auto space-y-1 rounded-md border border-gray-300 p-3 bg-gray-50">
@@ -515,16 +515,27 @@
 
         // Attach listeners to "Select All/None" buttons
         const addAllNoneListeners = (type) => {
-            document.getElementById(`${type}-select-all`).addEventListener('click', () => {
-                document.querySelectorAll(`#${type}-filter-list input`).forEach(cb => cb.checked = true);
-                handleFilterChange();
-            });
-            document.getElementById(`${type}-select-none`).addEventListener('click', () => {
-                document.querySelectorAll(`#${type}-filter-list input`).forEach(cb => cb.checked = false);
-                handleFilterChange();
-            });
+            // This helper uses the 'type' to find: 
+            // 1. Button ID: type + '-select-all'
+            // 2. List ID:   type + '-filter-list'
+            
+            const btnAll = document.getElementById(`${type}-select-all`);
+            const btnNone = document.getElementById(`${type}-select-none`);
+
+            if (btnAll && btnNone) {
+                btnAll.addEventListener('click', () => {
+                    document.querySelectorAll(`#${type}-filter-list input`).forEach(cb => cb.checked = true);
+                    handleFilterChange();
+                });
+                btnNone.addEventListener('click', () => {
+                    document.querySelectorAll(`#${type}-filter-list input`).forEach(cb => cb.checked = false);
+                    handleFilterChange();
+                });
+            }
         };
-        ['study', 'pathogen', 'subtype', 'sample'].forEach(addAllNoneListeners);
+        
+        // FIXED: Changed 'sample' to 'samplesource'
+        ['study', 'pathogen', 'subtype', 'samplesource'].forEach(addAllNoneListeners);
 
         // Attach listeners to container for delegation (more efficient)
         [studyListDiv, pathogenListDiv, subtypeListDiv, sampleListDiv].forEach(div => {
