@@ -111,7 +111,8 @@ def chart_view(request):
         # --- 3. Prepare ALL Data for JS ---
         
         # --- MODIFIED: Add Pathogen and Subtype to columns ---
-        plot_columns = ['StudyID', 'SampleSource', 'TimeDays', 'PathogenLoad', 'AgeRng1', 'AgeRng2', 'Pathogen', 'Subtype']
+        plot_columns = ['StudyID', 'SampleSource', 'TimeDays', 'PathogenLoad', 'AgeRng1', 'AgeRng2', 'Pathogen', 'Subtype', 'Units']
+        
         # --- MODIFIED: Add Pathogen to core columns ---
         core_plot_cols = ['StudyID', 'SampleSource', 'TimeDays', 'PathogenLoad', 'Pathogen']
         

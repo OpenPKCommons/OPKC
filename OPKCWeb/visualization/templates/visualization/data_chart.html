@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -16,7 +17,6 @@
         }
     </script>
     <style>
-        /* All your <style> content is identical */
         .modebar { background: transparent !important; }
         .modebar-group { background-color: white !important; border-radius: 6px !important; border: 1px solid #e2e8f0 !important; }
         .modebar-btn.active, .modebar-btn:hover { background-color: #f1f5f9 !important; }
@@ -42,11 +42,12 @@
             
             <div>
                 <label for="color-by-select" class="font-semibold text-gray-700">Color Scatter By</label>
-                <select id="color-by-select" class="w-full bg-white border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <select id="color-by-select" class="w-full p-2 mt-2 border border-gray-300 rounded-md shadow-sm text-sm bg-white">
                     <option value="StudyID" selected>Study</option>
                     <option value="SampleSource">Sample Source</option>
                     <option value="Pathogen">Pathogen</option>
                     <option value="Subtype">Subtype</option>
+                    <option value="Age">Age</option>
                 </select>
             </div>
 
@@ -127,7 +128,7 @@
             <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-6">
                 Pathogen Load vs. Time
             </h2>
-            <div id="vlScatterPlot" class="w-full h-[500px]">
+            <div id="plots-container" class="w-full h-[500px] flex flex-row space-x-2">
                 </div>
         </div>
         
@@ -145,25 +146,28 @@
     {{ sample_types|json_script:"unique-samples-json" }}
     {{ pathogens|json_script:"unique-pathogens-json" }}
     {{ subtypes|json_script:"unique-subtypes-json" }}
+    
     <script>
         // --- 1. Get Data from Django ---
         let ALL_DATA = [];
         let UNIQUE_STUDIES = [];
         let UNIQUE_SAMPLES = [];
-        // --- NEW: Add Pathogen and Subtype variables ---
         let UNIQUE_PATHOGENS = [];
         let UNIQUE_SUBTYPES = [];
-        // --- End NEW ---
+        
+        // --- NEW: Define Unit Categories ---
+        const UNITS_CT = ['Ct', 'Ct (max 40)', 'Ct (max 45)', 'Ct (max 38) WITH PLOTDIGITIZER'];
+        const UNITS_BINARY = ['binary'];
+        // All other units fall into "Other" (e.g., GE/ml, PFU/ml, copies/mL)
+
         const statusMessage = document.getElementById('status-message');
 
         try {
             ALL_DATA = JSON.parse(document.getElementById('all-data-json').textContent);
             UNIQUE_STUDIES = JSON.parse(document.getElementById('unique-studies-json').textContent);
             UNIQUE_SAMPLES = JSON.parse(document.getElementById('unique-samples-json').textContent);
-            // --- NEW: Parse Pathogen and Subtype JSON ---
             UNIQUE_PATHOGENS = JSON.parse(document.getElementById('unique-pathogens-json').textContent);
             UNIQUE_SUBTYPES = JSON.parse(document.getElementById('unique-subtypes-json').textContent);
-            // --- End NEW ---
             
             if (!ALL_DATA || ALL_DATA.length === 0) {
                  statusMessage.textContent = 'No data loaded from server.';
@@ -173,45 +177,37 @@
             statusMessage.textContent = 'Error loading data.';
             document.getElementById('study-filter-list').innerHTML = '<p class="text-red-500">Error loading filters.</p>';
             document.getElementById('samplesource-filter-list').innerHTML = '<p class="text-red-500">Error loading filters.</p>';
-            // --- NEW: Add error state for new filters ---
             document.getElementById('pathogen-filter-list').innerHTML = '<p class="text-red-500">Error loading filters.</p>';
             document.getElementById('subtype-filter-list').innerHTML = '<p class="text-red-500">Error loading filters.</p>';
-            // --- End NEW ---
         }
         
         // --- 2. Get DOM References ---
-        const scatterPlotDiv = document.getElementById('vlScatterPlot');
+        // CHANGED: Use the new container ID
+        const plotsContainer = document.getElementById('plots-container');
         const barPlotDiv = document.getElementById('timeDaysBarChart');
         const studyListDiv = document.getElementById('study-filter-list');
         const sampleListDiv = document.getElementById('samplesource-filter-list');
-        // --- NEW: Add DOM refs for new filters ---
         const pathogenListDiv = document.getElementById('pathogen-filter-list');
         const subtypeListDiv = document.getElementById('subtype-filter-list');
-        // --- End NEW ---
         const minAgeInput = document.getElementById('min-age');
         const maxAgeInput = document.getElementById('max-age');
         const colorBySelect = document.getElementById('color-by-select');
         
         const PLOTLY_COLORS = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf'];
 
-        /**
-         * Populates the filter checkboxes in the sidebar
-         */
         function populateFilters() {
             UNIQUE_STUDIES.forEach(study => {
                 const label = document.createElement('label');
                 label.className = 'block font-normal text-sm cursor-pointer hover:bg-gray-200 rounded px-1 study-label';
                 label.dataset.value = study; 
                 
-                // CHANGE: Check if the study is 'ke2022'. 
-                // If you want multiple defaults, you could use: ['ke2022', 'other'].includes(study)
+                // --- CHANGED: Default only to 'ke2022' ---
                 const isChecked = (study === 'ke2022') ? 'checked' : '';
-
+                
                 label.innerHTML = `<input type="checkbox" class="filter-checkbox" data-filter-type="study" value="${study}" ${isChecked}> ${study}`;
                 studyListDiv.appendChild(label);
             });
             
-            // --- NEW: Populate Pathogens ---
             UNIQUE_PATHOGENS.forEach(pathogen => {
                 const label = document.createElement('label');
                 label.className = 'block font-normal text-sm cursor-pointer hover:bg-gray-200 rounded px-1 pathogen-label';
@@ -219,9 +215,7 @@
                 label.innerHTML = `<input type="checkbox" class="filter-checkbox" data-filter-type="pathogen" value="${pathogen}" checked> ${pathogen}`;
                 pathogenListDiv.appendChild(label);
             });
-            // --- End NEW ---
 
-            // --- NEW: Populate Subtypes ---
             UNIQUE_SUBTYPES.forEach(subtype => {
                 const label = document.createElement('label');
                 label.className = 'block font-normal text-sm cursor-pointer hover:bg-gray-200 rounded px-1 subtype-label';
@@ -229,7 +223,6 @@
                 label.innerHTML = `<input type="checkbox" class="filter-checkbox" data-filter-type="subtype" value="${subtype}" checked> ${subtype}`;
                 subtypeListDiv.appendChild(label);
             });
-            // --- End NEW ---
 
             UNIQUE_SAMPLES.forEach(sample => {
                 const label = document.createElement('label');
@@ -238,20 +231,13 @@
                 label.innerHTML = `<input type="checkbox" class="filter-checkbox" data-filter-type="sample" value="${sample}" checked> ${sample}`;
                 sampleListDiv.appendChild(label);
             });
-
-            // (Error message logic is unchanged)
         }
 
-        /**
-         * Dynamically hide/show sample source filters based on selected studies
-         */
         function updateDynamicSampleFilter() {
             const selectedStudies = Array.from(studyListDiv.querySelectorAll('input[type=checkbox]:checked')).map(cb => cb.value);
             const validSampleSources = new Set();
             ALL_DATA.forEach(row => {
-                if (selectedStudies.includes(row.StudyID)) {
-                    validSampleSources.add(row.SampleSource);
-                }
+                if (selectedStudies.includes(row.StudyID)) validSampleSources.add(row.SampleSource);
             });
 
             sampleListDiv.querySelectorAll('.sample-source-label').forEach(label => {
@@ -266,16 +252,11 @@
             });
         }
         
-        /**
-         * --- NEW: Dynamically hide/show pathogen filters based on selected studies
-         */
         function updateDynamicPathogenFilter() {
             const selectedStudies = Array.from(studyListDiv.querySelectorAll('input[type=checkbox]:checked')).map(cb => cb.value);
             const validPathogens = new Set();
             ALL_DATA.forEach(row => {
-                if (selectedStudies.includes(row.StudyID)) {
-                    validPathogens.add(row.Pathogen);
-                }
+                if (selectedStudies.includes(row.StudyID)) validPathogens.add(row.Pathogen);
             });
 
             pathogenListDiv.querySelectorAll('.pathogen-label').forEach(label => {
@@ -290,22 +271,16 @@
             });
         }
         
-        /**
-         * --- NEW: Dynamically hide/show subtype filters based on selected pathogens
-         */
         function updateDynamicSubtypeFilter() {
             const selectedPathogens = Array.from(pathogenListDiv.querySelectorAll('input[type=checkbox]:checked')).map(cb => cb.value);
             const validSubtypes = new Set();
             ALL_DATA.forEach(row => {
-                if (selectedPathogens.includes(row.Pathogen)) {
-                    validSubtypes.add(row.Subtype);
-                }
+                if (selectedPathogens.includes(row.Pathogen)) validSubtypes.add(row.Subtype);
             });
 
             subtypeListDiv.querySelectorAll('.subtype-label').forEach(label => {
                 const subtypeValue = label.dataset.value;
                 const checkbox = label.querySelector('input');
-                // Also check for null/undefined, which may not be in the 'validSubtypes' set but should be hidden
                 if (validSubtypes.has(subtypeValue) && subtypeValue !== null) {
                     label.style.display = 'block';
                 } else {
@@ -315,11 +290,7 @@
             });
         }
 
-        /**
-         * Helper function to get an age bin for a row
-         */
         function getAgeBin(row) {
-            // (This function is unchanged)
             if (row.AgeRng1 === null) return "Unknown";
             const avgAge = (row.AgeRng1 + row.AgeRng2) / 2;
             if (avgAge < 10) return "0-9";
@@ -333,16 +304,14 @@
         }
 
         /**
-         * Main function to filter data and update both Plotly charts
+         * Main function to filter data and update BOTH charts (Scatter & Bar)
          */
         function updatePlots() {
             // 1. Get selected filters
             const selectedStudies = Array.from(studyListDiv.querySelectorAll('input[type=checkbox]:checked')).map(cb => cb.value);
             const selectedSamples = Array.from(sampleListDiv.querySelectorAll('input[type=checkbox]:checked')).map(cb => cb.value);
-            // --- NEW: Get Pathogen and Subtype filters ---
             const selectedPathogens = Array.from(pathogenListDiv.querySelectorAll('input[type=checkbox]:checked')).map(cb => cb.value);
             const selectedSubtypes = Array.from(subtypeListDiv.querySelectorAll('input[type=checkbox]:checked')).map(cb => cb.value);
-            // --- End NEW ---
             const userMinAge = parseFloat(minAgeInput.value) || 0;
             const userMaxAge = parseFloat(maxAgeInput.value) || 100;
             const colorBy = colorBySelect.value; 
@@ -351,10 +320,8 @@
             const filteredData = ALL_DATA.filter(row => {
                 const studiesMatch = selectedStudies.includes(row.StudyID);
                 const samplesMatch = selectedSamples.includes(row.SampleSource);
-                // --- NEW: Add Pathogen and Subtype match logic ---
                 const pathogensMatch = selectedPathogens.includes(row.Pathogen);
                 const subtypesMatch = selectedSubtypes.includes(row.Subtype);
-                // --- End NEW ---
                 
                 const personMinAge = row.AgeRng1;
                 const personMaxAge = row.AgeRng2;
@@ -362,79 +329,149 @@
                 if (personMinAge !== null && personMaxAge !== null) {
                     ageMatch = (personMaxAge >= userMinAge) && (personMinAge <= userMaxAge);
                 } else {
-                    if (userMinAge !== 0 || userMaxAge !== 100) {
-                        ageMatch = false; 
-                    }
+                    if (userMinAge !== 0 || userMaxAge !== 100) ageMatch = false; 
                 }
                 
-                // --- MODIFIED: Add new matches to return statement ---
                 return studiesMatch && samplesMatch && ageMatch && pathogensMatch && subtypesMatch;
             });
 
-            // 3. --- Prep Data for Scatter Plot (Stratified) ---
-            const scatterTraces = {};
-            let colorIndex = 0;
-            const colorMap = {};
+            // --- 3. Prep Data for SCATTER Plots (Split by Units) ---
             
-            filteredData.forEach(row => {
-                if (row.TimeDays === null || row.PathogenLoad === null) {
-                    return;
-                }
-                
-                let traceName;
-                switch (colorBy) {
-                    case 'StudyID':
-                        traceName = row.StudyID;
-                        break;
-                    // --- NEW: Add Pathogen and Subtype cases ---
-                    case 'Pathogen':
-                        traceName = row.Pathogen;
-                        break;
-                    case 'Subtype':
-                        traceName = row.Subtype;
-                        break;
-                    // --- End NEW ---
-                    case 'Age':
-                        traceName = getAgeBin(row);
-                        break;
-                    case 'SampleSource':
-                    default:
-                        traceName = row.SampleSource;
-                        break;
-                }
-                
-                if (traceName === null || traceName === undefined) traceName = "Unknown";
+            // Bucket data by unit type
+            let dataBuckets = {
+                'ct': [],
+                'binary': [],
+                'other': []
+            };
 
-                if (!colorMap[traceName]) {
-                    colorMap[traceName] = PLOTLY_COLORS[colorIndex % PLOTLY_COLORS.length];
-                    colorIndex++;
-                }
+            filteredData.forEach(d => {
+                if (d.TimeDays === null || d.PathogenLoad === null) return;
 
-                if (!scatterTraces[traceName]) {
-                    scatterTraces[traceName] = {
-                        x: [],
-                        y: [],
-                        mode: 'markers',
-                        type: 'scatter',
-                        name: traceName,
-                        marker: { 
-                            size: 6, 
-                            opacity: 0.7,
-                            color: colorMap[traceName]
-                        }
-                    };
+                if (UNITS_CT.includes(d.Units)) {
+                    dataBuckets['ct'].push(d);
+                } else if (UNITS_BINARY.includes(d.Units)) {
+                    dataBuckets['binary'].push(d);
+                } else {
+                    dataBuckets['other'].push(d);
                 }
-                scatterTraces[traceName].x.push(row.TimeDays);
-                scatterTraces[traceName].y.push(row.PathogenLoad);
             });
-            const scatterPlotData = Object.values(scatterTraces);
-            
-            if (colorBy === 'Age') {
-                scatterPlotData.sort((a, b) => a.name.localeCompare(b.name));
+
+            // Determine which plots to show
+            const activeCategories = [];
+            if (dataBuckets['ct'].length > 0) activeCategories.push('ct');
+            if (dataBuckets['binary'].length > 0) activeCategories.push('binary');
+            if (dataBuckets['other'].length > 0) activeCategories.push('other');
+
+            plotsContainer.innerHTML = ''; // Clear existing plots
+
+            if (activeCategories.length === 0) {
+                plotsContainer.innerHTML = '<div class="w-full h-full flex items-center justify-center text-gray-500 italic">No data to display.</div>';
+            } else {
+                // Calculate width per plot
+                const widthPercent = 100 / activeCategories.length;
+
+                activeCategories.forEach((cat, index) => {
+                    // Create a div for this specific plot
+                    const plotDiv = document.createElement('div');
+                    plotDiv.className = 'h-full';
+                    plotDiv.style.width = `${widthPercent}%`;
+                    if (index < activeCategories.length - 1) {
+                        plotDiv.style.borderRight = '1px solid #e5e7eb'; // Separator
+                    }
+                    plotsContainer.appendChild(plotDiv);
+
+                    // Group data by 'colorBy' for this bucket
+                    const categoryData = dataBuckets[cat];
+                    const tracesMap = new Map();
+                    let colorIndex = 0;
+                    const colorMap = {}; // Local map for consistency within this plot
+
+                    categoryData.forEach(d => {
+                        let groupKey;
+                        switch (colorBy) {
+                            case 'StudyID': groupKey = d.StudyID; break;
+                            case 'Pathogen': groupKey = d.Pathogen; break;
+                            case 'Subtype': groupKey = d.Subtype; break;
+                            case 'Age': groupKey = getAgeBin(d); break;
+                            default: groupKey = d.SampleSource; break;
+                        }
+                        if (!groupKey) groupKey = "Unknown";
+
+                        // Assign color
+                        if (!colorMap[groupKey]) {
+                            // Simple hashing or cycling for colors
+                            colorMap[groupKey] = PLOTLY_COLORS[colorIndex % PLOTLY_COLORS.length];
+                            colorIndex++;
+                        }
+
+                        if (!tracesMap.has(groupKey)) {
+                            tracesMap.set(groupKey, {
+                                x: [],
+                                y: [],
+                                mode: 'markers',
+                                type: 'scatter',
+                                name: groupKey,
+                                marker: { size: 6, opacity: 0.7, color: colorMap[groupKey] },
+                                text: [],
+                                hovertemplate: '<b>%{text}</b><br>Time: %{x} days<br>Load: %{y}<br><i>Unit: %{customdata}</i>'
+                            });
+                        }
+                        const trace = tracesMap.get(groupKey);
+                        trace.x.push(d.TimeDays);
+                        trace.y.push(d.PathogenLoad);
+                        
+                        const hoverStr = `${d.StudyID}<br>${d.SampleSource}<br>${d.Pathogen} (${d.Subtype || 'N/A'})`;
+                        trace.text.push(hoverStr);
+                        if (!trace.customdata) trace.customdata = [];
+                        trace.customdata.push(d.Units);
+                    });
+
+                    let traces = Array.from(tracesMap.values());
+                     if (colorBy === 'Age') {
+                        traces.sort((a, b) => a.name.localeCompare(b.name));
+                    }
+
+                    // Define Layout
+                    let yAxisTitle = 'Viral Load';
+                    let yAxisType = '-';
+                    let yAutoRange = true;
+                    let titleText = 'Quantitative Load';
+
+                    if (cat === 'ct') {
+                        titleText = 'Ct Values (Inverted)';
+                        yAxisTitle = 'Ct';
+                        yAutoRange = 'reversed';
+                    } else if (cat === 'binary') {
+                        titleText = 'Binary Result';
+                        yAxisTitle = 'Result';
+                        yAxisType = 'category';
+                    }
+
+                    const layout = {
+                        title: { text: titleText, font: { size: 14 } },
+                        xaxis: { title: 'Infection day', gridcolor: '#f3f4f6', zeroline: true, zerolinecolor: '#d1d5db' },
+                        yaxis: { 
+                            title: yAxisTitle, 
+                            gridcolor: '#f3f4f6', 
+                            zeroline: true, 
+                            zerolinecolor: '#d1d5db', 
+                            autorange: yAutoRange,
+                            type: (cat === 'binary') ? 'category' : undefined
+                        },
+                        hovermode: 'closest',
+                        margin: { l: 50, r: 20, t: 50, b: 50 }, 
+                        paper_bgcolor: 'rgba(0,0,0,0)',
+                        plot_bgcolor: 'rgba(0,0,0,0)',
+                        showlegend: true,
+                        legend: { orientation: 'h', y: -0.15 }
+                    };
+
+                    Plotly.newPlot(plotDiv, traces, layout, { displayModeBar: true, responsive: true });
+                });
             }
 
-            // 4. --- Prep Data for Bar Plot ---
-            // (This section is unchanged)
+
+            // --- 4. Prep Data for Bar Plot (Unchanged logic) ---
             const barCounts = {};
             filteredData.forEach(row => {
                 if (row.TimeDays !== null) {
@@ -451,18 +488,6 @@
                 marker: { color: 'rgb(37, 99, 235)' }
             }];
 
-            // 5. --- Define Layouts ---
-            // (This section is unchanged)
-            const scatterLayout = {
-                xaxis: { title: 'Infection day', gridcolor: '#f3f4f6', zeroline: true, zerolinecolor: '#d1d5db' },
-                yaxis: { title: 'Pathogen Load (Log10)', gridcolor: '#f3f4f6', zeroline: true, zerolinecolor: '#d1d5db', autorange: 'reversed' },
-                hovermode: 'closest',
-                margin: { l: 60, r: 30, t: 60, b: 80 }, 
-                paper_bgcolor: 'rgba(0,0,0,0)',
-                plot_bgcolor: 'rgba(0,0,0,0)',
-                showlegend: true,
-                legend: { orientation: 'h', y: -0.2, yanchor: 'top', x: 0.5, xanchor: 'center' }
-            };
             const barLayout = {
                 xaxis: { title: 'Infection day', automargin: true, gridcolor: '#f3f4f6', zeroline: false },
                 yaxis: { title: 'Sample Count', zeroline: true, rangemode: 'tozero', gridcolor: '#f3f4f6' },
@@ -471,103 +496,59 @@
                 margin: { l: 60, r: 30, t: 60, b: 50 }, 
             };
 
-            // 6. --- Redraw Plots ---
-            // (This section is unchanged)
-            if (scatterPlotData.length > 0) {
-                Plotly.react(scatterPlotDiv, scatterPlotData, scatterLayout, { displayModeBar: true, responsive: true });
-            } else {
-                Plotly.react(scatterPlotDiv, [], {title: 'No data to display for selected filters'}, { responsive: true });
-            }
             if (barPlotData[0].x.length > 0) {
                 Plotly.react(barPlotDiv, barPlotData, barLayout, { displayModeBar: true, responsive: true });
             } else {
                 Plotly.react(barPlotDiv, [], {title: 'No data to display for selected filters'}, { responsive: true });
             }
 
-            // 7. Update status message
             statusMessage.textContent = `${filteredData.length} data points shown.`;
         }
         
-        /**
-         * MODIFIED: Handler for when the STUDY filter changes
-         */
-        function handleStudyFilterChange() {
-            updateDynamicSampleFilter(); // Update samples
-            updateDynamicPathogenFilter(); // Update pathogens
-            updateDynamicSubtypeFilter(); // Update subtypes (cascades from pathogens)
-            updatePlots(); // Then update the plots
-        }
-        
-        /**
-         * --- NEW: Handler for when the PATHOGEN filter changes
-         */
-        function handlePathogenFilterChange() {
-            updateDynamicSubtypeFilter(); // Update subtypes
-            updatePlots(); // Then update the plots
-        }
-        
-        /**
-         * Helper function for "Select All" / "Select None" buttons
-         */
-        function setCheckboxes(containerId, isChecked) {
-            document.querySelectorAll(`#${containerId} input[type=checkbox]`).forEach(cb => {
-                // --- MODIFIED: Only check visible checkboxes ---
-                if (cb.closest('label').style.display !== 'none') {
-                    cb.checked = isChecked;
-                }
-                // --- End MODIFIED ---
-            });
-            
-            // Manually trigger the correct update handler
-            if (containerId === 'study-filter-list') {
-                handleStudyFilterChange();
-            } else if (containerId === 'pathogen-filter-list') {
-                handlePathogenFilterChange();
-            } else {
-                updatePlots();
-            }
+        // --- Event Listeners ---
+        function handleFilterChange() {
+            updateDynamicSampleFilter();
+            updateDynamicPathogenFilter();
+            updateDynamicSubtypeFilter();
+            updatePlots();
         }
 
-        // --- 3. Attach Event Listeners ---
-        
-        // Study list uses the new handler
-        studyListDiv.addEventListener('change', handleStudyFilterChange);
-        
-        // --- NEW: Add listeners for new filters ---
-        pathogenListDiv.addEventListener('change', handlePathogenFilterChange);
-        subtypeListDiv.addEventListener('change', updatePlots);
-        // --- End NEW ---
-        
-        // Other filters update plots directly
-        sampleListDiv.addEventListener('change', updatePlots);
-        minAgeInput.addEventListener('input', updatePlots);
-        maxAgeInput.addEventListener('input', updatePlots);
+        // Attach listeners to "Select All/None" buttons
+        const addAllNoneListeners = (type) => {
+            document.getElementById(`${type}-select-all`).addEventListener('click', () => {
+                document.querySelectorAll(`#${type}-filter-list input`).forEach(cb => cb.checked = true);
+                handleFilterChange();
+            });
+            document.getElementById(`${type}-select-none`).addEventListener('click', () => {
+                document.querySelectorAll(`#${type}-filter-list input`).forEach(cb => cb.checked = false);
+                handleFilterChange();
+            });
+        };
+        ['study', 'pathogen', 'subtype', 'sample'].forEach(addAllNoneListeners);
+
+        // Attach listeners to container for delegation (more efficient)
+        [studyListDiv, pathogenListDiv, subtypeListDiv, sampleListDiv].forEach(div => {
+            div.addEventListener('change', handleFilterChange);
+        });
+
+        minAgeInput.addEventListener('change', updatePlots);
+        maxAgeInput.addEventListener('change', updatePlots);
         colorBySelect.addEventListener('change', updatePlots);
 
-        // "Select All/None" buttons
-        document.getElementById('study-select-all').addEventListener('click', () => setCheckboxes('study-filter-list', true));
-        document.getElementById('study-select-none').addEventListener('click', () => setCheckboxes('study-filter-list', false));
-        document.getElementById('sample-select-all').addEventListener('click', () => setCheckboxes('samplesource-filter-list', true));
-        document.getElementById('sample-select-none').addEventListener('click', () => setCheckboxes('samplesource-filter-list', false));
-        // --- NEW: Add listeners for new "All/None" buttons ---
-        document.getElementById('pathogen-select-all').addEventListener('click', () => setCheckboxes('pathogen-filter-list', true));
-        document.getElementById('pathogen-select-none').addEventListener('click', () => setCheckboxes('pathogen-filter-list', false));
-        document.getElementById('subtype-select-all').addEventListener('click', () => setCheckboxes('subtype-filter-list', true));
-        document.getElementById('subtype-select-none').addEventListener('click', () => setCheckboxes('subtype-filter-list', false));
-        // --- End NEW ---
+        window.addEventListener('resize', () => {
+             updatePlots(); // Simple way to handle resize for multiple plots
+        });
 
-        // --- 4. Initial Page Load ---
+        // --- Initial Load ---
         document.addEventListener('DOMContentLoaded', () => {
             if (ALL_DATA.length > 0) {
                 populateFilters();
-                // --- MODIFIED: Call all dynamic filters on first load ---
                 updateDynamicSampleFilter();
                 updateDynamicPathogenFilter();
                 updateDynamicSubtypeFilter();
-                // --- End MODIFIED ---
                 updatePlots();
             } else {
-                 scatterPlotDiv.innerHTML = '<div class="w-full h-full flex items-center justify-center text-gray-500 italic">No data to display.</div>';
+                 plotsContainer.innerHTML = '<div class="w-full h-full flex items-center justify-center text-gray-500 italic">No data to display.</div>';
                  barPlotDiv.innerHTML = '<div class="w-full h-full flex items-center justify-center text-gray-500 italic">No data to display.</div>';
             }
         });
