@@ -432,19 +432,27 @@
                     }
 
                     // Define Layout
-                    let yAxisTitle = 'Viral Load';
+                    let yAxisTitle = 'Viral Load (GE/ml)';
                     let yAxisType = '-';
                     let yAutoRange = true;
                     let titleText = 'Quantitative Load';
 
+                    // New variables to control category order
+                    let yCategoryOrder = undefined;
+                    let yCategoryArray = undefined;
+
                     if (cat === 'ct') {
-                        titleText = 'Ct Values (Inverted)';
+                        titleText = 'Ct Value';
                         yAxisTitle = 'Ct';
                         yAutoRange = 'reversed';
                     } else if (cat === 'binary') {
                         titleText = 'Binary Result';
                         yAxisTitle = 'Result';
                         yAxisType = 'category';
+
+                        // --- CHANGE: Force order so Neg is bottom, Pos is top ---
+                        yCategoryOrder = 'array';
+                        yCategoryArray = ['Neg', 'Pos'];
                     }
 
                     const layout = {
@@ -456,7 +464,11 @@
                             zeroline: true, 
                             zerolinecolor: '#d1d5db', 
                             autorange: yAutoRange,
-                            type: (cat === 'binary') ? 'category' : undefined
+                            
+                            // Pass the category configuration
+                            type: (cat === 'binary') ? 'category' : undefined,
+                            categoryorder: yCategoryOrder,
+                            categoryarray: yCategoryArray
                         },
                         hovermode: 'closest',
                         margin: { l: 50, r: 20, t: 50, b: 50 }, 
@@ -466,7 +478,7 @@
                         legend: { orientation: 'h', y: -0.15 }
                     };
 
-                    Plotly.newPlot(plotDiv, traces, layout, { displayModeBar: true, responsive: true });
+                    Plotly.newPlot(plotDiv, traces, layout, { displayModeBar: false, responsive: true });
                 });
             }
 
@@ -497,7 +509,7 @@
             };
 
             if (barPlotData[0].x.length > 0) {
-                Plotly.react(barPlotDiv, barPlotData, barLayout, { displayModeBar: true, responsive: true });
+                Plotly.react(barPlotDiv, barPlotData, barLayout, { displayModeBar: false, responsive: true });
             } else {
                 Plotly.react(barPlotDiv, [], {title: 'No data to display for selected filters'}, { responsive: true });
             }
