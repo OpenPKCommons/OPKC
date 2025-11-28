@@ -27,7 +27,7 @@
     <div class="container mx-auto p-8 max-w-5xl py-12 md:py-20">
         
         <!-- 1. Hero Section -->
-        <section class="text-center md:text-left mb-16 md:mb-24">
+        <section class="text-center md:text-left mb-8 md:mb-12">
             <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6 flex items-center justify-center md:justify-start">
 
                 <img src="{% static 'visualization/images/logo_small.png' %}" 
@@ -38,14 +38,20 @@
                 
             </h1>
 
-            <p class="text-lg text-gray-700 mb-8">
+            <p class="text-lg text-gray-700 mb-6">
                 Welcome to the OpenPKCommons project. This platform is dedicated to compiling, standardizing, and visualizing pathogen kinetics data to accelerate scientific research and outbreak response.
             </p>
 
-            <!-- 
-            REMOVED the single "Go to Dashboard" button.
-            It is replaced by the grid below.
-            -->
+            <div class="mb-12">
+                <a href="{% static 'visualization/files/251125_opkc_lit_digested.bib' %}" download="opkc_data.bib" 
+                   class="inline-flex items-center text-blue-600 hover:text-blue-800 font-semibold transition duration-150 hover:underline">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z" />
+                    </svg>
+                    Cite the data (BibTeX)
+                </a>
+            </div>
+
         </section>
 
         <!-- 2. NEW: Thumbnail Grid Navigation -->
