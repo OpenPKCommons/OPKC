@@ -41,6 +41,31 @@ FEATURED_PAPERS_LIST = [
         'image_name': 'eales2025.png',
         'url': 'https://doi.org/10.1101/2025.02.01.636082'
     },
+    {
+        'title': 'Estimating infectiousness throughout SARS-CoV-2 infection course',
+        'image_name': 'jones2023.png',
+        'url': 'https://doi.org/10.1126/science.abi5273'
+    },
+    {
+        'title': 'Infectious viral load in unvaccinated and vaccinated individuals infected with ancestral, Delta or Omicron SARS-CoV-2',
+        'image_name': 'puhach2022.png',
+        'url': 'https://doi.org/10.1038/s41591-022-01816-0'
+    },
+    {
+        'title': 'Quantitative SARS-CoV-2 Viral-Load Curves in Paired Saliva Samples and Nasal Swabs Inform Appropriate Respiratory Sampling Site and Analytical Test Sensitivity Required for Earliest Viral Detection',
+        'image_name': 'savela2022.png',
+        'url': 'https://doi.org/10.1128/JCM.01785-21'
+    },
+    {
+        'title': 'Evolution of inflammation and immunity in a denguevirus 1 human infection model',
+        'image_name': 'waickman2022.png',
+        'url': 'https://doi.org/10.1126/scitranslmed.abo5019'
+    },
+    {
+        'title': 'Low-dose dengue virus 3 human challenge model: a phase 1 open-label study',
+        'image_name': 'waickman2024.png',
+        'url': 'https://doi.org/10.1038/s41564-024-01668-z'
+    },
 ]
 
 
