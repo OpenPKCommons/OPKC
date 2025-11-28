@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,12 +11,19 @@
     
     <div class="container mx-auto p-8 max-w-4xl py-12 md:py-20">
         
-        <p class="mb-8">
-            <a href="{% url 'visualization:index' %}" class="inline-flex items-center text-blue-600 hover:text-blue-800 hover:underline font-medium transition duration-150">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
+        <div class="flex flex-col md:flex-row md:items-center justify-between mb-10 border-b border-gray-200 pb-6">
+            <a href="{% url 'visualization:index' %}" class="flex items-center mb-4 md:mb-0 text-gray-900 hover:text-blue-700 transition duration-150 no-underline">
+                <img src="{% static 'visualization/images/logo_small.png' %}" alt="OPKC Logo" class="h-10 w-auto mr-3">
+                <span class="text-xl font-bold tracking-tight">Open Pathogen Kinetics Commons</span>
+            </a>
+
+            <a href="{% url 'visualization:index' %}" class="inline-flex items-center text-blue-600 hover:text-blue-800 hover:underline font-medium transition duration-150 no-underline">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                </svg>
                 Back to Home
             </a>
-        </p>
+        </div>
 
         <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
             Read the Docs
