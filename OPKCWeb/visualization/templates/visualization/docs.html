@@ -1,0 +1,184 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Docs - OPKC</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', '"Helvetica Neue"', 'Arial', '"Noto Sans"', 'sans-serif'],
+                    },
+                },
+            },
+        }
+    </script>
+</head>
+<body class="font-sans text-gray-800 bg-gray-50">
+    
+    <div class="container mx-auto p-8 max-w-5xl py-12 md:py-20">
+        
+        <div class="flex flex-col md:flex-row md:items-center justify-between mb-10 border-b border-gray-200 pb-6">
+            <a href="{% url 'visualization:index' %}" class="flex items-center mb-4 md:mb-0 text-gray-900 hover:text-blue-700 transition duration-150 no-underline">
+                <img src="{% static 'visualization/images/logo_small.png' %}" alt="OPKC Logo" class="h-10 w-auto mr-3">
+                <span class="text-xl font-bold tracking-tight">Open Pathogen Kinetics Commons</span>
+            </a>
+
+            <a href="{% url 'visualization:index' %}" class="inline-flex items-center text-blue-600 hover:text-blue-800 hover:underline font-medium transition duration-150 no-underline">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                </svg>
+                Back to Home
+            </a>
+        </div>
+
+        <article class="prose prose-lg max-w-none prose-blue">
+            
+            <h1>Documentation & Data</h1>
+
+            <h2>The Underlying Data</h2>
+            <p>
+                We are incredibly grateful to the researchers who have generated and shared these data. This project would not be possible without their commitment to open science. 
+                Below is a summary of the datasets currently integrated into the Open Pathogen Kinetics Commons.
+            </p>
+
+            <div class="overflow-x-auto not-prose my-8">
+                <table class="min-w-full bg-white border border-gray-300 shadow-sm rounded-lg overflow-hidden">
+                    <thead class="bg-gray-100">
+                        <tr>
+                            <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700 border-b">Citation Key</th>
+                            <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700 border-b">Pathogen</th>
+                            <th class="py-3 px-4 text-right text-sm font-semibold text-gray-700 border-b">Data Points</th>
+                            <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700 border-b">DOI</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200">
+                        <tr class="hover:bg-gray-50">
+                            <td class="py-2 px-4 text-sm font-medium text-gray-900">Eales2025_Baker</td>
+                            <td class="py-2 px-4 text-sm text-gray-600">Flu</td>
+                            <td class="py-2 px-4 text-sm text-gray-600 text-right">485</td>
+                            <td class="py-2 px-4 text-sm text-blue-600 font-mono"><a href="https://doi.org/10.1101/2025.02.01.636082" target="_blank" class="hover:underline">10.1101/2025.02.01.636082v1</a></td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="py-2 px-4 text-sm font-medium text-gray-900">Eales2025_Caserta</td>
+                            <td class="py-2 px-4 text-sm text-gray-600">Flu</td>
+                            <td class="py-2 px-4 text-sm text-gray-600 text-right">167</td>
+                            <td class="py-2 px-4 text-sm text-blue-600 font-mono"><a href="https://doi.org/10.1101/2025.02.01.636082" target="_blank" class="hover:underline">10.1101/2025.02.01.636082v1</a></td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="py-2 px-4 text-sm font-medium text-gray-900">Eales2025_Halwe</td>
+                            <td class="py-2 px-4 text-sm text-gray-600">Flu</td>
+                            <td class="py-2 px-4 text-sm text-gray-600 text-right">74</td>
+                            <td class="py-2 px-4 text-sm text-blue-600 font-mono"><a href="https://doi.org/10.1101/2025.02.01.636082" target="_blank" class="hover:underline">10.1101/2025.02.01.636082v1</a></td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="py-2 px-4 text-sm font-medium text-gray-900">hakki2022</td>
+                            <td class="py-2 px-4 text-sm text-gray-600">SARS2</td>
+                            <td class="py-2 px-4 text-sm text-gray-600 text-right">1,050</td>
+                            <td class="py-2 px-4 text-sm text-blue-600 font-mono"><a href="https://doi.org/10.1016/S2213-2600(22)00226-0" target="_blank" class="hover:underline">10.1016/S2213-2600(22)00226-0</a></td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="py-2 px-4 text-sm font-medium text-gray-900">jones2021</td>
+                            <td class="py-2 px-4 text-sm text-gray-600">SARS2</td>
+                            <td class="py-2 px-4 text-sm text-gray-600 text-right">18,136</td>
+                            <td class="py-2 px-4 text-sm text-blue-600 font-mono"><a href="https://doi.org/10.1126/science.abi5273" target="_blank" class="hover:underline">10.1126/science.abi5273</a></td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="py-2 px-4 text-sm font-medium text-gray-900">ke2022</td>
+                            <td class="py-2 px-4 text-sm text-gray-600">SARS2</td>
+                            <td class="py-2 px-4 text-sm text-gray-600 text-right">2,802</td>
+                            <td class="py-2 px-4 text-sm text-blue-600 font-mono"><a href="https://doi.org/10.1038/s41564-022-01105-z" target="_blank" class="hover:underline">10.1038/s41564-022-01105-z</a></td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="py-2 px-4 text-sm font-medium text-gray-900">kissler2023</td>
+                            <td class="py-2 px-4 text-sm text-gray-600">SARS2</td>
+                            <td class="py-2 px-4 text-sm text-gray-600 text-right">21,554</td>
+                            <td class="py-2 px-4 text-sm text-blue-600 font-mono"><a href="https://doi.org/10.1038/s41467-023-41941-z" target="_blank" class="hover:underline">10.1038/s41467-023-41941-z</a></td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="py-2 px-4 text-sm font-medium text-gray-900">puhach2022</td>
+                            <td class="py-2 px-4 text-sm text-gray-600">SARS2</td>
+                            <td class="py-2 px-4 text-sm text-gray-600 text-right">565</td>
+                            <td class="py-2 px-4 text-sm text-blue-600 font-mono"><a href="https://doi.org/10.1038/s41591-022-01816-0" target="_blank" class="hover:underline">10.1038/s41591-022-01816-0</a></td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="py-2 px-4 text-sm font-medium text-gray-900">russell2024</td>
+                            <td class="py-2 px-4 text-sm text-gray-600">SARS2</td>
+                            <td class="py-2 px-4 text-sm text-gray-600 text-right">1,451</td>
+                            <td class="py-2 px-4 text-sm text-blue-600 font-mono"><a href="https://doi.org/10.1371/journal.pbio.3002463" target="_blank" class="hover:underline">10.1371/journal.pbio.3002463</a></td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="py-2 px-4 text-sm font-medium text-gray-900">savela2022</td>
+                            <td class="py-2 px-4 text-sm text-gray-600">SARS2</td>
+                            <td class="py-2 px-4 text-sm text-gray-600 text-right">544</td>
+                            <td class="py-2 px-4 text-sm text-blue-600 font-mono"><a href="https://doi.org/10.1128/JCM.01785-21" target="_blank" class="hover:underline">10.1128/JCM.01785-21</a></td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="py-2 px-4 text-sm font-medium text-gray-900">wagstaffe2024</td>
+                            <td class="py-2 px-4 text-sm text-gray-600">SARS2</td>
+                            <td class="py-2 px-4 text-sm text-gray-600 text-right">1,368</td>
+                            <td class="py-2 px-4 text-sm text-blue-600 font-mono"><a href="https://doi.org/10.1126/sciimmunol.adj9285" target="_blank" class="hover:underline">10.1126/sciimmunol.adj9285</a></td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="py-2 px-4 text-sm font-medium text-gray-900">waickman2022</td>
+                            <td class="py-2 px-4 text-sm text-gray-600">Dengue</td>
+                            <td class="py-2 px-4 text-sm text-gray-600 text-right">2,826</td>
+                            <td class="py-2 px-4 text-sm text-blue-600 font-mono"><a href="https://doi.org/10.1126/scitranslmed.abo5019" target="_blank" class="hover:underline">10.1126/scitranslmed.abo5019</a></td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="py-2 px-4 text-sm font-medium text-gray-900">waickman2024</td>
+                            <td class="py-2 px-4 text-sm text-gray-600">Dengue</td>
+                            <td class="py-2 px-4 text-sm text-gray-600 text-right">2,430</td>
+                            <td class="py-2 px-4 text-sm text-blue-600 font-mono"><a href="https://doi.org/10.1038/s41564-024-01668-z" target="_blank" class="hover:underline">10.1038/s41564-024-01668-z</a></td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="py-2 px-4 text-sm font-medium text-gray-900">wongnak2024</td>
+                            <td class="py-2 px-4 text-sm text-gray-600">SARS2</td>
+                            <td class="py-2 px-4 text-sm text-gray-600 text-right">24,559</td>
+                            <td class="py-2 px-4 text-sm text-blue-600 font-mono"><a href="https://doi.org/10.1016/S1473-3099(24)00183-X" target="_blank" class="hover:underline">10.1016/S1473-3099(24)00183-X</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h2>Data Selection</h2>
+            <p>
+                The datasets included in OPKC were identified through a comprehensive literature search focusing on studies with longitudinal pathogen load measurements. We are continuously working to expand this library by bringing in new papers and datasets as they become available.
+            </p>
+            <p>
+                All underlying data are either open access or used with specific permission from the authors. Our inclusion criteria prioritize studies that meet the "bare minimum" requirement of providing pathogen load measurements over time (see our <a href="{% url 'visualization:data_standard' %}">Data Standard</a> for details). We filter and clean these datasets to ensure they can be meaningfully compared, but we strive to preserve the original structure and intent of the data wherever possible.
+            </p>
+
+            <h2>Data Visualization</h2>
+            <p>
+                The <a href="{% url 'visualization:time_days_bar' %}">Sample Explorer</a> is a tool designed to provide immediate, visual insight into the contents of the database. It allows users to:
+            </p>
+            <ul>
+                <li><strong>Filter</strong> by study, pathogen, sample source, and more.</li>
+                <li><strong>Visualize</strong> kinetic trajectories to understand the density and duration of sampling.</li>
+                <li><strong>Compare</strong> data across different studies and units (e.g., Ct values vs. pathogen load).</li>
+            </ul>
+            <p>
+                This visualization is intended as a "helper" tool—a way to quickly assess which datasets might be relevant for your specific research question before downloading the full dataset for detailed analysis.
+            </p>
+
+            <h2>Web Development</h2>
+            <p>
+                The Open Pathogen Kinetics Commons is built using open-source tools to ensure transparency and reproducibility.
+            </p>
+            <ul>
+                <li><strong>Backend:</strong> Django (Python)</li>
+                <li><strong>Frontend:</strong> Tailwind CSS and Plotly.js</li>
+                <li><strong>Code Assistance:</strong> Google Gemini was used to assist with writing the underlying code for this platform.</li>
+            </ul>
+
+        </article>
+
+    </div>
+</body>
+</html>
