@@ -43,6 +43,16 @@ Baker et al:
         - including body temperature with a thermal microchip, respiratory effort and rate, nasal and ocular discharge, and faecal consistency
         - not ingested here but could be included in v2
 
+Caserta et al:
+    - data is in "Eales_Caserta_Fig1a.csv", "Eales_Caserta_Fig1f.csv", and "Eales_Caserta_Fig2b.csv" which are from Eales repo, not from Caserta (which contains more data)
+    - Eales also ingested Fig1f and Fig2b data, but the difficult to parse AnimalID naming scheme makes it hard to convert to kinetics
+        - I have emailed the Caserta et al authors to ask for clarification (as of 11/17/25) on naming conventions
+        - I suspect that the reported data that gets used in Eales et al is only a subset of all the animal data in Caserta et al
+            - AND figures in Caserta et al may only show a subset of all animals described in the study
+    - for MVP ingestion of Eales et al, decided to only go with data from Fig1a for now
+        = mixture of numeric and A-type Animal(?)IDs
+        - data is JUST from milk (n = 167) samples collected from cattle from farms 1 to 9 quantified by RT–qPCR targeting the IAV matrix gene
+
 Halwe et al:
     - data is in "Eales_Halwe_Fig.csv" which is from Eales repo, extracted with PlotDigitizer from Halwe Fig 3C
         - H5N1 viral genome load over time in milk samples from 6 experimentally infected lactating cows (Halwe1 to Halwe6)
@@ -166,10 +176,69 @@ def baker():
     df = enforce_schema(df)
     df = coerce_types(df)
 
-    df
+    #df
 
     return df
 # %%
+
+# %%
+# Caserta MVP = Fig1a per Eales
+def caserta():
+    #load in data: Eales_Caserta_Fig1a.csv, Eales_Caserta_Fig1f.csv, and Eales_Caserta_Fig2b.csv
+
+    csv_path_fig1a = os.path.join(base_dir, "data", "Eales_Caserta_Fig1a.csv")
+    #csv_path_fig1f = os.path.join(base_dir, "data", "Eales_Caserta_Fig1f.csv")
+    #csv_path_fig2b = os.path.join(base_dir, "data", "Eales_Caserta_Fig2b.csv")
+
+    df1a = pd.read_csv(csv_path_fig1a)
+    #df1f = pd.read_csv(csv_path_fig1f)
+    #df2b = pd.read_csv(csv_path_fig2b)
+
+    # %%
+    # rename columns per schema
+    df1a = df1a.rename(columns={
+        "ID": "SampleID",
+        "45-Ct": "PathogenLoad"
+        })
+
+    # NOTE : I'm making an assumption here that the ID postfixes correspond to TimeDays in a way that makes sense
+    # create a column in df1a that extract TimeDays from SampleID - search for the first "-" from the left of the string and take that int
+    df1a["TimeDays"] = df1a["SampleID"].str.extract(r'-(\d+)$').astype(int)
+
+    # now create another new column "IndivID"
+    ## extract his from SampleID but without the year or TimeDays
+    ## if the ID starts with a number, take the first 6 digits
+    ## elif it starts with A, take all digits after A24 then up to the first "-"
+    def extract_individ(sample_id):
+        if sample_id[0].isdigit():
+            return sample_id[:6]
+        elif sample_id[0] == "A":
+            return sample_id.split("-")[0][3:]  # remove "A24", not strictly necessary tbh
+        else:
+            return sample_id.split("-")[0]  # default case
+
+    df1a["IndivID"] = df1a["SampleID"].apply(extract_individ)
+
+    # %%
+
+    # Additional columns with known information:
+    df1a["StudyID"] = "Eales2025_Caserta"
+    df1a["Pathogen"] = "Flu"
+    df1a["Subtype"] = "H5N1"
+    df1a["IndSpecies"] = "Dairy cattle"
+    df1a["DOI"] = "10.1101/2025.02.01.636082v1" # Eales et al
+    df1a["Units"] = "Ct (max 45)"
+    df1a["PlatformType"] = "RT-qPCR" # referred to in the paper as "Real-time PCR with reverse transcription (rRT–PCR)"
+    df1a["PlatformTech"] = "Applied Biosystems 7500 Fast PCR/Path-ID Multiplex One-Step RT-PCR Kit"
+    df1a["Targets"] = "IAV matrix gene"
+    df1a["SampleSource"] = "milk" # raw data from Caserta et al directly does have the other sample types in figure, but Eales didn't ingest these
+    df1a["SampleMethod"] = "milk sample"
+
+    # now can enforce schema and coerce types
+    df1a = enforce_schema(df1a)
+    df1a = coerce_types(df1a)
+
+    return df1a
 
 # Halwe et al is much more straightforward - only thing is that Eales extracted from Figure 3C with PlotDigitizer
 # %% 
@@ -207,7 +276,7 @@ def halwe():
 def load_and_format():
     # For now, just Baker data
     df_baker = baker()
-    df_caserta = None # to be added
+    df_caserta = caserta() # to be added
     df_halwe = halwe()
     
     # combine all dataframes

@@ -30,7 +30,7 @@ def load_and_format():
     df["IndSpecies"] = "Human"
     df["DOI"] = "10.1038/s41467-023-41941-z"
     df["Units"] = "Ct"
-    df["PlatformType"] = "RTqPCR"
+    df["PlatformType"] = "RT-qPCR"
     df["PlatformTech"] = "cobas_target1"
     df["GEml_conversion_intercept"] = 11.34089
     df["GEml_conversion_slope"] = -0.2770306
