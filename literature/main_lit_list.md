@@ -58,7 +58,6 @@ Count = 15
 ## DE = DATA EXISTS (in priority order)
 | DOI | PaperNameString | Status/Classification | Pathogen | Tags | INGEST-IN-PROGRESS-BY? | Data link |
 |:---|:---|:---:|:---:|:---:|:---|:---|
-| 10.7554/eLife.92606.3 | Vuong et al 2024 | `DE` | `Dengue` | `LAB` | Oliver | [github](https://github.com/Nguyenlamvuong/Dengue_Viremia_Kinetics_eLife_2024/blob/main/Viremia%20and%20outcomes%20240522.Rdata) |
 | 10.7326/M20-1495 | Kucirka et al 2020 | `DE` | `SARS2` | `MA` | Carrie | [github](https://github.com/HopkinsIDD/covidRTPCR) |
 | 10.1038/s41467-025-61553-z | Peña-Mosca et al 2025  | `DE` | `Flu` |`H5N1` `cows` | Ellen | [github](https://github.com/fepenamosca/hpai_impact_dairies/tree/fd5f303f4aae47ef3a6259e7e7b94284f8c3af67/data) |
 | 10.1038/s41564-025-01998-6 | Facciuolo et al 2025 | `DE` | `Flu` |`H5N1` `cows` | Ellen | [Source Data at paper](https://www-nature-com.colorado.idm.oclc.org/articles/s41564-025-01998-6#Sec25) |
