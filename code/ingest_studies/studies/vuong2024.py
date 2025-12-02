@@ -67,7 +67,7 @@ def vuong2024():
 
     df["StudyID"] = "vuong2024"
     df["Pathogen"] = "Dengue"
-    df["IndSpecies"] = "human"
+    df["IndSpecies"] = "Human"
     df["SampleSource"] = "serum"
     df["SampleMethod"] = "blood draw (serum)"
     df["DOI"] = "10.7554/eLife.92606"
