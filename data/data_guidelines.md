@@ -9,31 +9,35 @@ Explicit conditions may not be included in the data structure, but should be ext
 
 ## Necessary
 
-- Disease Identification
-- Patient Identification
-- Timing of each measurement for each patient
-    - There should be more than one -> time series data!
-- Quantity of viral material (GEml)
+- Pathogen Information
+    - Specific Pathogen
+    - Measured Pathogen Load (Log10(copies/mL))
+    - Units (e.g., Ct, Log10 copies/mL)
+    - Platform Type (e.g., RT-qPCR)
+    - Time of sample collection (in days, relative to an event)
+- Individual Information
+    - Identifier
+    - Species
+- Digital Object Identifier (DOI)
 
 
 ## Preferable 
 
-- Conversion to GEml (slope/intercept) if not directly measured
-- Sample location 
-    - nose, throat, etc.
+- Study Identifier
+- Infection Identifier
+- Conversion to GE/mL (slope/intercept) if not directly measured
+- Sample Information
+    - Anatomical location (e.g., nose, throat)
+    - Collection method (e.g., swab, wash)
+- Gene Targets (e.g., N gene, S gene)
+- Platform Technology (e.g., Alinity, cobas)
 
 ## Accepted
 
-- Patient Information
-    - Age, sex, weight, etc.
+- Age Range
 - Symptoms
-    - symptom onset/timing
-- Timeseries from multiple sites
-- Vaccination/Booster status
-    - Timing of dosages
-- Previous infection date(s)
-- Testing results
-    - Date(s) of test(s)
-    - Result(s) of test(s)
-- Details of known exposure
-- Secondary infections
+    - Presence, absence, or description of symptom(s)
+- Comorbidities
+- Hospitalizations
+- Treatments
+- Subtype (e.g., H1N1, Omicron)
