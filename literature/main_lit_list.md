@@ -1,43 +1,7 @@
 # Main Literature List
 Comprehensive, authoritative list of papers scanned for possible inclusion in open pathogen kinetics commons.
 
-## Literature Workflow
-In the "Status" column of main_lit_list, collaborators can indicate what stage of the literature worflow a given reference is in, and either add new papers to the list or work on scanning or ingesting already identified papers, and create a github Issue to indicate work in progress.
-
-### 1. **Identify** a candidate paper
-- Check main_lit_list for the DOI to ensure that it hasn't already been processed, and if not, add it.
-- Recommended avenues of search are:
-    - Specific journals (e.g. Epidemics, Human Challenge Studies for Vaccine Development)
-    - Authors (e.g. Christopher Chiu, works from senior authors on already identified papers)
-    - Methods or topics (e.g. challange studies, epi review papers)
-
-### 2. **Scan** paper for pathogen kinetics data to quickly determine if that data exists or not.
-- Annotate in main_lit_list according to the below scheme. (Emojis are for easy labeling in Slack.)
-    - DE ✅ = data exists
-	- DE-NEA ✳️ = not easily accessible
-	    - as in the data is clearly there at individual scale but would need to be extracted or requested
-    - DME ❇️ = data may exist, worth following up more in-depth
-        - as in would definitely need to request, and figures do not display individual resolution
-		- this is more work than DE-NEA
-		- * an asterisk denotes that this data seems especially difficult to track down
-    - NA ❎ = not applicable, not something we can use for whatever reason
-    - MO 🤖 = modeling only
-    - DAI = data already included
-    	- e.g. data from this source has already been included as part of another dataset
-    	- these references are recorded to prevent redundant scanning
-	- For other metadata worth flagging (e.g. pathogen, cross-sectional data, meta-analysis, lab data, spatial data, etc.), use tags. See key below for tags in use.
-
-### 3. **Ingest** the data from that source by saving it to this directory, then creating a script in ingest_studies/studies that formats it according to our schema.
-- Any papers with status Scanned: DE can be immediately ingested. Other designations will need more work.
-- A paper is marked as **digested** when this has been done and it has been added to our database with create_schema.py
-
-## Challenges and nuances of note
-- identifying empirical vs. modeled data
-- want to capture linkages between papers
-	- e.g. modeling papers based on empirical data
-- papers with many authors can be challenging to identify who the senior author is to seed future searches on
-
-# Key
+## Key
 - DE ✅ = data exists
 	- DE-NEA ✳️ = not easily accessible
 	- as in is clearly there at individual scale but would need to be extracted or requested
@@ -66,25 +30,29 @@ In the "Status" column of main_lit_list, collaborators can indicate what stage o
 	8. PACK = package
 	9. VAX = vaccination data
 
-
 # Literature List
-## Datasets already downloaded (ingested) and formatted (digested)
-| DOI | PaperNameString | Status/Classification | Pathogen | Tags | By |
-|:---|:---|:---:|:---:|:---:|---:|
-| 10.1038/s41564-022-01105-z | Ke2022daily | `DIGESTED` | `SARS2` | | Stephen |
-| 10.1038/s41467-023-41941-z | Kissler2023 | `DIGESTED` | `SARS2` | | Stephen |
-| 10.1371/journal.pbio.3002463 | Russell2024 | `DIGESTED` | `SARS2` | | Stephen |
-| 10.1126/sciimmunol.adj9285 | Wagstaffe2024 | `DIGESTED` | `SARS2` | | Carrie |
-| 10.1016/S1473-3099(24)00183-X | Wongnak2024 | `DIGESTED` | `SARS2` | | Stephen |
-| 10.1016/S2213-2600(22)00226-0 | Hakki2022 | `DIGESTED` | `SARS2` | `VAX` `LAB`| Oliver | [github](https://github.com/HPRURespMed/SARS-CoV-2-viral-shedding-dynamics) |
-| 10.1128/jcm.01785-21 | Savela2022 | `DIGESTED` | `SARS2` | | Oliver | [author site](https://data.caltech.edu/records/bv2tf-aap55) |
-| 10.1126/scitranslmed.abo5019 | Waickman2022 | `DIGESTED` | `Dengue` | `LAB` | Oliver | [data at paper](https://www.science.org/doi/10.1126/scitranslmed.abo5019) |
-| 10.1038/s41564-024-01668-z | Waickman2024 | `DIGESTED` | `Dengue` | `LAB` | Oliver | [data at paper](https://www-nature-com.colorado.idm.oclc.org/articles/s41564-024-01668-z) |
-| 10.1038/s41591-022-01816-0 | Puhach2022 | `DIGESTED` | `SARS2` | | Carrie | [Extended data at paper](https://www-nature-com.colorado.idm.oclc.org/articles/s41591-022-01816-0#Sec18) |
-| 10.1126/science.abi5273 | Jones2021 | `DIGESTED` | `SARS2` | | Carrie | [github](https://github.com/VirologyCharite/SARS-CoV-2-VL-paper/tree/main) |
-| 10.1101/2025.02.01.636082v1 | Eales et al 2025 | `MVP DIGESTED` | `H5N1` | | Ellen | [github](https://github.com/Eales96/H5N1_viral_kinetics) |
+## Datasets already ingested in our schema
+### Digested => MVP v1 data has been ingested and added to schema
+### Additional data may be available from source for schema v2 (e.g. symptom or vaccination data)
+| DOI | PaperNameString | Status/Classification | Pathogen | Tags | By | Additional data? |
+|:---|:---|:---:|:---:|:---:|:---:|:---:|
+| 10.1038/s41564-022-01105-z | Ke2022daily | `DIGESTED` | `SARS2` | | Stephen | |
+| 10.1038/s41467-023-41941-z | Kissler2023 | `DIGESTED` | `SARS2` | | Stephen | |
+| 10.1371/journal.pbio.3002463 | Russell2024 | `DIGESTED` | `SARS2` | | Stephen | |
+| 10.1126/sciimmunol.adj9285 | Wagstaffe2024 | `DIGESTED` | `SARS2` | | Carrie | |
+| 10.1016/S1473-3099(24)00183-X | Wongnak2024 | `DIGESTED` | `SARS2` | | Stephen | |
+| 10.1016/S2213-2600(22)00226-0 | Hakki2022 | `DIGESTED` | `SARS2` | `VAX` `LAB`| Oliver | Yes |
+| 10.1128/jcm.01785-21 | Savela2022 | `DIGESTED` | `SARS2` | `sx` | Oliver | Yes |
+| 10.1126/scitranslmed.abo5019 | Waickman2022 | `DIGESTED` | `Dengue` | `sx` `LAB` | Oliver | Yes |
+| 10.1038/s41564-024-01668-z | Waickman2024 | `DIGESTED` | `Dengue` | `LAB` | Oliver | Yes |
+| 10.1038/s41591-022-01816-0 | Puhach2022 | `DIGESTED` | `SARS2` `VAX` | | Carrie | Yes |
+| 10.1126/science.abi5273 | Jones2021 | `DIGESTED` | `SARS2` | `LAB` | Carrie | Yes |
+| 10.1038/s41586-024-07849-4 | Caserta2025 | `DIGESTED` | | Ellen | Yes |
+| 10.1038/s41586-024-08166-6 | Baker2024 | `DIGESTED` | | Ellen | Yes|
+| 10.1038/s41586-024-08063-y | Halwe2024 | `DIGESTED` | | Ellen | No |
+| 10.1101/2025.07.02.662782 | Alahakoon2025TrackingWestNile | `DIGESTED` | `WestNile` | `mosq` `birds` `MOSP` | Carrie | Yes |
 
-Count = 12 (14)
+Count = 15
 
 ## DE = DATA EXISTS (in priority order)
 | DOI | PaperNameString | Status/Classification | Pathogen | Tags | INGEST-IN-PROGRESS-BY? | Data link |
@@ -92,10 +60,9 @@ Count = 12 (14)
 | 10.7554/eLife.92606.3 | Vuong et al 2024 | `DE` | `Dengue` | `LAB` | Oliver | [github](https://github.com/Nguyenlamvuong/Dengue_Viremia_Kinetics_eLife_2024/blob/main/Viremia%20and%20outcomes%20240522.Rdata) |
 | 10.7326/M20-1495 | Kucirka et al 2020 | `DE` | `SARS2` | `MA` | Carrie | [github](https://github.com/HopkinsIDD/covidRTPCR) |
 | 10.1038/s41467-020-20568-4 | van Kampen et al 2021 | `DE` | `SARS2` | `LAB` | Carrie | [Source data at paper](https://www-nature-com.colorado.idm.oclc.org/articles/s41467-020-20568-4#Sec12) |
-| 10.1101/2025.07.02.662782 | Alahakoon et al 2025 Tracking West Nile | `DE` | `WestNile` | `mosq` `birds` | Carrie | [github](https://github.com/PunyaAlahakoon/west_nile_virus_abm/tree/main/3_figure_generation/data) |
 | 10.1038/s41467-025-61553-z | Peña-Mosca et al 2025  | `DE` | `Flu` |`H5N1` `cows` | Ellen | [github](https://github.com/fepenamosca/hpai_impact_dairies/tree/fd5f303f4aae47ef3a6259e7e7b94284f8c3af67/data) |
 | 10.1038/s41564-025-01998-6 | Facciuolo et al 2025 | `DE` | `Flu` |`H5N1` `cows` | Ellen | [Source Data at paper](https://www-nature-com.colorado.idm.oclc.org/articles/s41564-025-01998-6#Sec25) |
-Count = 6
+Count = 5
 
 ## DE-NEA = Data exists, not easily accesible (alphabetized)
 | DOI | PaperNameString | Status/Classification | Pathogen | Tags | AUTHOR_CONTACTED? |
@@ -179,7 +146,7 @@ Count = 45
 | 10.3389/fimmu.2018.00323 | Ascough et al 2018 | `IDed` | | Ellen |
 | 10.1007/82_2022_257 | Dayananda et al 2022 | `IDed` | | Ellen |
 Count = 4+
-*Check with Ellen for the most complete queue*
+*Consult verbose_main_lit_list.xlsx for full queue*
 
 ## MO = Modeling Only papers
 | DOI | PaperNameString | Status/Classification | Tags | By |
@@ -230,19 +197,19 @@ Count = 21
 Count = 15
 
 ## DAI = Data already included
-| DOI | PaperNameString | Status/Classification | Tags | By | DOI of authoritative paper |
-|:---|:---|:---:|:---:|:---|:---|
-| 10.1038/s41586-024-07849-4 | Caserta et al 2025 | `DAI` | | Ellen | 10.1101/2025.02.01.636082v1 |
-| 10.1038/s41586-024-08166-6 | Baker et al 2024 | `DE` | | Ellen | 10.1101/2025.02.01.636082v1 |
-| 10.1038/s41586-024-08063-y | Halwe et al 2024 | `DE` | | Ellen | 10.1101/2025.02.01.636082v1 |
-| 10.1371/journal.pbio.3001333 | Kissler 2021 PLOS CtTrajectories | `DAI` | | Ellen | 10.1038/s41467-023-41941-z |
-| 10.1056/nejmc2102507 | Kissler 2021 NEJM CtTrajectories_B117 Vax | `DAI` | | Ellen | 10.1038/s41467-023-41941-z |
-| 10.7554/eLife.81849 | Hay Kissler 2022 eLife SC2 kinetics | `DAI` | | Ellen | 10.1038/s41467-023-41941-z |
-| 10.1056/nejmc2102507 | Kissler et al 2021 | `DAI` | | Ellen RR | 10.1038/s41467-023-41941-z |
-| 10.1371/journal.pbio.3001333 | Kissler et al 2021 | `DAI` | | Ellen RR | 10.1038/s41467-023-41941-z |
-| 10.1016/s1473-3099(21)00648-4 | Singanayagam et al 2021 | `DAI` | | Ellen RR | 10.1016/S2213-2600(22)00226-0 |
-| 10.1371/journal.pcbi.0030240 | Handel et al 2007 | `DAI` | | Ellen RR | 10.1086/314938 |
+| DOI | PaperNameString | Status/Classification | Pathogen | Tags | By | DOI of authoritative paper |
+|:---|:---|:---:|:---:|:---:|:---|:---|
+| 10.1101/2025.02.01.636082v1 | Eales et al 2025 | `DAI` | `H5N1` | | Ellen | 10.1038/s41586-024-07849-4 |
+| 10.1101/2025.02.01.636082v1 | Eales et al 2025 | `DAI` | `H5N1` | | Ellen | 10.1038/s41586-024-08166-6 |
+| 10.1101/2025.02.01.636082v1 | Eales et al 2025 | `DAI` | `H5N1` | | Ellen | 10.1038/s41586-024-08063-y |
+| 10.1371/journal.pbio.3001333 | Kissler 2021 PLOS CtTrajectories | `DAI` | `SARS2` | | Ellen | 10.1038/s41467-023-41941-z |
+| 10.1056/nejmc2102507 | Kissler 2021 NEJM CtTrajectories_B117 Vax | `DAI` | `SARS2` | | Ellen | 10.1038/s41467-023-41941-z |
+| 10.7554/eLife.81849 | Hay Kissler 2022 eLife SC2 kinetics | `DAI` | `SARS2` | | Ellen | 10.1038/s41467-023-41941-z |
+| 10.1056/nejmc2102507 | Kissler et al 2021 | `DAI` | `SARS2` | | Ellen RR | 10.1038/s41467-023-41941-z |
+| 10.1371/journal.pbio.3001333 | Kissler et al 2021 | `DAI` | `SARS2` | | Ellen RR | 10.1038/s41467-023-41941-z |
+| 10.1016/s1473-3099(21)00648-4 | Singanayagam et al 2021 | `DAI` | `SARS2` | | Ellen RR | 10.1016/S2213-2600(22)00226-0 |
+| 10.1371/journal.pcbi.0030240 | Handel et al 2007 | `DAI` | `Flu` | | Ellen RR | 10.1086/314938 |
 
-Count = 10
+Count = 8
 
 Total tally = 132
