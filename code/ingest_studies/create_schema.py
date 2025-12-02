@@ -3,11 +3,13 @@ from schema import enforce_schema, coerce_types
 import pandas as pd
 
 def main():
+    df_alahakoon2025 = alahakoon2025.load_and_format()
     df_eales2025 = eales2025.load_and_format()
     df_hakki2022 = hakki2022.load_and_format()
     df_jones2021 = jones2021.load_and_format()
     df_ke2022 = ke2022.load_and_format()
     df_kissler2023 = kissler2023.load_and_format()
+    df_kucirka2020 = kucirka2020.load_and_format()
     df_puhach2022 = puhach2022.load_and_format()
     df_russell2024 = russell2024.load_and_format()
     df_savela2022 = savela2022.load_and_format()
