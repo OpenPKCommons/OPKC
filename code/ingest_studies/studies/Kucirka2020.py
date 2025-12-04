@@ -23,7 +23,7 @@ def load_and_format():
     # Rename columns to match schema: 
     df = df.rename(columns={
         "study": "StudyID", 
-        "test": "PlatformType"
+        "test": "PlatformType",
         "day": "TimeDays"
         })
     
