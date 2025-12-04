@@ -36,11 +36,11 @@ Comprehensive, authoritative list of papers scanned for possible inclusion in op
 ### Additional data may be available from source for schema v2 (e.g. symptom or vaccination data)
 | DOI | PaperNameString | Status/Classification | Pathogen | Tags | By | Additional data? |
 |:---|:---|:---:|:---:|:---:|:---:|:---:|
-| 10.1038/s41564-022-01105-z | Ke2022daily | `DIGESTED` | `SARS2` | | Stephen | |
-| 10.1038/s41467-023-41941-z | Kissler2023 | `DIGESTED` | `SARS2` | | Stephen | |
-| 10.1371/journal.pbio.3002463 | Russell2024 | `DIGESTED` | `SARS2` | | Stephen | |
-| 10.1126/sciimmunol.adj9285 | Wagstaffe2024 | `DIGESTED` | `SARS2` | | Carrie | |
-| 10.1016/S1473-3099(24)00183-X | Wongnak2024 | `DIGESTED` | `SARS2` | | Stephen | |
+| 10.1038/s41564-022-01105-z | Ke2022daily | `DIGESTED` | `SARS2` | | Stephen | No |
+| 10.1038/s41467-023-41941-z | Kissler2023 | `DIGESTED` | `SARS2` | | Stephen | Yes |
+| 10.1371/journal.pbio.3002463 | Russell2024 | `DIGESTED` | `SARS2` | | Stephen | Yes |
+| 10.1126/sciimmunol.adj9285 | Wagstaffe2024 | `DIGESTED` | `SARS2` | | Carrie | Yes - revisit source|
+| 10.1016/S1473-3099(24)00183-X | Wongnak2024 | `DIGESTED` | `SARS2` | | Stephen | Yes |
 | 10.1016/S2213-2600(22)00226-0 | Hakki2022 | `DIGESTED` | `SARS2` | `VAX` `LAB`| Oliver | Yes |
 | 10.1128/jcm.01785-21 | Savela2022 | `DIGESTED` | `SARS2` | `sx` | Oliver | Yes |
 | 10.1126/scitranslmed.abo5019 | Waickman2022 | `DIGESTED` | `Dengue` | `sx` `LAB` | Oliver | Yes |
