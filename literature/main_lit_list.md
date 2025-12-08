@@ -61,7 +61,14 @@ Count = 16
 |:---|:---|:---:|:---:|:---:|:---|:---|
 | 10.1038/s41467-025-61553-z | Peña-Mosca et al 2025  | `DE` | `Flu` |`H5N1` `cows` | Oliver | [github](https://github.com/fepenamosca/hpai_impact_dairies/tree/fd5f303f4aae47ef3a6259e7e7b94284f8c3af67/data) |
 | 10.1038/s41564-025-01998-6 | Facciuolo et al 2025 | `DE` | `Flu` |`H5N1` `cows` | Ellen | [Source Data at paper](https://www-nature-com.colorado.idm.oclc.org/articles/s41564-025-01998-6#Sec25) |
-Count = 2
+| 10.1093/cid/ciaa344 | Zhao 2020 | `DE` | `COVID-19` | | Carrie - from Kucirka 2020 | Data available in article and supplementary materials (PMC Open Access) |
+| 10.1101/2020.03.06.20031856 | Liu 2020 | `DE` | `COVID-19` | | Carrie - from Kucirka 2020 | Data included within the preprint article |
+| 10.1093/cid/ciaa310 | Guo 2020 | `DE` | `COVID-19` | | Carrie - from Kucirka 2020 | Data available in article and supplementary materials (PMC Open Access) |
+| 10.1038/s41586-020-2196-x | Wölfel 2020 | `DE` | `COVID-19` | | Carrie - from Kucirka 2020 | Viral load, sequencing, and isolation data included in article; no separate repository listed |
+| 10.1093/cid/ciaa424 | Danis 2020 | `DE` | `COVID-19` | | Carrie - from Kucirka 2020 | Outbreak investigation data available in article and supplementary materials |
+| 10.1101/2020.03.09.20032896 | Kujawski 2020 | `DE` | `COVID-19` | | Carrie - from Kucirka 2020 | Data stated as “available upon request” |
+| 10.1001/jama.2020.3786 | Wang 2020 | `DE` | `COVID-19` | | Carrie - from Kucirka 2020 | Specimen testing data included in the article |
+Count = 9
 
 ## DE-NEA = Data exists, not easily accesible (alphabetized)
 | DOI | PaperNameString | Status/Classification | Pathogen | Tags | AUTHOR_CONTACTED? |
