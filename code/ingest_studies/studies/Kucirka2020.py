@@ -1,3 +1,25 @@
+"""
+Kucirka et al. 2020 (DOI: 10.7326/M20-1495)
+========================================================
+Paper overview:
+---------------
+This meta-analysis quantified the false-negative rate of
+RT-PCR testing for SARS-CoV-2 as a function of time since
+exposure and symptom onset.
+
+Data source:
+------------
+- https://www.acpjournals.org/doi/10.7326/M20-1495
+
+Notes:
+- Species: Human
+- Units: Probability of false-negative RT-PCR
+- Sampling: Pooled diagnostic respiratory samples
+- Platform: RT-qPCR (clinical diagnostics)
+- Target: SARS-CoV-2 RNA
+- Statistical meta-analysis of multiple cohorts
+"""
+
 # Kucirka 2020
 # Data source: https://github.com/HopkinsIDD/covidRTPCR/tree/master/data
 

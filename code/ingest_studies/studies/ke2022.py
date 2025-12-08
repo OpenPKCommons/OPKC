@@ -1,3 +1,25 @@
+"""
+Ke et al. 2022 (DOI: 10.1038/s41564-022-01105-z)
+========================================================
+Paper overview:
+---------------
+This study quantified daily SARS-CoV-2 viral load trajectories
+in infected humans to characterize within-host kinetics,
+infectiousness, and test sensitivity over time. Dense daily
+sampling enabled precise modeling of viral growth and decay.
+
+Data source:
+------------
+- https://www.nature.com/articles/s41564-022-01105-z
+
+Notes:
+- Species: Human
+- Units: Viral RNA copies per mL (RT-qPCR)
+- Sampling: Daily longitudinal nasal swabs
+- Platform: RT-qPCR with viral culture validation
+- Target: SARS-CoV-2 N gene
+- No standalone public dataset repository
+"""
 import pandas as pd
 from schema import enforce_schema, coerce_types
 

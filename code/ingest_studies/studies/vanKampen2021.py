@@ -1,3 +1,25 @@
+"""
+van Kampen et al. 2021 (DOI: 10.1038/s41467-020-20568-4)
+========================================================
+Paper overview:
+---------------
+This study measured duration of infectious SARS-CoV-2 shedding
+in severely ill, hospitalized patients using viral culture and
+PCR over extended hospitalization.
+
+Data source:
+------------
+- https://www.nature.com/articles/s41467-020-20568-4
+
+Notes:
+- Species: Human
+- Units: RNA copies per mL and infectious virus (TCID50)
+- Sampling: Serial lower and upper respiratory tract samples
+- Platform: RT-qPCR and viral culture
+- Target: SARS-CoV-2 E gene
+- One of the key severe-disease infectiousness studies
+"""
+
 # van Kampen 2021
 # Data source (source data): https://www-nature-com.colorado.idm.oclc.org/articles/s41467-020-20568-4#Sec12
 

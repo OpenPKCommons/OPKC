@@ -1,3 +1,24 @@
+"""
+Jones et al. 2021 (DOI: 10.1126/science.abi5273)
+========================================================
+Paper overview:
+---------------
+This study demonstrated that upper respiratory viral load of
+SARS-CoV-2 is similar across age groups, including children and
+adults, suggesting comparable transmission potential.
+
+Data source:
+------------
+- https://www.science.org/doi/10.1126/science.abi5273
+
+Notes:
+- Species: Human
+- Units: Viral RNA copies per mL
+- Sampling: Diagnostic respiratory swabs
+- Platform: RT-qPCR
+- Target: SARS-CoV-2 ORF1ab
+- Cross-sectional clinical testing dataset
+"""
 # Jones 2021
 # Data source: https://github.com/VirologyCharite/SARS-CoV-2-VL-paper/tree/main
 

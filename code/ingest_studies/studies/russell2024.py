@@ -1,3 +1,25 @@
+"""
+Russell et al. 2024 (DOI: 10.1371/journal.pbio.3002463)
+========================================================
+Paper overview:
+---------------
+This study integrated viral kinetics, infectiousness modeling,
+and immune dynamics to quantify how long individuals remain
+infectious with SARS-CoV-2 under different immune histories.
+
+Data source:
+------------
+- https://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.3002463
+
+Notes:
+- Species: Human
+- Units: Viral RNA copies per mL and infectious virus (TCID50)
+- Sampling: Longitudinal respiratory sampling
+- Platform: RT-qPCR and viral culture
+- Target: SARS-CoV-2 genomic RNA
+- Model-driven analysis with individual-level trajectories
+
+"""
 import pandas as pd
 from schema import enforce_schema, coerce_types, split_age_range
 

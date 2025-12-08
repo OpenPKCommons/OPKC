@@ -1,3 +1,24 @@
+"""
+Kissler et al. 2023 (DOI: 10.1038/s41467-023-41941-z)
+========================================================
+Paper overview:
+---------------
+This study compared viral load dynamics between SARS-CoV-2
+variants, including Omicron sublineages, to assess infectious
+period and transmission potential using longitudinal testing.
+
+Data source:
+------------
+- https://www.nature.com/articles/s41467-023-41941-z
+
+Notes:
+- Species: Human
+- Units: Ct values converted to viral RNA copies/mL
+- Sampling: Longitudinal self-collected nasal swabs
+- Platform: RT-qPCR
+- Targets: N1/N2 SARS-CoV-2 genes
+- No public standalone dataset
+"""
 import pandas as pd
 from schema import enforce_schema, coerce_types
 
