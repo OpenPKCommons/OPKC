@@ -25,7 +25,11 @@ Notes:
 
 # Column names of van Kampen 2021 data for reference
 # duration of symptoms in days , RNA copies per mL , PRNT titer , virus culture result
-# NEED TO ADD individual identification added based on days since infection below (129 indiv from 690 samples!)
+
+# WORK TO BE DONE/CONSIDERED #
+# individual identification not provided so must be created
+# currently: added ID based on duration of symptoms by data order (129 indiv from 690 samples!) but is not identical to paper
+#   - alternative to restarting individual once the days since is less than the previous entry?
 # data from respiratory samples
 
 import pandas as pd
@@ -74,6 +78,8 @@ def load_and_format():
     #         .reset_index()
     # )
     # print(pos_summary) # provides whether each individual had a positive result in their list and how many
+        # Problem -> just because they need to test positive once doesn't necessarily mean they won't test positive multiple times
+        # several 0 positive tests as is, so are those creating the extra individuals? how do we find where it goes if so?
 #####################################################################################################################################################
 
     # Rename columns to match schema: 
