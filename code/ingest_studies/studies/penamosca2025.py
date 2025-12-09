@@ -44,7 +44,7 @@ def penamosca2025():
     """Load and format HPAI H5N1 viremia data from Peña-Mosca et al. 2025."""
 
     xlsx_path = os.path.join(base_dir, "data", "penamosca2025.xlsx")
-    df = pd.read_excel(xlsx_path) #sheet_name=1 ??
+    df = pd.read_excel(xlsx_path) 
 
     if "sample" in df.columns:
         sample = df["sample"].astype(str).str.lower()
@@ -77,7 +77,7 @@ def penamosca2025():
 
     # Convert PathogenLoad (Ct values) to numeric, with negative results or missing Ct values becoming NA
     df["PathogenLoad"] = pd.to_numeric(df["PathogenLoad"], errors="coerce")
-    df.loc[df["PathogenLoad"] <= 0, "PathogenLoad"] = pd.NA #different, correct?
+    df.loc[df["PathogenLoad"] <= 0, "PathogenLoad"] = pd.NA 
 
     # Calculate TimeDays from sample_date and date_gripa_cow (disease onset date)
     df["sample_date"] = pd.to_datetime(df["sample_date"], errors="coerce")
@@ -108,5 +108,6 @@ def penamosca2025():
 def load_and_format():
     df = penamosca2025()
     return df
+
 
 # %%
