@@ -47,19 +47,19 @@ Comprehensive, authoritative list of papers scanned for possible inclusion in op
 | 10.1038/s41564-024-01668-z | Waickman2024 | `DIGESTED` | `Dengue` | `LAB` | Oliver | Yes |
 | 10.1038/s41591-022-01816-0 | Puhach2022 | `DIGESTED` | `SARS2` `VAX` | | Carrie | Yes |
 | 10.1126/science.abi5273 | Jones2021 | `DIGESTED` | `SARS2` | `LAB` | Carrie | Yes |
-| 10.1038/s41586-024-07849-4 | Caserta2025 | `DIGESTED` | | Ellen | Yes |
-| 10.1038/s41586-024-08166-6 | Baker2024 | `DIGESTED` | | Ellen | Yes|
-| 10.1038/s41586-024-08063-y | Halwe2024 | `DIGESTED` | | Ellen | No |
+| 10.1038/s41586-024-07849-4 | Caserta2025 | `DIGESTED` | | | Ellen | Yes |
+| 10.1038/s41586-024-08166-6 | Baker2024 | `DIGESTED` | | | Ellen | Yes|
+| 10.1038/s41586-024-08063-y | Halwe2024 | `DIGESTED` | | | Ellen | No |
 | 10.1038/s41467-020-20568-4 | vanKampen2021 | `DE` | `SARS2` | `LAB` | Carrie | No |
 | 10.1101/2025.07.02.662782 | Alahakoon2025TrackingWestNile | `DIGESTED` | `WestNile` | `mosq` `birds` `MOSP` | Carrie | Yes |
 | 10.7326/M20-1495 | Kucirka et al 2020 | `Separating out` | `SARS2` | `MA` | Carrie | [github](https://github.com/HopkinsIDD/covidRTPCR) |
+| 10.1038/s41467-025-61553-z | Peña-Mosca et al 2025  | `DIGESTED` | `Flu` |`H5N1` `cows` | Oliver | Yes |
 
-Count = 16
+Count = 17
 
 ## DE = DATA EXISTS (in priority order)
 | DOI | PaperNameString | Status/Classification | Pathogen | Tags | INGEST-IN-PROGRESS-BY? | Data link |
 |:---|:---|:---:|:---:|:---:|:---|:---|
-| 10.1038/s41467-025-61553-z | Peña-Mosca et al 2025  | `DE` | `Flu` |`H5N1` `cows` | Oliver | [github](https://github.com/fepenamosca/hpai_impact_dairies/tree/fd5f303f4aae47ef3a6259e7e7b94284f8c3af67/data) |
 | 10.1038/s41564-025-01998-6 | Facciuolo et al 2025 | `DE` | `Flu` |`H5N1` `cows` | Ellen | [Source Data at paper](https://www-nature-com.colorado.idm.oclc.org/articles/s41564-025-01998-6#Sec25) |
 | 10.1093/cid/ciaa344 | Zhao 2020 | `DE` | `COVID-19` | | Carrie - from Kucirka 2020 | Data available in article and supplementary materials (PMC Open Access) |
 | 10.1101/2020.03.06.20031856 | Liu 2020 | `DE` | `COVID-19` | | Carrie - from Kucirka 2020 | Data included within the preprint article |
