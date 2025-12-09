@@ -1,3 +1,24 @@
+"""
+Wagstaffe et al. 2024 (DOI: 10.1126/sciimmunol.adj9285)
+========================================================
+Paper overview:
+---------------
+This study examined how prior vaccination and infection shape
+mucosal and systemic immune responses to SARS-CoV-2, including
+effects on viral clearance and immune memory.
+
+Data source:
+------------
+- https://www.science.org/doi/10.1126/sciimmunol.adj9285
+
+Notes:
+- Species: Human
+- Units: Antibody titers, viral RNA Ct values
+- Sampling: Nasal swabs, blood, mucosal samples
+- Platform: RT-qPCR, ELISA, neutralization assays
+- Targets: Spike and nucleocapsid
+- No public raw viral load dataset released
+"""
 import pandas as pd
 from schema import enforce_schema, coerce_types
 

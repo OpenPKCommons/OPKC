@@ -36,11 +36,11 @@ Comprehensive, authoritative list of papers scanned for possible inclusion in op
 ### Additional data may be available from source for schema v2 (e.g. symptom or vaccination data)
 | DOI | PaperNameString | Status/Classification | Pathogen | Tags | By | Additional data? |
 |:---|:---|:---:|:---:|:---:|:---:|:---:|
-| 10.1038/s41564-022-01105-z | Ke2022daily | `DIGESTED` | `SARS2` | | Stephen | |
-| 10.1038/s41467-023-41941-z | Kissler2023 | `DIGESTED` | `SARS2` | | Stephen | |
-| 10.1371/journal.pbio.3002463 | Russell2024 | `DIGESTED` | `SARS2` | | Stephen | |
-| 10.1126/sciimmunol.adj9285 | Wagstaffe2024 | `DIGESTED` | `SARS2` | | Carrie | |
-| 10.1016/S1473-3099(24)00183-X | Wongnak2024 | `DIGESTED` | `SARS2` | | Stephen | |
+| 10.1038/s41564-022-01105-z | Ke2022daily | `DIGESTED` | `SARS2` | | Stephen | No |
+| 10.1038/s41467-023-41941-z | Kissler2023 | `DIGESTED` | `SARS2` | | Stephen | Yes |
+| 10.1371/journal.pbio.3002463 | Russell2024 | `DIGESTED` | `SARS2` | | Stephen | Yes |
+| 10.1126/sciimmunol.adj9285 | Wagstaffe2024 | `DIGESTED` | `SARS2` | | Carrie | Yes - revisit source|
+| 10.1016/S1473-3099(24)00183-X | Wongnak2024 | `DIGESTED` | `SARS2` | | Stephen | Yes |
 | 10.1016/S2213-2600(22)00226-0 | Hakki2022 | `DIGESTED` | `SARS2` | `VAX` `LAB`| Oliver | Yes |
 | 10.1128/jcm.01785-21 | Savela2022 | `DIGESTED` | `SARS2` | `sx` | Oliver | Yes |
 | 10.1126/scitranslmed.abo5019 | Waickman2022 | `DIGESTED` | `Dengue` | `sx` `LAB` | Oliver | Yes |
@@ -52,16 +52,23 @@ Comprehensive, authoritative list of papers scanned for possible inclusion in op
 | 10.1038/s41586-024-08063-y | Halwe2024 | `DIGESTED` | | Ellen | No |
 | 10.1038/s41467-020-20568-4 | vanKampen2021 | `DE` | `SARS2` | `LAB` | Carrie | No |
 | 10.1101/2025.07.02.662782 | Alahakoon2025TrackingWestNile | `DIGESTED` | `WestNile` | `mosq` `birds` `MOSP` | Carrie | Yes |
+| 10.7326/M20-1495 | Kucirka et al 2020 | `Separating out` | `SARS2` | `MA` | Carrie | [github](https://github.com/HopkinsIDD/covidRTPCR) |
 
-Count = 15
+Count = 16
 
 ## DE = DATA EXISTS (in priority order)
 | DOI | PaperNameString | Status/Classification | Pathogen | Tags | INGEST-IN-PROGRESS-BY? | Data link |
 |:---|:---|:---:|:---:|:---:|:---|:---|
-| 10.7326/M20-1495 | Kucirka et al 2020 | `DE` | `SARS2` | `MA` | Carrie | [github](https://github.com/HopkinsIDD/covidRTPCR) |
-| 10.1038/s41467-025-61553-z | Peña-Mosca et al 2025  | `DE` | `Flu` |`H5N1` `cows` | Ellen | [github](https://github.com/fepenamosca/hpai_impact_dairies/tree/fd5f303f4aae47ef3a6259e7e7b94284f8c3af67/data) |
+| 10.1038/s41467-025-61553-z | Peña-Mosca et al 2025  | `DE` | `Flu` |`H5N1` `cows` | Oliver | [github](https://github.com/fepenamosca/hpai_impact_dairies/tree/fd5f303f4aae47ef3a6259e7e7b94284f8c3af67/data) |
 | 10.1038/s41564-025-01998-6 | Facciuolo et al 2025 | `DE` | `Flu` |`H5N1` `cows` | Ellen | [Source Data at paper](https://www-nature-com.colorado.idm.oclc.org/articles/s41564-025-01998-6#Sec25) |
-Count = 5
+| 10.1093/cid/ciaa344 | Zhao 2020 | `DE` | `COVID-19` | | Carrie - from Kucirka 2020 | Data available in article and supplementary materials (PMC Open Access) |
+| 10.1101/2020.03.06.20031856 | Liu 2020 | `DE` | `COVID-19` | | Carrie - from Kucirka 2020 | Data included within the preprint article |
+| 10.1093/cid/ciaa310 | Guo 2020 | `DE` | `COVID-19` | | Carrie - from Kucirka 2020 | Data available in article and supplementary materials (PMC Open Access) |
+| 10.1038/s41586-020-2196-x | Wölfel 2020 | `DE` | `COVID-19` | | Carrie - from Kucirka 2020 | Viral load, sequencing, and isolation data included in article; no separate repository listed |
+| 10.1093/cid/ciaa424 | Danis 2020 | `DE` | `COVID-19` | | Carrie - from Kucirka 2020 | Outbreak investigation data available in article and supplementary materials |
+| 10.1101/2020.03.09.20032896 | Kujawski 2020 | `DE` | `COVID-19` | | Carrie - from Kucirka 2020 | Data stated as “available upon request” |
+| 10.1001/jama.2020.3786 | Wang 2020 | `DE` | `COVID-19` | | Carrie - from Kucirka 2020 | Specimen testing data included in the article |
+Count = 9
 
 ## DE-NEA = Data exists, not easily accesible (alphabetized)
 | DOI | PaperNameString | Status/Classification | Pathogen | Tags | AUTHOR_CONTACTED? |

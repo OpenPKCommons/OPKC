@@ -1,3 +1,24 @@
+"""
+Puhach et al. 2022 (DOI: 10.1038/s41591-022-01816-0)
+========================================================
+Paper overview:
+---------------
+This study quantified infectious viral load of SARS-CoV-2 in
+vaccinated and unvaccinated individuals, linking RNA levels
+to culturable virus across variants.
+
+Data source:
+------------
+- https://www.nature.com/articles/s41591-022-01816-0
+
+Notes:
+- Species: Human
+- Units: RNA copies per mL and infectious virus (PFU/mL)
+- Sampling: Longitudinal nasopharyngeal swabs
+- Platform: RT-qPCR + viral culture
+- Target: SARS-CoV-2 E gene
+- Key study linking PCR to infectiousness
+"""
 # Puhach 2022
 # Data source (supplementary information): https://www-nature-com.colorado.idm.oclc.org/articles/s41591-022-01816-0#Sec19
 
