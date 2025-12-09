@@ -50,10 +50,11 @@ Comprehensive, authoritative list of papers scanned for possible inclusion in op
 | 10.1038/s41586-024-07849-4 | Caserta2025 | `DIGESTED` | | | Ellen | Yes |
 | 10.1038/s41586-024-08166-6 | Baker2024 | `DIGESTED` | | | Ellen | Yes|
 | 10.1038/s41586-024-08063-y | Halwe2024 | `DIGESTED` | | | Ellen | No |
+| 10.7554/eLife.92606.3 | Vuong2024 | `DIGESTED` | `Dengue` | `LAB` | Oliver | Yes|
 | 10.1038/s41467-020-20568-4 | vanKampen2021 | `DE` | `SARS2` | `LAB` | Carrie | No |
 | 10.1101/2025.07.02.662782 | Alahakoon2025TrackingWestNile | `DIGESTED` | `WestNile` | `mosq` `birds` `MOSP` | Carrie | Yes |
 | 10.7326/M20-1495 | Kucirka et al 2020 | `Separating out` | `SARS2` | `MA` | Carrie | [github](https://github.com/HopkinsIDD/covidRTPCR) |
-| 10.1038/s41467-025-61553-z | Peña-Mosca et al 2025  | `DIGESTED` | `Flu` |`H5N1` `cows` | Oliver | Yes |
+| 10.1038/s41467-025-61553-z | PenaMosca2025  | `DIGESTED` | `Flu` |`H5N1` `cows` | Oliver | Yes |
 
 Count = 17
 
