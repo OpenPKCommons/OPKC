@@ -95,7 +95,7 @@ def penamosca2025():
     df["Subtype"] = "H5N1"
     
     # Units (Ct values, 'cycle threshold')
-    df["Units"] = "Ct"
+    df["Units"] = "Ct (max 40)" # paper does not list the max cycles! inferred 40 from max Ct values in data
 
     # Enforce schema and coerce types
     df = enforce_schema(df)

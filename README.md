@@ -98,6 +98,7 @@ graph LR
 - DOI: DOI of the study or data repository
 - PathogenLoad: Viral load or other pathogen concentration measurement (most commonly will be log10 viral load - but need to specify!)
 - Units: Viral load units (e.g., Ct, GE/ml)
+    - NOTE: for Ct values, best practice is to include the maximum number of cycles which papers should report (is often, but not always, 40)
 - GEml_conversion_intercept: Conversion intercept from viral load units to - GE/ml
 - GEml_conversion_slope: Conversion slope from viral load units to GE/ml
 - Targets: Platform target(s) e.g. amplification of N1 gene (comma-separated string, not a list)
