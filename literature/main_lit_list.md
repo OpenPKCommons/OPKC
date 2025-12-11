@@ -50,48 +50,52 @@ Comprehensive, authoritative list of papers scanned for possible inclusion in op
 | 10.1038/s41586-024-07849-4 | Caserta2025 | `DIGESTED` | | Ellen | Yes |
 | 10.1038/s41586-024-08166-6 | Baker2024 | `DIGESTED` | | Ellen | Yes|
 | 10.1038/s41586-024-08063-y | Halwe2024 | `DIGESTED` | | Ellen | No |
+| 10.7554/eLife.92606.3 | Vuong2024 | `DIGESTED` | `Dengue` | `LAB` | Oliver | Yes |
 | 10.1038/s41467-020-20568-4 | vanKampen2021 | `DE` | `SARS2` | `LAB` | Carrie | No |
 | 10.1101/2025.07.02.662782 | Alahakoon2025TrackingWestNile | `DIGESTED` | `WestNile` | `mosq` `birds` `MOSP` | Carrie | Yes |
-| 10.7326/M20-1495 | Kucirka et al 2020 | `Separating out` | `SARS2` | `MA` | Carrie | [github](https://github.com/HopkinsIDD/covidRTPCR) |
+| 10.7326/M20-1495 | Kucirka2020 | `Separating out` | `SARS2` | `MA` | Carrie | [github](https://github.com/HopkinsIDD/covidRTPCR) |
+| 10.1038/s41467-025-61553-z | Peña-Mosca2025  | `DIGESTED` | `Flu` |`H5N1` `cows` `sx` `LAB`| Oliver | Yes |
 
-Count = 16
+Count = 19
 
 ## DE = DATA EXISTS (in priority order)
 | DOI | PaperNameString | Status/Classification | Pathogen | Tags | INGEST-IN-PROGRESS-BY? | Data link |
 |:---|:---|:---:|:---:|:---:|:---|:---|
-| 10.1038/s41467-025-61553-z | Peña-Mosca et al 2025  | `DE` | `Flu` |`H5N1` `cows` | Oliver | [github](https://github.com/fepenamosca/hpai_impact_dairies/tree/fd5f303f4aae47ef3a6259e7e7b94284f8c3af67/data) |
 | 10.1038/s41564-025-01998-6 | Facciuolo et al 2025 | `DE` | `Flu` |`H5N1` `cows` | Ellen | [Source Data at paper](https://www-nature-com.colorado.idm.oclc.org/articles/s41564-025-01998-6#Sec25) |
-| 10.1093/cid/ciaa344 | Zhao 2020 | `DE` | `COVID-19` | | Carrie - from Kucirka 2020 | Data available in article and supplementary materials (PMC Open Access) |
-| 10.1101/2020.03.06.20031856 | Liu 2020 | `DE` | `COVID-19` | | Carrie - from Kucirka 2020 | Data included within the preprint article |
-| 10.1093/cid/ciaa310 | Guo 2020 | `DE` | `COVID-19` | | Carrie - from Kucirka 2020 | Data available in article and supplementary materials (PMC Open Access) |
-| 10.1038/s41586-020-2196-x | Wölfel 2020 | `DE` | `COVID-19` | | Carrie - from Kucirka 2020 | Viral load, sequencing, and isolation data included in article; no separate repository listed |
-| 10.1093/cid/ciaa424 | Danis 2020 | `DE` | `COVID-19` | | Carrie - from Kucirka 2020 | Outbreak investigation data available in article and supplementary materials |
-| 10.1101/2020.03.09.20032896 | Kujawski 2020 | `DE` | `COVID-19` | | Carrie - from Kucirka 2020 | Data stated as “available upon request” |
-| 10.1001/jama.2020.3786 | Wang 2020 | `DE` | `COVID-19` | | Carrie - from Kucirka 2020 | Specimen testing data included in the article |
-Count = 9
+| 10.1371/journal.ppat.1012171 | Snedden et al 2024 | `DE` | `SARS2` | `macaque` | | [Zenodo](https://zenodo.org/records/10947025) |
+| 10.1093/cid/ciaa344 | Zhao 2020 | `DE` | `SARS2` | | Carrie - from Kucirka 2020 | Data available in article and supplementary materials (PMC Open Access) |
+| 10.1101/2020.03.06.20031856 | Liu 2020 | `DE` | `SARS2` | | Carrie - from Kucirka 2020 | Data included within the preprint article |
+| 10.1093/cid/ciaa310 | Guo 2020 | `DE` | `SARS2` | | Carrie - from Kucirka 2020 | Data available in article and supplementary materials (PMC Open Access) |
+| 10.1038/s41586-020-2196-x | Wölfel 2020 | `DE` | `SARS2` | | Carrie - from Kucirka 2020 | Viral load, sequencing, and isolation data included in article; no separate repository listed |
+| 10.1093/cid/ciaa424 | Danis 2020 | `DE` | `SARS2` | | Carrie - from Kucirka 2020 | Outbreak investigation data available in article and supplementary materials |
+| 10.1101/2020.03.09.20032896 | Kujawski 2020 | `DE` | `SARS2` | | Carrie - from Kucirka 2020 | Data stated as “available upon request” |
+| 10.1001/jama.2020.3786 | Wang 2020 | `DE` | `SARS2` | | Carrie - from Kucirka 2020 | Specimen testing data included in the article |
+| 10.1093/infdis/jiaf138 | Li et al 2025 | `DE` | `RSV` | | UNCLAIMED | [github](https://github.com/keli5734/RSV_Viral_Dynamics_Study/tree/main) |
+Count = 10
 
 ## DE-NEA = Data exists, not easily accesible (alphabetized)
 | DOI | PaperNameString | Status/Classification | Pathogen | Tags | AUTHOR_CONTACTED? |
 |:---|:---|:---:|:---:|:---:|---:|
-| 10.1007/s40121-025-01235-x | Berger et al 2025 | DE-NEA | `SARS2` |  | No |
-| Preprint | Blanquart et al 2021 | DE-NEA | `SARS2` |  | No |
-| 10.1056/nejmc2202092 | Boucau et al 2022 | DE-NEA | `SARS2` | `Omicron` `sx` | On deck |
-| 10.1093/aje/kwm375 | Carrat et al 2008 | DE-NEA | `Flu` | `H1N1` `sx` | On deck |
-| 10.1016/s2666-5247(20)30172-5 | Cevik et al 2020 | DE-NEA | `SARS2` `SARS` `MERS` | `MA` `REF` | No |
-| 10.7326/0003-4819-151-7-200910060-00142 | Cowling et al 2009 | DE-NEA | `Flu` | `H1N1` | On deck |
-| 10.1098/rsif.2016.0289 | Hadjichrysanthou et al 2016 | DE-NEA | `Flu` | `H1N1` | On deck |
-| 10.1038/s41591-020-0869-5 | He et al 2020 | DE-NEA | `SARS2` |  | No |
-| 10.1038/s41591-022-01780-9 | Killingley et al 2022 | DE-NEA | `SARS2` | `sx` `LAB` | On deck |
-| 10.1016/j.antiviral.2004.04.005 | Lee et al 2004 | DE-NEA | `RSV` | `sx` | No |
-| 10.1093/biostatistics/kxaa009 | Mahsin et al 2019 | DE-NEA | `Flu` | `H1N1` `MOSP` | No |
-| 10.1038/s44298-025-00132-x | Mehta et al 2025 | DE-NEA | `SARS` `Flu` `RSV` | `H3N2` | No |
-| 10.1128/iai.29.2.348-355.1980 | Murphy et al 1980 | DE-NEA | `Flu` | `H1N1` | No |
-| 10.1016/j.antiviral.2020.104763 | Sloan et al 2020 | DE-NEA | `Flu` | `XS` `H1N1` | On deck |
-| 10.1001/jamanetworkopen.2021.42796 | Stankiewicz et al 2022 | DE-NEA | `SARS2` |  | No |
-| 10.1038/s41586-020-2196-x | Wolfel et al 2020 | DE-NEA | `SARS2` |  | No |
-| 10.3389/fmicb.2019.02342  | Yuko Sakai-Tagawa et al 2019 | DE-NEA | `Flu` | `H1N1` `H3N2` `H5N1` `H5N6` `H7N9` `Victoria` `Yamagata` | No |
+| 10.1007/s40121-025-01235-x | Berger et al 2025 | `DE-NEA` | `SARS2` |  | No |
+| Preprint | Blanquart et al 2021 | `DE-NEA` | `SARS2` |  | No |
+| 10.1056/nejmc2202092 | Boucau et al 2022 | `DE-NEA` | `SARS2` | `Omicron` `sx` | On deck |
+| 10.1093/aje/kwm375 | Carrat et al 2008 | `DE-NEA` | `Flu` | `H1N1` `sx` | On deck |
+| 10.1016/s2666-5247(20)30172-5 | Cevik et al 2020 | `DE-NEA` | `SARS2` `SARS` `MERS` | `MA` `REF` | No |
+| 10.7326/0003-4819-151-7-200910060-00142 | Cowling et al 2009 | `DE-NEA` | `Flu` | `H1N1` | On deck |
+| 10.1098/rsif.2016.0289 | Hadjichrysanthou et al 2016 | `DE-NEA` | `Flu` | `H1N1` | On deck |
+| 10.1038/s41591-020-0869-5 | He et al 2020 | `DE-NEA` | `SARS2` |  | No |
+| 10.1038/s41591-022-01780-9 | Killingley et al 2022 | `DE-NEA` | `SARS2` | `sx` `LAB` | On deck |
+| 10.1016/j.antiviral.2004.04.005 | Lee et al 2004 | `DE-NEA` | `RSV` | `sx` | No |
+| 10.1093/biostatistics/kxaa009 | Mahsin et al 2019 | `DE-NEA` | `Flu` | `H1N1` `MOSP` | No |
+| 10.1038/s44298-025-00132-x | Mehta et al 2025 | `DE-NEA` | `SARS` `Flu` `RSV` | `H3N2` | No |
+| 10.1128/iai.29.2.348-355.1980 | Murphy et al 1980 | `DE-NEA` | `Flu` | `H1N1` | No |
+| 10.1101/700401 | Prague et al 2019 | `DE-NEA` | `HIV` `SIV` | `LAB` `VAX` `Ab` | No |
+| 10.1016/j.antiviral.2020.104763 | Sloan et al 2020 | `DE-NEA` | `Flu` | `XS` `H1N1` | On deck |
+| 10.1001/jamanetworkopen.2021.42796 | Stankiewicz et al 2022 | `DE-NEA` | `SARS2` |  | No |
+| 10.1038/s41586-020-2196-x | Wolfel et al 2020 | `DE-NEA` | `SARS2` |  | No |
+| 10.3389/fmicb.2019.02342  | Yuko Sakai-Tagawa et al 2019 | `DE-NEA` | `Flu` | `H1N1` `H3N2` `H5N1` `H5N6` `H7N9` `Victoria` `Yamagata` | No |
 
-Count = 17
+Count = 18
 
 ## DME = Data MAY exist
 | DOI | PaperNameString | Status/Classification | Pathogen | Tags | By |
@@ -140,18 +144,21 @@ Count = 17
 | 10.1126/science.1065973 | Keeling et al 2001 | `DME` | `FMD` | * | 
 | 10.1186/1746-6148-2-3 | Savill et al 2006 | `DME` | `FMD` | * | 
 | 10.1056/NEJMoa2116154 | Shmoele-Thoma et al 2022 | `DME` | `RSV` |  | 
-| 10.1371/journal.pone.0051653 | Suess et al 2012 | `DME` |  | sx | 
+| 10.1371/journal.pone.0051653 | Suess et al 2012 | `DME` |  | `sx` | 
 
 Count = 45
 
 ## IDed paper in scanning queue
 | DOI | PaperNameString | Status/Classification | Pathogen | Tags | By |
 |:---|:---|:---:|:---:|:---:|---:|
-| 10.1016/S2666-5247(23)00005-8 | Galmiche et al 2023 | `IDed` | | Ellen |
-| 10.1016/S2666-5247(23)00101-5 | Zhou et al 2023 | `IDed` | | Ellen |
-| 10.3389/fimmu.2018.00323 | Ascough et al 2018 | `IDed` | | Ellen |
-| 10.1007/82_2022_257 | Dayananda et al 2022 | `IDed` | | Ellen |
-Count = 4+
+| 10.1016/S2666-5247(23)00005-8 | Galmiche et al 2023 | `IDed` | | | Ellen |
+| 10.1016/S2666-5247(23)00101-5 | Zhou et al 2023 | `IDed` | | | Ellen |
+| 10.3389/fimmu.2018.00323 | Ascough et al 2018 | `IDed` | | | Ellen |
+| 10.1007/82_2022_257 | Dayananda et al 2022 | `IDed` | | | Ellen |
+| 10.1097/QAD.0000000000000953 | Li et al 2016 | `IDed` | `HIV` | | Ellen |
+| 10.1101/2025.10.24.25338576 | Bruce et al 2025 | `IDed` | `Flu` | | Dan Epidemics |
+| 10.1371/journal.ppat.1012131 | VanInsberghe et al 2024 | `IDed` | `Flu` | `H1N1` `H3N2` | Dan Epidemics |
+Count = 7+
 *Consult verbose_main_lit_list.xlsx for full queue*
 
 ## MO = Modeling Only papers
@@ -198,7 +205,7 @@ Count = 21
 | 10.1016/S0140-6736(00)02061-4 | Babiker et al 2000 | `NA` | `HIV`  | Ellen |
 | 10.1016/S1473-3099(24)00416-X | Pham et al 2024 | `NA` | `Bact Res`  | Ellen GH |
 | 10.3390/v17101343 | Aloisio et al 2025 | `NA` | `SARS2` | Dan | 
-| 10.1093/imammb/14.2.85 | Hughes et al 1997 | `NA` |  | Plants | 
+| 10.1093/imammb/14.2.85 | Hughes et al 1997 | `NA` |  | `Plants` | Ellen |
 
 Count = 15
 
@@ -216,6 +223,6 @@ Count = 15
 | 10.1016/s1473-3099(21)00648-4 | Singanayagam et al 2021 | `DAI` | `SARS2` | | Ellen RR | 10.1016/S2213-2600(22)00226-0 |
 | 10.1371/journal.pcbi.0030240 | Handel et al 2007 | `DAI` | `Flu` | | Ellen RR | 10.1086/314938 |
 
-Count = 8
+Count = 10
 
-Total tally = 132
+Total tally = 145
