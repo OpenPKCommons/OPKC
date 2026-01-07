@@ -47,21 +47,21 @@ Comprehensive, authoritative list of papers scanned for possible inclusion in op
 | 10.1038/s41564-024-01668-z | Waickman2024 | `DIGESTED` | `Dengue` | `LAB` | Oliver | Yes |
 | 10.1038/s41591-022-01816-0 | Puhach2022 | `DIGESTED` | `SARS2` `VAX` | | Carrie | Yes |
 | 10.1126/science.abi5273 | Jones2021 | `DIGESTED` | `SARS2` | `LAB` | Carrie | Yes |
-| 10.1038/s41586-024-07849-4 | Caserta2025 | `DIGESTED` | | Ellen | Yes |
-| 10.1038/s41586-024-08166-6 | Baker2024 | `DIGESTED` | | Ellen | Yes|
-| 10.1038/s41586-024-08063-y | Halwe2024 | `DIGESTED` | | Ellen | No |
+| 10.1038/s41586-024-07849-4 | Eales_Caserta | `DIGESTED` | | Ellen | Yes |
+| 10.1038/s41586-024-08166-6 | Eales_Baker | `DIGESTED` | | Ellen | Yes|
+| 10.1038/s41586-024-08063-y | Eales_Halwe | `DIGESTED` | | Ellen | No |
 | 10.7554/eLife.92606.3 | Vuong2024 | `DIGESTED` | `Dengue` | `LAB` | Oliver | Yes |
 | 10.1038/s41467-020-20568-4 | vanKampen2021 | `DE` | `SARS2` | `LAB` | Carrie | No |
 | 10.1101/2025.07.02.662782 | Alahakoon2025TrackingWestNile | `DIGESTED` | `WestNile` | `mosq` `birds` `MOSP` | Carrie | Yes |
-| 10.7326/M20-1495 | Kucirka2020 | `Separating out` | `SARS2` | `MA` | Carrie | [github](https://github.com/HopkinsIDD/covidRTPCR) |
+| 10.7326/M20-1495 | Kucirka2020 | `Separating out` | `SARS2` | `MA` | Carrie | Yes |
 | 10.1038/s41467-025-61553-z | Peña-Mosca2025  | `DIGESTED` | `Flu` |`H5N1` `cows` `sx` `LAB`| Oliver | Yes |
+| 10.1038/s41564-025-01998-6 | Facciuolo et al 2025 | `DIGESTED` | `Flu` |`H5N1` `cows` `sx` `LAB` `Ab` | Ellen | Yes |
 
-Count = 19
+Count = 20
 
 ## DE = DATA EXISTS (in priority order)
 | DOI | PaperNameString | Status/Classification | Pathogen | Tags | INGEST-IN-PROGRESS-BY? | Data link |
 |:---|:---|:---:|:---:|:---:|:---|:---|
-| 10.1038/s41564-025-01998-6 | Facciuolo et al 2025 | `DE` | `Flu` |`H5N1` `cows` | Ellen | [Source Data at paper](https://www-nature-com.colorado.idm.oclc.org/articles/s41564-025-01998-6#Sec25) |
 | 10.1371/journal.ppat.1012171 | Snedden et al 2024 | `DE` | `SARS2` | `macaque` | | [Zenodo](https://zenodo.org/records/10947025) |
 | 10.1093/cid/ciaa344 | Zhao 2020 | `DE` | `SARS2` | | Carrie - from Kucirka 2020 | Data available in article and supplementary materials (PMC Open Access) |
 | 10.1101/2020.03.06.20031856 | Liu 2020 | `DE` | `SARS2` | | Carrie - from Kucirka 2020 | Data included within the preprint article |
@@ -71,7 +71,7 @@ Count = 19
 | 10.1101/2020.03.09.20032896 | Kujawski 2020 | `DE` | `SARS2` | | Carrie - from Kucirka 2020 | Data stated as “available upon request” |
 | 10.1001/jama.2020.3786 | Wang 2020 | `DE` | `SARS2` | | Carrie - from Kucirka 2020 | Specimen testing data included in the article |
 | 10.1093/infdis/jiaf138 | Li et al 2025 | `DE` | `RSV` | | UNCLAIMED | [github](https://github.com/keli5734/RSV_Viral_Dynamics_Study/tree/main) |
-Count = 10
+Count = 9
 
 ## DE-NEA = Data exists, not easily accesible (alphabetized)
 | DOI | PaperNameString | Status/Classification | Pathogen | Tags | AUTHOR_CONTACTED? |
