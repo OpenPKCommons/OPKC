@@ -270,6 +270,10 @@ def halwe():
     df["SampleMethod"] = "milk sample"
     df["PlatformTech"] = "BioRad CFX Maestro 1.1 with AgPath-ID One-Step RT-PCR kit"
 
+    # Enforce schema and coerce types
+    df = enforce_schema(df)
+    df = coerce_types(df)
+
     return df
 
 # %%
