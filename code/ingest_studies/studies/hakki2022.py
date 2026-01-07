@@ -82,7 +82,7 @@ def load_and_format():
         "pfu": "PFUPerML",
         "LFD": "LFD_Positive",
         "vaccinated": "Vaccinated",
-        "WGS": "Subtype"
+        "WGS": "PathogenSubtype"
     }
     present_map = {k: v for k, v in rename_map.items() if k in df.columns}
     df = df.rename(columns=present_map)
@@ -98,29 +98,29 @@ def load_and_format():
     #   - Else if PFUPerML present: Log10VL = log10(PFU/mL), Units = "log10(PFU/mL)"
     #   - Else (no quantitative): keep Units as "Ct" only if you map Ct elsewhere (not present here); otherwise leave NA.
     if "CopiesPerML" in df.columns and df["CopiesPerML"].notna().any():
-        df["PathogenLoad"] = df["CopiesPerML"].apply(_safe_log10)
+        df["BiomarkerQuantity"] = df["CopiesPerML"].apply(_safe_log10)
         df["Units"] = "log10(copies/mL)"
     elif "PFUPerML" in df.columns and df["PFUPerML"].notna().any():
-        df["PathogenLoad"] = df["PFUPerML"].apply(_safe_log10)
+        df["BiomarkerQuantity"] = df["PFUPerML"].apply(_safe_log10)
         df["Units"] = "log10(PFU/mL)"
     else:
         # No quantitative load; leave Log10VL as NaN and Units unspecified.
-        df["PathogenLoad"] = float("nan")
+        df["BiomarkerQuantity"] = float("nan")
         df["Units"] = pd.NA
 
     # 6) Fill study-level metadata lab schema expects
     df["StudyID"] = "hakki2022"
     df["Pathogen"] = "SARS2"
-    df["IndSpecies"] = "Human"
+    df["IndivSpecies"] = "Human"
     df["DOI"] = "10.1016/S2213-2600(22)00226-0"
-    df["Targets"] = "ORF1ab"
+    df["AssayTargets"] = "ORF1ab"
     # SampleType/Platform - set conservative defaults; refine from Methods later if needed
     if "SampleSource" not in df.columns:
         df["SampleSource"] = "nose+throat"
     if "SampleMethod" not in df.columns:
         df["SampleMethod"] = "nose+throat_swabs_in_VTM"
-    if "PlatformType" not in df.columns:
-        df["PlatformType"] = "RT-qPCR"           # TODO: refine targets if I extract them later
+    if "AssayType" not in df.columns:
+        df["AssayType"] = "RT-qPCR"           # TODO: refine targets if I extract them later
 
     # Optional: normalize booleans
     if "LFD_Positive" in df.columns:

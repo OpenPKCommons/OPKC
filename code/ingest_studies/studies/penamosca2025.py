@@ -70,14 +70,14 @@ def penamosca2025():
     # Rename columns to match schema
     rename_map = {
         "id": "IndivID",
-        "ct_pcr": "PathogenLoad",
+        "ct_pcr": "BiomarkerQuantity",
     }
 
     df = df.rename(columns={k: v for k, v in rename_map.items() if k in df.columns})
 
-    # Convert PathogenLoad (Ct values) to numeric, with negative results or missing Ct values becoming NA
-    df["PathogenLoad"] = pd.to_numeric(df["PathogenLoad"], errors="coerce")
-    df.loc[df["PathogenLoad"] <= 0, "PathogenLoad"] = pd.NA 
+    # Convert BiomarkerQuantity (Ct values) to numeric, with negative results or missing Ct values becoming NA
+    df["BiomarkerQuantity"] = pd.to_numeric(df["BiomarkerQuantity"], errors="coerce")
+    df.loc[df["BiomarkerQuantity"] <= 0, "BiomarkerQuantity"] = pd.NA 
 
     # Calculate TimeDays from sample_date and date_gripa_cow (disease onset date)
     df["sample_date"] = pd.to_datetime(df["sample_date"], errors="coerce")
@@ -89,10 +89,10 @@ def penamosca2025():
 
     df["StudyID"] = "penamosca2025"
     df["Pathogen"] = "Flu"
-    df["IndSpecies"] = "Dairy cattle"
+    df["IndivSpecies"] = "Dairy cattle"
     df["DOI"] = "10.1038/s41467-025-61553-z"
-    df["PlatformType"] = "RT-qPCR"
-    df["Subtype"] = "H5N1"
+    df["AssayType"] = "RT-qPCR"
+    df["PathogenSubtype"] = "H5N1"
     
     # Units (Ct values, 'cycle threshold')
     df["Units"] = "Ct (max 40)" # paper does not list the max cycles! inferred 40 from max Ct values in data

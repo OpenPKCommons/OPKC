@@ -41,17 +41,17 @@ def load_and_format():
     df = df.rename(columns={
         "PersonID": "IndivID",
         "DaysPostInoculation": "TimeDays",
-        "GEml": "PathogenLoad", # is log10VL
+        "GEml": "BiomarkerQuantity", # is log10VL
         "site": "SampleSource"
         })
 
     # Add additional columns with known but missing information:
     df["StudyID"] = "wagstaffe2024"
     df["Pathogen"] = "SARS2"
-    df["IndSpecies"] = "Human"
+    df["IndivSpecies"] = "Human"
     df["DOI"] = "10.1126/sciimmunol.adj9285"
     df["Units"] = "GEml (log10VL)"
-    df["PlatformType"] = "RT-qPCR"
+    df["AssayType"] = "RT-qPCR"
     df["SampleMethod"] = "flocked_swab_in_VTM"
 
     # For reference...
@@ -73,4 +73,5 @@ def load_and_format():
 
     df = enforce_schema(df)
     df = coerce_types(df)
+    
     return df

@@ -1,14 +1,15 @@
 import pandas as pd
 
 STANDARD_SCHEMA = [
-    "StudyID", "IndivID", "Pathogen", "IndSpecies",
+    "StudyID", "IndivID", "Pathogen", "IndivSpecies",
     "InfectionID", "SampleID", "TimeDays",
     "Symptoms1", "Symptoms2", "Symptoms3", "Symptoms4",
     "Comorbidity1", "Comorbidity2", "Comorbidity3", "Comorbidity4",
     "Treatment1", "Treatment2", "Treatment3", "Treatment4",
     "Hospitalized", "SampleSource", "SampleMethod", "AgeRng1", "AgeRng2",
-    "Subtype", "PlatformType", "DOI", "PathogenLoad", "Units", "GEml_conversion_intercept", "GEml_conversion_slope",
-    "Targets", "PlatformTech"
+    "PathogenSubtype", "AssayType", "DOI", "Biomarker", "BiomarkerQuantity", "Units",
+    "GEml_conversion_intercept", "GEml_conversion_slope", "Ct_max",
+    "AssayTargets", "ReagentSystem", "ReadoutPlatform"
 ]
 
 def enforce_schema(df):
@@ -19,11 +20,14 @@ def enforce_schema(df):
     return df[STANDARD_SCHEMA]
 
 def coerce_types(df):
-    numeric_cols = ["TimeDays", "AgeRng1", "AgeRng2", "GEml_conversion_intercept", "GEml_conversion_slope"]
+    numeric_cols = ["TimeDays", "AgeRng1", "AgeRng2", "GEml_conversion_intercept", "GEml_conversion_slope", "Ct_max"]
     for col in numeric_cols:
         df[col] = pd.to_numeric(df[col], errors="coerce")
 
-    string_cols = ["StudyID", "IndivID", "Pathogen", "IndSpecies", "InfectionID", "SampleID", "Symptoms1", "Symptoms2", "Symptoms3", "Symptoms4", "Comorbidity1", "Comorbidity2", "Comorbidity3", "Comorbidity4", "Treatment1", "Treatment2", "Treatment3", "Treatment4", "SampleSource", "SampleMethod", "Subtype", "PlatformType", "DOI", "Units", "Targets", "PlatformTech"]
+    string_cols = ["StudyID", "IndivID", "Pathogen", "IndivSpecies", "InfectionID", "SampleID", "Symptoms1", "Symptoms2", "Symptoms3", "Symptoms4",
+                   "Comorbidity1", "Comorbidity2", "Comorbidity3", "Comorbidity4", "Treatment1", "Treatment2", "Treatment3", "Treatment4", "SampleSource", "SampleMethod",
+                   "PathogenSubtype", "AssayType", "DOI", "Biomarker", "BiomarkerQuantity", "Units",
+                   "AssayTargets", "ReagentSystem", "ReadoutPlatform"]
     df[string_cols] = df[string_cols].astype(str)
 
     return df

@@ -45,22 +45,22 @@ def load_and_format():
     # Rename columns to match schema: 
     df = df.rename(columns={
         "study": "StudyID", 
-        "test": "PlatformType",
+        "test": "AssayType",
         "day": "TimeDays"
         })
     
     # Add additional columns with known but missing information:
     df["StudyID"] = "Kucirka2020"
     df["Pathogen"] = "SARS2"
-    df["IndSpecies"] = "Human"
+    df["IndivSpecies"] = "Human"
     df["Units"] = "mixed" # study specific!
     df["DOI"] = "10.7326/M20-1495"
-    # df["PlatformType"] = "RT-qPCR" # study speciifc
+    # df["AssayType"] = "RT-qPCR" # study specific
 
     # not included or study specific! 
-    #df["PlatformTech"] = "Roche cobas 6800/"
-    #df["Targets"] = "E-gene" 
-
+    #df["ReadoutPlatform"] = "Roche cobas 6800"
+    #df["AssayTargets"] = "E-gene" 
+    
     df = enforce_schema(df)
     df = coerce_types(df)
     return df

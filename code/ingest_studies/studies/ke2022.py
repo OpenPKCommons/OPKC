@@ -52,15 +52,15 @@ def load_and_format():
     df = df.rename(columns={
         "Ind": "IndivID",
         "Time": "TimeDays",
-        "Lineage": "Subtype",
+        "Lineage": "PathogenSubtype",
         "Age": "AgeRng1",
-        "Log10VL": "PathogenLoad"
+        "Log10VL": "BiomarkerQuantity"
         })
 
     # Add additional columns with known but missing information:
     df["StudyID"] = "ke2022"
     df["Pathogen"] = "SARS2"
-    df["IndSpecies"] = "Human"
+    df["IndivSpecies"] = "Human"
     df["AgeRng2"] = df["AgeRng1"]
     df["DOI"] = "10.1038/s41564-022-01105-z"
     df["Units"] = df["SampleSource"].map({
@@ -73,17 +73,17 @@ def load_and_format():
         "nasal": "flocked_swab_in_VTM",
         "nasal antigen": "dry_swab"
         })
-    df["PlatformType"] = df["SampleSource"].map({
+    df["AssayType"] = df["SampleSource"].map({
         "saliva": "RT-qPCR",
         "nasal": "RT-qPCR", #calibrated with ddPCR
         "nasal antigen": "Antigen"
         })
-    df["PlatformTech"] = df["SampleSource"].map({
+    df["ReadoutPlatform"] = df["SampleSource"].map({
         "saliva": "Taqpath",
         "nasal": "Alinity",
         "nasal antigen": "Sofia"
         })
-    df["Targets"] = df["SampleSource"].map({
+    df["AssayTargets"] = df["SampleSource"].map({
         "saliva": "ORF1ab, N, S",
         "nasal": "N1",
         })

@@ -59,29 +59,29 @@ def load_and_format():
     df = df.rename(columns={
         "personHash": "PersonID",
         "computedTimeDays": "TimeDays",
-        "viralLoad": "PathogenLoad", 
+        "viralLoad": "BiomarkerQuantity", 
         "age": "AgeRng1"
         })
     
     # for rows where "B117" is TRUE, df["Subtype"] = "B.1.1.7", else leave blank
-    df["Subtype"] = ""
+    df["PathogenSubtype"] = ""
     df.loc[df["B117"] == True, "Subtype"] = "B.1.1.7"
 
     #and for thoes rows where df["Subtype"] == "B.1.1.7", df["Targets"] = "N501Y, del69/70 spike protein AA"
-    df["Targets"] = ""
-    df.loc[df["Subtype"] == "B.1.1.7", "Targets"] = "N501Y, del69/70 spike protein AA"
+    df["AssayTargets"] = ""
+    df.loc[df["PathogenSubtype"] == "B.1.1.7", "AssayTargets"] = "N501Y, del69/70 spike protein AA"
 
     # Add additional columns with known but missing information:
     df["StudyID"] = "jones2021"
     df["Pathogen"] = "SARS2"
-    df["IndSpecies"] = "Human"
+    df["IndivSpecies"] = "Human"
     df["Units"] = "GEml (log10VL)" # intercepts available in supplemental material
     df["DOI"] = "10.1126/science.abi5273"
-    df["PlatformType"] = "RT-qPCR"
+    df["AssayType"] = "RT-qPCR"
     # note that in data/jones2021_rawfiles, empirical culture data is recorded, confusingly labeled as "probabiliity"
     ## these were used to calculate the culture probability in the source paper, they are not simulated data
     ## not currently ingested here but could be added in future versions
-    df["PlatformTech"] = "Roche Light Cycler 480, or Roche cobas 6800/8800"
+    df["ReadoutPlatform"] = "Roche Light Cycler 480, or Roche cobas 6800/8800"
 
 
     df = enforce_schema(df)

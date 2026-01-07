@@ -46,24 +46,24 @@ if PARENT_DIR not in sys.path:
 from schema import enforce_schema, coerce_types
 
 
-def _load_sheet(base_dir, sheet_name, platform_type, units, platform_tech, targets):
+def _load_sheet(base_dir, sheet_name, platform_type, units, readout_platform, targets):
     xlsx_path = os.path.join(base_dir, "data", "waickman2022_s1.xlsx")
     df_raw = pd.read_excel(xlsx_path, sheet_name=sheet_name)
     df_raw = df_raw.dropna(how="all")
     df_raw.columns = df_raw.columns.map(str)
 
-    df = df_raw.melt(id_vars="Study day", var_name="IndivID", value_name="PathogenLoad")
+    df = df_raw.melt(id_vars="Study day", var_name="IndivID", value_name="BiomarkerQuantity")
     df["TimeDays"] = df["Study day"]
     df = df.drop(columns=["Study day"])
 
     # Replace BLOD / non-detectable values ≤1 with NaN
-    df["PathogenLoad"] = pd.to_numeric(df["PathogenLoad"], errors="coerce")
-    df.loc[df["PathogenLoad"] <= 1.0, "PathogenLoad"] = pd.NA
+    df["BiomarkerQuantity"] = pd.to_numeric(df["BiomarkerQuantity"], errors="coerce")
+    df.loc[df["BiomarkerQuantity"] <= 1.0, "BiomarkerQuantity"] = pd.NA
 
     # Core metadata
     df["StudyID"] = "waickman2022"
     df["Pathogen"] = "Dengue"
-    df["IndSpecies"] = "human"
+    df["IndivSpecies"] = "human"
     # df["Symptoms1"] = "R51"     # Headache
     # df["Symptoms2"] = "R21"     # Rash
     # df["Symptoms3"] = "R50.9"   # Fever
@@ -75,12 +75,12 @@ def _load_sheet(base_dir, sheet_name, platform_type, units, platform_tech, targe
     df["SampleMethod"] = "blood draw (serum)"
     df["AgeRng1"] = 20
     df["AgeRng2"] = 45
-    df["Subtype"] = "DENV-1 45AZ5"
-    df["PlatformType"] = platform_type
+    df["PathogenSubtype"] = "DENV-1 45AZ5"
+    df["AssayType"] = platform_type
     df["DOI"] = "10.1126/scitranslmed.abo5019"
     df["Units"] = units
-    df["Targets"] = targets
-    df["PlatformTech"] = platform_tech
+    df["ReadoutPlatform"] = readout_platform
+    df["AssayTargets"] = targets
     
     df = enforce_schema(df)
     df = coerce_types(df)

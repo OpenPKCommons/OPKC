@@ -41,23 +41,23 @@ def load_and_format():
         "PersonID": "IndivID",
         "InfectionEvent": "InfectionID",
         "TestDateIndex": "TimeDays",
-        "CtT1": "PathogenLoad",
-        "LineageBroad": "Subtype"
+        "CtT1": "BiomarkerQuantity",
+        "LineageBroad": "PathogenSubtype"
         })
 
     # Add additional columns with known but missing information:
     df["StudyID"] = "kissler2023"
     df["Pathogen"] = "SARS2"
-    df["IndSpecies"] = "Human"
+    df["IndivSpecies"] = "Human"
     df["DOI"] = "10.1038/s41467-023-41941-z"
     df["Units"] = "Ct"
-    df["PlatformType"] = "RT-qPCR"
-    df["PlatformTech"] = "cobas_target1"
+    df["AssayType"] = "RT-qPCR"
+    df["ReadoutPlatform"] = "cobas_target1"
     df["GEml_conversion_intercept"] = 11.34089
     df["GEml_conversion_slope"] = -0.2770306
     df["SampleSource"] = "nasal+oropharyngeal"
     df["SampleMethod"] = "swab in VTM"
-    df["Targets"] = "E484K, N501Y, delHV-69/70"
+    df["AssayTargets"] = "E484K, N501Y, delHV-69/70"
     
 
     df = enforce_schema(df)

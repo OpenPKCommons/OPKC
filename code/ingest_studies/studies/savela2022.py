@@ -121,10 +121,10 @@ def load_savela2022_infection(data_dir: str) -> pd.DataFrame:
         # Metadata
         df["StudyID"] = "savela2022"
         df["Pathogen"] = "SARS2"
-        df["IndSpecies"] = "Human"
+        df["IndivSpecies"] = "Human"
         df["Units"] = "copies/mL"
-        df["PlatformType"] = "RT-qPCR"
-        df["PlatformTech"] = "Bio-Rad CFX96"
+        df["AssayType"] = "RT-qPCR"
+        df["ReadoutPlatform"] = "Bio-Rad CFX96"
         df["DOI"] = "10.1128/JCM.01785-21"
 
         # Set age ranges based on figure letter
@@ -138,22 +138,22 @@ def load_savela2022_infection(data_dir: str) -> pd.DataFrame:
 
         # N1 rows
         df_n1 = df.copy(deep=True)
-        df_n1["Targets"] = "N1"
-        df_n1["PathogenLoad"] = df_n1["Target1"].apply(
+        df_n1["AssayTargets"] = "N1"
+        df_n1["BiomarkerQuantity"] = df_n1["Target1"].apply(
             lambda x: math.log10(x) if pd.notna(x) and x > 0 else np.nan
         )
 
         # N2 rows
         df_n2 = df.copy(deep=True)
-        df_n2["Targets"] = "N2"
-        df_n2["PathogenLoad"] = df_n2["Target2"].apply(
+        df_n2["AssayTargets"] = "N2"
+        df_n2["BiomarkerQuantity"] = df_n2["Target2"].apply(
             lambda x: math.log10(x) if pd.notna(x) and x > 0 else np.nan
         )
 
         use_cols = [
-            "StudyID", "IndivID", "Pathogen", "IndSpecies", "TimeDays",
-            "SampleSource", "SampleMethod", "AgeRng1", "AgeRng2", "PlatformType", "PlatformTech", "DOI",
-            "Targets", "PathogenLoad", "Units"
+            "StudyID", "IndivID", "Pathogen", "IndivSpecies", "TimeDays",
+            "SampleSource", "SampleMethod", "AgeRng1", "AgeRng2", "AssayType", "ReadoutPlatform", "DOI",
+            "AssayTargets", "BiomarkerQuantity", "Units"
         ]
 
         frames.append(df_n1[use_cols])
@@ -164,7 +164,7 @@ def load_savela2022_infection(data_dir: str) -> pd.DataFrame:
 
     # Re-baseline TimeDays
     def first_detected_day(g):
-        mask = g["PathogenLoad"].notna() & g["TimeDays"].notna()
+        mask = g["BiomarkerQuantity"].notna() & g["TimeDays"].notna()
         if mask.any():
             return g.loc[mask, "TimeDays"].min()
         return np.nan

@@ -122,7 +122,7 @@ def baker():
     df = df.rename(columns={
         "Animal ID": "IndivID",
         "Day post inoculation": "TimeDays",
-        "IAV RT-qPCR Ct": "PathogenLoad"
+        "IAV RT-qPCR Ct": "BiomarkerQuantity"
         # "VI": "TBD"  # "viral isolation", may want to include in v2, a la viral culture
     })
 
@@ -166,11 +166,12 @@ def baker():
     # Additional columns with known information:
     df["StudyID"] = "Eales2025_Baker"
     df["Pathogen"] = "Flu"
-    df["Subtype"] = "H5N1"
-    df["IndSpecies"] = "Dairy cattle"
+    df["PathogenSubtype"] = "H5N1"
+    df["IndivSpecies"] = "Dairy cattle"
     df["DOI"] = "10.1101/2025.02.01.636082v1" # Eales et al
-    df["Units"] = "Ct (max 40)"
-    df["PlatformType"] = "RT-qPCR"
+    df["Units"] = "Ct"
+    df["Ct_max"] = 40
+    df["AssayType"] = "RT-qPCR"
 
     # Enforce schema and coerce types
     df = enforce_schema(df)
@@ -198,7 +199,7 @@ def caserta():
     # rename columns per schema
     df1a = df1a.rename(columns={
         "ID": "SampleID",
-        "45-Ct": "PathogenLoad"
+        "45-Ct": "BiomarkerQuantity"
         })
 
     # NOTE : I'm making an assumption here that the ID postfixes correspond to TimeDays in a way that makes sense
@@ -224,13 +225,15 @@ def caserta():
     # Additional columns with known information:
     df1a["StudyID"] = "Eales2025_Caserta"
     df1a["Pathogen"] = "Flu"
-    df1a["Subtype"] = "H5N1"
-    df1a["IndSpecies"] = "Dairy cattle"
+    df1a["PathogenSubtype"] = "H5N1"
+    df1a["IndivSpecies"] = "Dairy cattle"
     df1a["DOI"] = "10.1101/2025.02.01.636082v1" # Eales et al
-    df1a["Units"] = "Ct (max 45)"
-    df1a["PlatformType"] = "RT-qPCR" # referred to in the paper as "Real-time PCR with reverse transcription (rRT–PCR)"
-    df1a["PlatformTech"] = "Applied Biosystems 7500 Fast PCR/Path-ID Multiplex One-Step RT-PCR Kit"
-    df1a["Targets"] = "IAV matrix gene"
+    df1a["Units"] = "Ct"
+    df1a["Ct_max"] = 45
+    df1a["AssayType"] = "RT-qPCR" # referred to in the paper as "Real-time PCR with reverse transcription (rRT–PCR)"
+    df1a["ReagentSystem"] = "Path-ID Multiplex One-Step RT-PCR Kit"
+    df1a["ReadoutPlatform"] = "Applied Biosystems 7500 Fast PCR"
+    df1a["AssayTargets"] = "IAV matrix gene"
     df1a["SampleSource"] = "milk" # raw data from Caserta et al directly does have the other sample types in figure, but Eales didn't ingest these
     df1a["SampleMethod"] = "milk sample"
 
@@ -252,7 +255,7 @@ def halwe():
     #then rename columns according to schema
     df = df.rename(columns={
         "x": "TimeDays",
-        "y": "PathogenLoad",
+        "y": "BiomarkerQuantity",
         "ID": "IndivID"
     })
 
@@ -262,13 +265,15 @@ def halwe():
     # Additional columns with known information:
     df["StudyID"] = "Eales2025_Halwe"
     df["Pathogen"] = "Flu"
-    df["IndSpecies"] = "Dairy cattle"
+    df["IndivSpecies"] = "Dairy cattle"
     df["DOI"] = "10.1101/2025.02.01.636082v1" # Eales et al
-    df["Units"] = "Ct (max 38) WITH PLOTDIGITIZER"
-    df["PlatformType"] = "RT-qPCR"
+    df["Units"] = "Ct WITH PLOTDIGITIZER"
+    df['Ct_max'] = 38
+    df["AssayType"] = "RT-qPCR"
     df["SampleSource"] = "milk"
     df["SampleMethod"] = "milk sample"
-    df["PlatformTech"] = "BioRad CFX Maestro 1.1 with AgPath-ID One-Step RT-PCR kit"
+    df["ReagentSystem"] = "AgPath-ID One-Step RT–PCR kit"
+    df["ReadoutPlatform"] = "BioRad CFX Maestro 1.1"
 
     # Enforce schema and coerce types
     df = enforce_schema(df)

@@ -169,16 +169,43 @@ remapped_test_days = remap_days(test_days)
 """
 
 # Function to append raw data to a combined df, by tab and by cow/source - pretty brute force but works for now
-def expand_tabs(in_df, col_name, samplesource, samplemethod, units, platformtype, targets, platformtech):
+def expand_tabs(in_df, col_name, assay):
     df_expanded = pd.DataFrame()
-    df_expanded["PathogenLoad"] = in_df[col_name].values
+
+    df_expanded["BiomarkerQuantity"] = in_df[col_name].values
     df_expanded["TimeDays"] = in_df["TimeDays"].values
-    df_expanded["SampleSource"] = samplesource
-    df_expanded["SampleMethod"] = samplemethod
-    df_expanded["Units"] = units
-    df_expanded["PlatformType"] = platformtype
-    df_expanded["Targets"] = targets
-    df_expanded["PlatformTech"] = platformtech
+
+    # set sample_source based on col_name: L = left, R = right; H = hindquarters, F = forequarters
+    sample_source_abbrev = col_name.split(" ")[2]  # e.g., "HL" or "FL"
+    if sample_source_abbrev == "HL":
+        sample_source = "left hindquarters"
+    elif sample_source_abbrev == "FL":
+        sample_source = "left forequarters"
+    elif sample_source_abbrev == "HR":
+        sample_source = "right hindquarters"
+    elif sample_source_abbrev == "FR":
+        sample_source = "right forequarters"
+    else:
+        sample_source = "unknown"
+
+    # metadata based on RT-qPCR or titer
+    if assay == "RT-qPCR":
+        df_expanded["SampleSource"] = sample_source
+        df_expanded["SampleMethod"] = "milk sample"
+        df_expanded["Units"] = "TCID50 equivalent/mL"
+        df_expanded["AssayType"] = "RT-qPCR"
+        df_expanded["AssayTargets"] = "Influenza A - M gene"
+        df_expanded["ReagentSystem"] = "Luna qPCR Kit"
+        df_expanded["ReadoutPlatform"] = "StepOne Plus Real-Time PCR System"
+
+    if assay == "titer":
+        df_expanded["SampleSource"] = sample_source
+        df_expanded["SampleMethod"] = "milk sample"
+        df_expanded["Units"] = "TCID50/mL"
+        df_expanded["AssayType"] = "Infectious virus titer"
+        df_expanded["AssayTargets"] = ""
+        df_expanded["ReagentSystem"] = ""
+        df_expanded["ReadoutPlatform"] = ""
 
     # add an IndivID column based on cow number
     cow_number = col_name.split("#")[1].split(" ")[0]  # extract cow number from "Cow #4 HL"
@@ -213,186 +240,30 @@ def load_and_format():
 
     # %%
 
-    # 4b - Cow 4 HL
-    df_4b_HL = expand_tabs(
-        df_4b,
-        col_name="Cow #4 HL",
-        samplesource="left hindquarters",
-        samplemethod="milk sample",
-        units="TCID50 equivalent/mL",
-        platformtype="RT-qPCR",
-        targets="Influenza A - M gene",
-        platformtech="Luna qPCR Kit, StepOne Plus Real-Time PCR System"
-    )
-
-    # %%
-    # is it elegant, no? but it works
-    df_4b_FL = expand_tabs(
-        df_4b,
-        col_name="Cow #4 FL",
-        samplesource="left forequarters",
-        samplemethod="milk sample",
-        units="TCID50 equivalent/mL",
-        platformtype="RT-qPCR",
-        targets="Influenza A - M gene",
-        platformtech="Luna qPCR Kit, StepOne Plus Real-Time PCR System"
-    )
-
-    df_4b_HR = expand_tabs(
-        df_4b,
-        col_name="Cow #4 HR",
-        samplesource="right hindquarters",
-        samplemethod="milk sample",
-        units="TCID50 equivalent/mL",
-        platformtype="RT-qPCR",
-        targets="Influenza A - M gene",
-        platformtech="Luna qPCR Kit, StepOne Plus Real-Time PCR System"
-    )
-
-    df_4b_FR = expand_tabs(
-        df_4b,
-        col_name="Cow #4 FR",
-        samplesource="right forequarters",
-        samplemethod="milk sample",
-        units="TCID50 equivalent/mL",
-        platformtype="RT-qPCR",
-        targets="Influenza A - M gene",
-        platformtech="Luna qPCR Kit, StepOne Plus Real-Time PCR System"
-    )
+    # Now expand each tab into long format according to schema
+    ## Tediosly andimal by animal then tab by tab, but it works
+    df_4b_HL = expand_tabs(df_4b, col_name="Cow #4 HL", assay="RT-qPCR")
+    df_4b_FL = expand_tabs(df_4b, col_name="Cow #4 FL", assay="RT-qPCR")
+    df_4b_HR = expand_tabs(df_4b, col_name="Cow #4 HR", assay="RT-qPCR")
+    df_4b_FR = expand_tabs(df_4b, col_name="Cow #4 FR", assay="RT-qPCR")
 
     # Now 4c
-    df_4c_HL = expand_tabs(
-        df_4c,
-        col_name="Cow #4 HL",
-        samplesource="left hindquarters",
-        samplemethod="milk sample",
-        units="TCID50/mL",
-        platformtype="Infectious virus titer",
-        targets="",
-        platformtech=""
-    )
-
-    df_4c_FL = expand_tabs(
-        df_4c,
-        col_name="Cow #4 FL",
-        samplesource="left forequarters",
-        samplemethod="milk sample",
-        units="TCID50/mL",
-        platformtype="Infectious virus titer",
-        targets="",
-        platformtech=""
-    )
-
-    df_4c_HR = expand_tabs(
-        df_4c,
-        col_name="Cow #4 HR",
-        samplesource="right hindquarters",
-        samplemethod="milk sample",
-        units="TCID50/mL",
-        platformtype="Infectious virus titer",
-        targets="",
-        platformtech=""
-    )
-
-    df_4c_FR = expand_tabs(
-        df_4c,
-        col_name="Cow #4 FR",
-        samplesource="right forequarters",
-        samplemethod="milk sample",
-        units="TCID50/mL",
-        platformtype="Infectious virus titer",
-        targets="",
-        platformtech=""
-    )
+    df_4c_HL = expand_tabs(df_4c, col_name="Cow #4 HL", assay="titer")
+    df_4c_FL = expand_tabs(df_4c, col_name="Cow #4 FL", assay="titer")
+    df_4c_HR = expand_tabs(df_4c, col_name="Cow #4 HR", assay="titer")
+    df_4c_FR = expand_tabs(df_4c, col_name="Cow #4 FR", assay="titer")
 
     # And Cow 11, 4d
-    df_4d_HL = expand_tabs(
-        df_4d,
-        col_name="Cow #11 HL",
-        samplesource="left hindquarters",
-        samplemethod="milk sample",
-        units="TCID50 equivalent/mL",
-        platformtype="RT-qPCR",
-        targets="Influenza A - M gene",
-        platformtech="Luna qPCR Kit, StepOne Plus Real-Time PCR System"
-    )
+    df_4d_HL = expand_tabs(df_4d, col_name="Cow #11 HL", assay="RT-qPCR")
+    df_4d_FL = expand_tabs(df_4d, col_name="Cow #11 FL", assay="RT-qPCR")
+    df_4d_HR = expand_tabs(df_4d, col_name="Cow #11 HR", assay="RT-qPCR")
+    df_4d_FR = expand_tabs(df_4d, col_name="Cow #11 FR", assay="RT-qPCR")
 
-    df_4d_FL = expand_tabs(
-        df_4d,
-        col_name="Cow #11 FL",
-        samplesource="left forequarters",
-        samplemethod="milk sample",
-        units="TCID50 equivalent/mL",
-        platformtype="RT-qPCR",
-        targets="Influenza A - M gene",
-        platformtech="Luna qPCR Kit, StepOne Plus Real-Time PCR System"
-    )
-
-    df_4d_HR = expand_tabs(
-        df_4d,
-        col_name="Cow #11 HR",
-        samplesource="right hindquarters",
-        samplemethod="milk sample",
-        units="TCID50 equivalent/mL",
-        platformtype="RT-qPCR",
-        targets="Influenza A - M gene",
-        platformtech="Luna qPCR Kit, StepOne Plus Real-Time PCR System"
-    )
-
-    df_4d_FR = expand_tabs(
-        df_4d,
-        col_name="Cow #11 FR",
-        samplesource="right forequarters",
-        samplemethod="milk sample",
-        units="TCID50 equivalent/mL",
-        platformtype="RT-qPCR",
-        targets="Influenza A - M gene",
-        platformtech="Luna qPCR Kit, StepOne Plus Real-Time PCR System"
-    )
-
-    df_4e_HL = expand_tabs(
-        df_4e,
-        col_name="Cow #11 HL",
-        samplesource="left hindquarters",
-        samplemethod="milk sample",
-        units="TCID50/mL",
-        platformtype="Infectious virus titer",
-        targets="",
-        platformtech=""
-    )
-
-    df_4e_FL = expand_tabs(
-        df_4e,
-        col_name="Cow #11 FL",
-        samplesource="left forequarters",
-        samplemethod="milk sample",
-        units="TCID50/mL",
-        platformtype="Infectious virus titer",
-        targets="",
-        platformtech=""
-    )
-
-    df_4e_HR = expand_tabs(
-        df_4e,
-        col_name="Cow #11 HR",
-        samplesource="right hindquarters",
-        samplemethod="milk sample",
-        units="TCID50/mL",
-        platformtype="Infectious virus titer",
-        targets="",
-        platformtech=""
-    )
-
-    df_4e_FR = expand_tabs(
-        df_4e,
-        col_name="Cow #11 FR",
-        samplesource="right forequarters",
-        samplemethod="milk sample",
-        units="TCID50/mL",
-        platformtype="Infectious virus titer",
-        targets="",
-        platformtech=""
-    )
+    #4e
+    df_4e_HL = expand_tabs(df_4e, col_name="Cow #11 HL", assay="RT-qPCR")
+    df_4e_FL = expand_tabs(df_4e, col_name="Cow #11 FL", assay="RT-qPCR")
+    df_4e_HR = expand_tabs(df_4e, col_name="Cow #11 HR", assay="RT-qPCR")
+    df_4e_FR = expand_tabs(df_4e, col_name="Cow #11 FR", assay="RT-qPCR")
 
     # Now can concatenate all these dataframes together
     df = pd.concat([
@@ -403,7 +274,7 @@ def load_and_format():
     ], ignore_index=True)
     # %%
 
-    # Figure 6 data
+    # Load in Figure 6 data
     """
     df_6a = pd.read_excel(datapath, sheet_name="Fig_6a", index_col=0)
     df_6b = pd.read_excel(datapath, sheet_name="Fig_6b", index_col=0)
@@ -419,8 +290,8 @@ def load_and_format():
     # Add additional columns
     df["StudyID"] = "Facciuolo2025"
     df["Pathogen"] = "Flu"
-    df["Subtype"] = "H5N1 B3.13"
-    df["IndSpecies"] = "Dairy cattle"
+    df["PathogenSubtype"] = "H5N1 B3.13"
+    df["IndivSpecies"] = "Dairy cattle"
     df["DOI"] = "10.1038/s41564-025-01998-6"
 
     # Enforce schema and coerce types

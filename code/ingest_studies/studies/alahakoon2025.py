@@ -48,17 +48,18 @@ def load_and_format():
     df = df.rename(columns={
         "mosqID": "IndivID",
         "disease_week": "TimeDays",
-        "ctval": "PathogenLoad"
+        "ctval": "BiomarkerQuantity",
         })
 
     # Add additional columns with known but missing information:
     df["StudyID"] = "alahakoon2025"
     df["Pathogen"] = "WestNile"
-    df["IndSpecies"] = "Mosquitoes"
+    df["IndivSpecies"] = "Mosquitoes"
     df["DOI"] = "10.1101/2025.07.02.662782"
-    df["Units"] = "Ct (max 40)"
-    df["PlatformType"] = "RT-qPCR" # referred to in the paper as "Real-time PCR with reverse transcription (rRT–PCR)"
-    df["PlatformTech"] = "trioplex RT-qPCR assay"
+    df["Units"] = "Ct"
+    df["Ct_max"] = 40
+    df["AssayType"] = "RT-qPCR" # referred to in the paper as "Real-time PCR with reverse transcription (rRT–PCR)"
+    df["ReagentSystem"] = "trioplex RT-qPCR assay"
     df["SampleMethod"] = "CO2 light traps"
 
     df = enforce_schema(df)
