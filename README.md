@@ -68,7 +68,7 @@ graph LR
 - Pathogen: ["SARS2", "Flu", "Dengue", "WestNile"]
     - Prefer shortest cleanest, high-level term
     - Keep track of naming quirks here for consistency
-- IndSpecies: Spcies (corresponding to the individual subject of study) e.g. human, dairy cattle
+- IndivSpecies: Spcies (corresponding to the individual subject of study) e.g. human, dairy cattle
     - Use naming convention per the paper or simple common name, rather than scientific names
 - InfectionID: A unique infection identifier (in case multiple infections in a single person, as needed)
 - SampleID: An identifier for the biological sample
@@ -93,16 +93,21 @@ graph LR
 - SampleMethod: Type of sample, medium if relevant (e.g., swab, raw saliva, buffered saliva, VTM)
 - AgeRng1: Lower end of the patient's age bracket
 - AgeRng2: Upper end of the patient's age bracket
-- Subtype: Pathogen subtype/strain/variant
-- PlatformType: Analytical test platform type (e.g. RT-qPCR, plaque-forming assay, antibody titer)
+- PathogenSubtype: Pathogen subtype/strain/variant
+- AssayType: Analytical test assay or platform type (e.g. RT-qPCR, plaque-forming assay, antibody titer)
 - DOI: DOI of the study or data repository
-- PathogenLoad: Viral load or other pathogen concentration measurement (most commonly will be log10 viral load - but need to specify!)
-- Units: Viral load units (e.g., Ct, GE/ml)
-    - NOTE: for Ct values, best practice is to include the maximum number of cycles which papers should report (is often, but not always, 40)
+- BiomarkerQuantity: Viral load or other pathogen or immune biomarker quantitation or measurement (most commonly will be log10 viral load - but need to specify!)
+    - Formerly "PathogenLoad"
+- Units: Pathogen load/biomarker quantity units (e.g., Ct, GE/ml)
+- Biomarker: Indicate which biomarker is being measured, if not some form of the pathogen (e.g. an immune marker, gene expression, etc.)
+- Ct_max: For Ct values, best practice is to include the maximum number of cycles which papers should report (is often, but not always, 40) - report separately here
 - GEml_conversion_intercept: Conversion intercept from viral load units to - GE/ml
 - GEml_conversion_slope: Conversion slope from viral load units to GE/ml
-- Targets: Platform target(s) e.g. amplification of N1 gene (comma-separated string, not a list)
-- PlatformTech: Analytical test platform manufacturer or machine info (e.g. Roche cobas, Taqpath, BioRad CFX Maestro)
+- AssayTargets: Assay target(s) e.g. amplification of N1 gene (comma-separated string, not a list)
+- ReagentSystem: Refers to assay kit or any reagents used in the lab (e.g. Luna qPCR kit)
+    - Formerly recorded in PlatformTech
+- ReadoutPlatform: Assay readout manufacturer or machine info (e.g. Roche cobas, Taqpath, BioRad CFX Maestro)
+    - Formerly recorded in PlatformTech
 
 #### ID Assignments
 

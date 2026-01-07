@@ -52,26 +52,26 @@ def vuong2024():
     rename_map = {
         "Code": "IndivID",
         "DOI": "TimeDays",
-        "vir": "PathogenLoad",
-        "Serotype": "Subtype"
+        "vir": "BiomarkerQuantity",
+        "Serotype": "PathogenSubtype"
     }
 
     df = df.rename(columns={k: v for k, v in rename_map.items() if k in df.columns})
 
     # Below detection limit is NA
-    df["PathogenLoad"] = pd.to_numeric(df["PathogenLoad"], errors="coerce")
-    df.loc[df["PathogenLoad"] <= 0, "PathogenLoad"] = pd.NA
+    df["BiomarkerQuantity"] = pd.to_numeric(df["BiomarkerQuantity"], errors="coerce")
+    df.loc[df["BiomarkerQuantity"] <= 0, "BiomarkerQuantity"] = pd.NA
 
     # Construct SampleID 
     df["SampleID"] = df["IndivID"].astype(str) + "_" + df["TimeDays"].astype(str)
 
     df["StudyID"] = "vuong2024"
     df["Pathogen"] = "Dengue"
-    df["IndSpecies"] = "Human"
+    df["IndivSpecies"] = "Human"
     df["SampleSource"] = "serum"
     df["SampleMethod"] = "blood draw (serum)"
     df["DOI"] = "10.7554/eLife.92606"
-    df["PlatformType"] = "RT-qPCR"
+    df["AssayType"] = "RT-qPCR"
     df["AgeRng1"] = df["Age"]
     df["AgeRng2"] = df["Age"]
 

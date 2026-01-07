@@ -59,7 +59,7 @@ def load_and_format():
             df.loc[j, 'indvID'] = i
            next
         else:
-          print("ERROR in condition")
+            print("ERROR in condition")
         
 # code to check if each individual reports a positive result to help resolve 154 > 129 -> unclear if that is an additional requirement...
         # need to include 'virus culture result' if using this section
@@ -86,20 +86,21 @@ def load_and_format():
     df = df.rename(columns={
         "indvID": "PersonID",
         "duration of symptoms in days": "TimeDays",
-        "RNA copies per mL": "PathogenLoad"
+        "RNA copies per mL": "BiomarkerQuantity"
         })
     
     # Add additional columns with known but missing information:
     df["StudyID"] = "vanKampen2021"
     df["Pathogen"] = "SARS2"
-    df["IndSpecies"] = "Human"
+    df["IndivSpecies"] = "Human"
     df["Units"] = "GEml (log10VL)" # RNA copies
     df["DOI"] = "10.1038/s41467-020-20568-4"
     # from sample processing and analysis section
-    df["PlatformType"] = "RT-qPCR" 
-    df["PlatformTech"] = "Roche cobas 6800/" 
-    df["Targets"] = "E-gene" 
+    df["AssayType"] = "RT-qPCR" 
+    df["ReadoutPlatform"] = "Roche cobas 6800" 
+    df["AssayTargets"] = "E-gene" 
 
     df = enforce_schema(df)
     df = coerce_types(df)
+
     return df

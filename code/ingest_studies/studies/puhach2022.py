@@ -41,21 +41,22 @@ def load_and_format():
     df = df.rename(columns={
         "sample number": "PersonID",
         "DPOS": "TimeDays",
-        "FFU/ml": "PathogenLoad", # log10 genome copies per ml for RNA viral loads
-        "Variant": "Subtype",
+        "FFU/ml": "BiomarkerQuantity", # log10 genome copies per ml for RNA viral loads
+        "Variant": "PathogenSubtype",
         "Age": "AgeRng1"
         })
 
     # Add additional columns with known but missing information:
     df["StudyID"] = "puhach2022"
     df["Pathogen"] = "SARS2"
-    df["IndSpecies"] = "Human"
+    df["IndivSpecies"] = "Human"
     df["Units"] = "GEml (log10VL)"
     df["DOI"] = "10.1038/s41591-022-01816-0"
-    df["PlatformType"] = "RT-qPCR"
-    df["PlatformTech"] = "Roche cobas 6800/"
-    df["Targets"] = "E-gene, S-gene"
+    df["AssayType"] = "RT-qPCR"
+    df["ReadoutPlatform"] = "Roche cobas 6800"
+    df["AssayTargets"] = "E-gene, S-gene"
 
     df = enforce_schema(df)
     df = coerce_types(df)
+    
     return df

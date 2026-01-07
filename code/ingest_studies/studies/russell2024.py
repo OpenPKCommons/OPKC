@@ -50,13 +50,13 @@ def load_and_format():
     df = df.rename(columns={
         "id": "IndivID",
         "swab_type": "SampleMethod",
-        "VOC": "Subtype",
+        "VOC": "PathogenSubtype",
         "symptoms": "Symptoms1",
         "t": "TimeDays",
-        "ct_value": "PathogenLoad"
+        "ct_value": "BiomarkerQuantity"
         })
     
-    df["Targets"] = df["ct_type"].map({
+    df["AssayTargets"] = df["ct_type"].map({
         "ct_value": "ORF1a",
         "ct_n_gene": "N",
         "ct_s_gene": "S"
@@ -72,13 +72,14 @@ def load_and_format():
     # Add additional columns with known but missing information:
     df["StudyID"] = "russell2024"
     df["Pathogen"] = "SARS2"
-    df["IndSpecies"] = "Human"
+    df["IndivSpecies"] = "Human"
     df["DOI"] = "10.1371/journal.pbio.3002463"
     df["Units"] = "Ct"
     df["SampleSource"] = "nasopharyngeal"
-    df["PlatformType"] = "RT-qPCR"
-    df["PlatformTech"] = "QuantStudio 3"
+    df["AssayType"] = "RT-qPCR"
+    df["ReadoutPlatform"] = "QuantStudio 3"
 
     df = enforce_schema(df)
     df = coerce_types(df)
+    
     return df
