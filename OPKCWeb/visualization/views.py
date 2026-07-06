@@ -1,12 +1,16 @@
 # visualization/views.py
 
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
+from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import ensure_csrf_cookie
 from functools import lru_cache
 import os
 import pandas as pd
 import json
 import random # <-- 1. IMPORT THE RANDOM MODULE
+
+from .fit_kinetics import fit_kinetics, smoothed_binary
 
 # Define the absolute path to the base directory of the Django project (OPKCWeb)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -72,6 +76,10 @@ def _blod_label(v):
 def _compute_chart_context(mtime):
     df = pd.read_csv(DATA_FILE_PATH, na_values=['<NA>'])
     df['BelowLOD'] = df['BelowLOD'].apply(_blod_label)
+    # Rows with no reported subtype would otherwise be silently dropped by the
+    # chart's subtype filter (JS `.includes(null)` is False). Surface them as
+    # "Unspecified" so they show up as a checkbox users can toggle.
+    df['PathogenSubtype'] = df['PathogenSubtype'].fillna('Unspecified')
 
     study_ids = sorted(df['StudyID'].dropna().unique().tolist())
     sample_types = sorted(df['SampleSource'].dropna().unique().tolist())
@@ -222,3 +230,124 @@ def why_kinetics_view(request):
 
 def add_dataset_view(request):
     return render(request, 'visualization/add_dataset.html', {})
+
+
+# --- MLE kinetics fit endpoint ---
+# Matches the chart's client-side units bucketing.
+UNITS_CT = ['Ct', 'Ct (max 40)', 'Ct (max 45)', 'Ct (max 38) WITH PLOTDIGITIZER']
+UNITS_BINARY = ['binary']
+
+
+def _apply_chart_filters(df, f):
+    """Server-side mirror of the JS filter cascade in data_chart.html."""
+    if f.get('study_ids') is not None:
+        df = df[df['StudyID'].isin(f['study_ids'])]
+    if f.get('sample_sources') is not None:
+        df = df[df['SampleSource'].isin(f['sample_sources'])]
+    if f.get('pathogens') is not None:
+        df = df[df['Pathogen'].isin(f['pathogens'])]
+    if f.get('subtypes') is not None:
+        df = df[df['PathogenSubtype'].isin(f['subtypes'])]
+    if f.get('biomarkers') is not None:
+        df = df[df['Biomarker'].isin(f['biomarkers'])]
+    if f.get('belowlod') is not None:
+        df = df[df['BelowLOD'].isin(f['belowlod'])]
+    min_age = float(f.get('min_age', 0))
+    max_age = float(f.get('max_age', 100))
+    has_age = df['AgeRng1'].notna() & df['AgeRng2'].notna()
+    age_match = (df['AgeRng2'] >= min_age) & (df['AgeRng1'] <= max_age)
+    if min_age == 0 and max_age == 100:
+        df = df[has_age & age_match | ~has_age]
+    else:
+        df = df[has_age & age_match]
+    return df
+
+
+@require_POST
+def fit_view(request):
+    """Compute per-group piecewise-linear kinetics fits and return JSON.
+
+    Request body: {"color_by": "<field>", "filters": {...}}.
+    Response: {"fits": [{"units_bucket": "ct"|"other", "group": "...", "success": bool, "curve": {...}, "params": {...}, ...}]}
+    """
+    try:
+        payload = json.loads(request.body or b"{}")
+    except json.JSONDecodeError:
+        return JsonResponse({"error": "invalid JSON"}, status=400)
+
+    color_by = payload.get("color_by", "StudyID")
+    if color_by not in {"StudyID", "SampleSource", "Pathogen", "PathogenSubtype", "Age"}:
+        return JsonResponse({"error": f"unsupported color_by: {color_by}"}, status=400)
+
+    # Load and prep the same way the chart does
+    df = pd.read_csv(DATA_FILE_PATH, na_values=['<NA>'], low_memory=False)
+    df['BelowLOD'] = df['BelowLOD'].apply(_blod_label)
+    df['PathogenSubtype'] = df['PathogenSubtype'].fillna('Unspecified')
+    # Rows missing structural columns can't participate in any fit.
+    df = df.dropna(subset=['StudyID', 'SampleSource', 'TimeDays', 'Pathogen'])
+    df = _apply_chart_filters(df, payload.get("filters", {}))
+
+    # For Age grouping, bin the same way the JS getAgeBin does
+    if color_by == "Age":
+        def _age_bin(row):
+            if pd.isna(row['AgeRng1']):
+                return "Unknown"
+            avg = (row['AgeRng1'] + row['AgeRng2']) / 2
+            for lo, hi, label in [(0,10,'0-9'),(10,20,'10-19'),(20,30,'20-29'),(30,40,'30-39'),
+                                  (40,50,'40-49'),(50,60,'50-59'),(60,70,'60-69')]:
+                if avg < hi:
+                    return label
+            return "70+"
+        df['_group'] = df.apply(_age_bin, axis=1)
+    else:
+        df['_group'] = df[color_by].astype(str)
+
+    fits = []
+    # Binary bucket: sliding-window mean of positivity per group.
+    binary_df = df[df['Units'].isin(UNITS_BINARY)]
+    if not binary_df.empty:
+        for group_val, gdf in binary_df.groupby('_group', sort=False):
+            is_pos = (gdf['BiomarkerQuantity'].astype(str) == 'Pos').values
+            result = smoothed_binary(
+                times=gdf['TimeDays'].values,
+                is_positive=is_pos,
+            )
+            result['units_bucket'] = 'binary'
+            result['group'] = str(group_val)
+            fits.append(result)
+
+    # For the numeric buckets: coerce BiomarkerQuantity to numeric, and drop
+    # NaN rows unless they're BLOD (which still contribute via censored likelihood).
+    numeric_df = df[~df['Units'].isin(UNITS_BINARY)].copy()
+    numeric_df['BiomarkerQuantity'] = pd.to_numeric(numeric_df['BiomarkerQuantity'], errors='coerce')
+    numeric_df = numeric_df[numeric_df['BiomarkerQuantity'].notna() | (numeric_df['BelowLOD'] == 'Below LOD')]
+
+    for bucket_label, bucket_df in [
+        ('ct', numeric_df[numeric_df['Units'].isin(UNITS_CT)]),
+        ('other', numeric_df[~numeric_df['Units'].isin(UNITS_CT + UNITS_BINARY)]),
+    ]:
+        if bucket_df.empty:
+            continue
+        orientation = 'below' if bucket_label == 'ct' else 'above'
+        for group_val, gdf in bucket_df.groupby('_group', sort=False):
+            # LOD selection: schema value if present, else observed extreme
+            if orientation == 'below':
+                lod_series = pd.to_numeric(gdf['LOD_max'], errors='coerce').dropna()
+                lod = float(lod_series.max()) if not lod_series.empty else float(gdf['BiomarkerQuantity'].max())
+            else:
+                lod_series = pd.to_numeric(gdf['LOD_min'], errors='coerce').dropna()
+                lod = float(lod_series.min()) if not lod_series.empty else float(gdf['BiomarkerQuantity'].min())
+
+            is_blod = (gdf['BelowLOD'] == 'Below LOD').values
+            result = fit_kinetics(
+                times=gdf['TimeDays'].values,
+                values=gdf['BiomarkerQuantity'].values,
+                is_blod=is_blod,
+                lod=lod,
+                orientation=orientation,
+            )
+            result['units_bucket'] = bucket_label
+            result['group'] = str(group_val)
+            fits.append(result)
+
+    return JsonResponse({"fits": fits})

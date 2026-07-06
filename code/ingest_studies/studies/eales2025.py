@@ -200,8 +200,16 @@ def caserta():
     # rename columns per schema
     df1a = df1a.rename(columns={
         "ID": "SampleID",
-        "45-Ct": "BiomarkerQuantity"
         })
+
+    # The source column "45-Ct" holds (LOD_max - Ct) rather than Ct directly.
+    # Invert to recover real Ct values. Raw values <= 0 mean Ct >= 45 (at the
+    # LOD ceiling, undetected).
+    lod_max_caserta = 45
+    raw_45_minus_ct = pd.to_numeric(df1a["45-Ct"], errors="coerce")
+    df1a["BelowLOD"] = raw_45_minus_ct.le(0).where(raw_45_minus_ct.notna(), pd.NA)
+    df1a["BiomarkerQuantity"] = (lod_max_caserta - raw_45_minus_ct).clip(upper=lod_max_caserta)
+    df1a = df1a.drop(columns=["45-Ct"])
 
     # NOTE : I'm making an assumption here that the ID postfixes correspond to TimeDays in a way that makes sense
     # create a column in df1a that extract TimeDays from SampleID - search for the first "-" from the left of the string and take that int

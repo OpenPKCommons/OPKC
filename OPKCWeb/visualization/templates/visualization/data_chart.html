@@ -135,6 +135,22 @@
                 </div>
             </div>
 
+            <div class="pt-2 border-t border-gray-200 space-y-2">
+                <label class="font-semibold text-gray-700">Kinetics fit</label>
+                <p class="text-xs text-gray-500 leading-tight">
+                    Fits a 4-piece linear MLE to <em>Quantitative Load</em> and <em>Ct Value</em> panels, and a sliding-window mean of positivity to the <em>Binary Result</em> panel. All are stratified by the "Color Scatter By" grouping.
+                </p>
+                <div class="flex gap-2">
+                    <button id="fit-btn" class="flex-1 px-3 py-2 text-sm font-medium bg-blue-600 hover:bg-blue-700 text-white rounded-md shadow-sm disabled:bg-gray-400 disabled:cursor-not-allowed">
+                        Compute fit
+                    </button>
+                    <button id="clear-fit-btn" class="px-3 py-2 text-sm font-medium bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-md shadow-sm">
+                        Clear
+                    </button>
+                </div>
+                <div id="fit-status" class="text-xs text-gray-600 italic"></div>
+            </div>
+
             <div id="status-message" class="text-sm text-gray-600 italic text-center">
                 Loading...
             </div>
@@ -170,6 +186,7 @@
         </div>
     </main>
 
+    <form style="display:none">{% csrf_token %}</form>
     {{ all_data|json_script:"all-data-json" }}
     {{ study_ids|json_script:"unique-studies-json" }}
     {{ sample_types|json_script:"unique-samples-json" }}
@@ -234,6 +251,12 @@
         
         const PLOTLY_COLORS = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf'];
 
+        // Per-bucket plot state (populated on each redraw). Used by the fit
+        // overlay to attach traces to the right plot and match group colors.
+        const PLOT_STATE = {};
+        // Last computed fit result. Cleared when filters change (fits go stale).
+        let CURRENT_FITS = null;
+
         function populateFilters() {
             UNIQUE_STUDIES.forEach(study => {
                 const label = document.createElement('label');
@@ -296,7 +319,14 @@
             });
         }
 
-        function updateDynamicSampleFilter() {
+        // The three functions below cascade the study/pathogen selection into the
+        // downstream filters. When `autoCheckNewlyValid` is true (i.e. the call
+        // was triggered by a change upstream), any option transitioning from
+        // hidden -> visible gets auto-checked so the user doesn't have to
+        // manually re-check every downstream box when they add a new study.
+        // Options that are already visible are left in whatever state the user
+        // put them in.
+        function updateDynamicSampleFilter(autoCheckNewlyValid = false) {
             const selectedStudies = Array.from(studyListDiv.querySelectorAll('input[type=checkbox]:checked')).map(cb => cb.value);
             const validSampleSources = new Set();
             ALL_DATA.forEach(row => {
@@ -306,16 +336,18 @@
             sampleListDiv.querySelectorAll('.sample-source-label').forEach(label => {
                 const sampleValue = label.dataset.value;
                 const checkbox = label.querySelector('input');
+                const wasHidden = label.style.display === 'none';
                 if (validSampleSources.has(sampleValue)) {
                     label.style.display = 'block';
+                    if (autoCheckNewlyValid && wasHidden) checkbox.checked = true;
                 } else {
                     label.style.display = 'none';
                     checkbox.checked = false;
                 }
             });
         }
-        
-        function updateDynamicPathogenFilter() {
+
+        function updateDynamicPathogenFilter(autoCheckNewlyValid = false) {
             const selectedStudies = Array.from(studyListDiv.querySelectorAll('input[type=checkbox]:checked')).map(cb => cb.value);
             const validPathogens = new Set();
             ALL_DATA.forEach(row => {
@@ -325,16 +357,18 @@
             pathogenListDiv.querySelectorAll('.pathogen-label').forEach(label => {
                 const pathogenValue = label.dataset.value;
                 const checkbox = label.querySelector('input');
+                const wasHidden = label.style.display === 'none';
                 if (validPathogens.has(pathogenValue)) {
                     label.style.display = 'block';
+                    if (autoCheckNewlyValid && wasHidden) checkbox.checked = true;
                 } else {
                     label.style.display = 'none';
                     checkbox.checked = false;
                 }
             });
         }
-        
-        function updateDynamicSubtypeFilter() {
+
+        function updateDynamicSubtypeFilter(autoCheckNewlyValid = false) {
             const selectedPathogens = Array.from(pathogenListDiv.querySelectorAll('input[type=checkbox]:checked')).map(cb => cb.value);
             const validSubtypes = new Set();
             ALL_DATA.forEach(row => {
@@ -344,8 +378,10 @@
             subtypeListDiv.querySelectorAll('.subtype-label').forEach(label => {
                 const subtypeValue = label.dataset.value;
                 const checkbox = label.querySelector('input');
+                const wasHidden = label.style.display === 'none';
                 if (validSubtypes.has(subtypeValue) && subtypeValue !== null) {
                     label.style.display = 'block';
+                    if (autoCheckNewlyValid && wasHidden) checkbox.checked = true;
                 } else {
                     label.style.display = 'none';
                     checkbox.checked = false;
@@ -485,7 +521,14 @@
                         }
                         const trace = tracesMap.get(groupKey);
                         trace.x.push(d.TimeDays);
-                        trace.y.push(d.BiomarkerQuantity);
+                        // Binary axis is now linear with tick labels — convert
+                        // the categorical value to 0/1 so smoothed positivity
+                        // curves (0..1) share the same coordinate system.
+                        if (cat === 'binary') {
+                            trace.y.push(d.BiomarkerQuantity === 'Pos' ? 1 : 0);
+                        } else {
+                            trace.y.push(d.BiomarkerQuantity);
+                        }
                         
                         const hoverStr = `${d.StudyID}<br>${d.SampleSource}<br>${d.Pathogen} (${d.PathogenSubtype || 'N/A'})`;
                         trace.text.push(hoverStr);
@@ -515,27 +558,24 @@
                     } else if (cat === 'binary') {
                         titleText = 'Binary Result';
                         yAxisTitle = 'Result';
-                        yAxisType = 'category';
-
-                        // --- CHANGE: Force order so Neg is bottom, Pos is top ---
-                        yCategoryOrder = 'array';
-                        yCategoryArray = ['Neg', 'Pos'];
+                        // Linear axis with custom tick labels: allows a smoothed
+                        // positivity curve (0..1) to render alongside the 0/1
+                        // scatter points.
+                        yAutoRange = false;
                     }
 
                     const layout = {
                         title: { text: titleText, font: { size: 14 } },
                         xaxis: { title: 'Infection day', gridcolor: '#f3f4f6', zeroline: true, zerolinecolor: '#d1d5db' },
-                        yaxis: { 
-                            title: yAxisTitle, 
-                            gridcolor: '#f3f4f6', 
-                            zeroline: true, 
-                            zerolinecolor: '#d1d5db', 
+                        yaxis: {
+                            title: yAxisTitle,
+                            gridcolor: '#f3f4f6',
+                            zeroline: true,
+                            zerolinecolor: '#d1d5db',
                             autorange: yAutoRange,
-                            
-                            // Pass the category configuration
-                            type: (cat === 'binary') ? 'category' : undefined,
-                            categoryorder: yCategoryOrder,
-                            categoryarray: yCategoryArray
+                            range: (cat === 'binary') ? [-0.15, 1.15] : undefined,
+                            tickvals: (cat === 'binary') ? [0, 1] : undefined,
+                            ticktext: (cat === 'binary') ? ['Neg', 'Pos'] : undefined,
                         },
                         hovermode: 'closest',
                         margin: { l: 50, r: 20, t: 50, b: 50 }, 
@@ -546,8 +586,15 @@
                     };
 
                     Plotly.newPlot(plotDiv, traces, layout, { displayModeBar: false, responsive: true });
+
+                    // Remember the plot + color assignment so drawFits() can
+                    // overlay matching fit lines.
+                    PLOT_STATE[cat] = { plotDiv, colorMap };
                 });
             }
+
+            // If a fit is active, overlay it onto the freshly drawn plots.
+            if (CURRENT_FITS) drawFits(CURRENT_FITS);
 
 
             // --- 4. Prep Data for Bar Plot (Unchanged logic) ---
@@ -585,40 +632,49 @@
         }
         
         // --- Event Listeners ---
-        function handleFilterChange() {
-            updateDynamicSampleFilter();
-            updateDynamicPathogenFilter();
-            updateDynamicSubtypeFilter();
+        // `sourceType` names which filter triggered the change. That determines
+        // which downstream filters cascade with auto-check-newly-valid:
+        //   - study    -> sample, pathogen, subtype
+        //   - pathogen -> subtype
+        //   - anything else -> no cascade (respects the user's explicit choice)
+        function refreshFilters(sourceType) {
+            if (sourceType === 'study') {
+                updateDynamicSampleFilter(true);
+                updateDynamicPathogenFilter(true);
+                updateDynamicSubtypeFilter(true);
+            } else if (sourceType === 'pathogen') {
+                updateDynamicSubtypeFilter(true);
+            }
+            // Fits go stale when filters change — clear them so the user has to
+            // click "Compute fit" again to refit against the new subset.
+            CURRENT_FITS = null;
+            document.getElementById('fit-status').textContent = '';
             updatePlots();
         }
 
         // Attach listeners to "Select All/None" buttons
         const addAllNoneListeners = (type) => {
-            // This helper uses the 'type' to find: 
-            // 1. Button ID: type + '-select-all'
-            // 2. List ID:   type + '-filter-list'
-            
             const btnAll = document.getElementById(`${type}-select-all`);
             const btnNone = document.getElementById(`${type}-select-none`);
-
             if (btnAll && btnNone) {
                 btnAll.addEventListener('click', () => {
                     document.querySelectorAll(`#${type}-filter-list input`).forEach(cb => cb.checked = true);
-                    handleFilterChange();
+                    refreshFilters(type);
                 });
                 btnNone.addEventListener('click', () => {
                     document.querySelectorAll(`#${type}-filter-list input`).forEach(cb => cb.checked = false);
-                    handleFilterChange();
+                    refreshFilters(type);
                 });
             }
         };
-        
-        // FIXED: Changed 'sample' to 'samplesource'
+
         ['study', 'pathogen', 'subtype', 'biomarker', 'blod', 'samplesource'].forEach(addAllNoneListeners);
 
-        // Attach listeners to container for delegation (more efficient)
-        [studyListDiv, pathogenListDiv, subtypeListDiv, biomarkerListDiv, blodListDiv, sampleListDiv].forEach(div => {
-            div.addEventListener('change', handleFilterChange);
+        // Direct change listeners — pass the source name so cascades can fire.
+        studyListDiv.addEventListener('change', () => refreshFilters('study'));
+        pathogenListDiv.addEventListener('change', () => refreshFilters('pathogen'));
+        [subtypeListDiv, biomarkerListDiv, blodListDiv, sampleListDiv].forEach(div => {
+            div.addEventListener('change', () => refreshFilters(null));
         });
 
         minAgeInput.addEventListener('change', updatePlots);
@@ -628,6 +684,106 @@
         window.addEventListener('resize', () => {
              updatePlots(); // Simple way to handle resize for multiple plots
         });
+
+        // --- Kinetics fit ---
+        const fitBtn = document.getElementById('fit-btn');
+        const clearFitBtn = document.getElementById('clear-fit-btn');
+        const fitStatus = document.getElementById('fit-status');
+        const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+
+        function collectFilters() {
+            return {
+                study_ids:      Array.from(studyListDiv.querySelectorAll('input[type=checkbox]:checked')).map(cb => cb.value),
+                sample_sources: Array.from(sampleListDiv.querySelectorAll('input[type=checkbox]:checked')).map(cb => cb.value),
+                pathogens:      Array.from(pathogenListDiv.querySelectorAll('input[type=checkbox]:checked')).map(cb => cb.value),
+                subtypes:       Array.from(subtypeListDiv.querySelectorAll('input[type=checkbox]:checked')).map(cb => cb.value),
+                biomarkers:     Array.from(biomarkerListDiv.querySelectorAll('input[type=checkbox]:checked')).map(cb => cb.value),
+                belowlod:       Array.from(blodListDiv.querySelectorAll('input[type=checkbox]:checked')).map(cb => cb.value),
+                min_age:        parseFloat(minAgeInput.value) || 0,
+                max_age:        parseFloat(maxAgeInput.value) || 100,
+            };
+        }
+
+        async function computeFit() {
+            fitBtn.disabled = true;
+            fitBtn.textContent = 'Fitting…';
+            fitStatus.textContent = '';
+            try {
+                const response = await fetch("{% url 'visualization:fit_pathogen_load' %}", {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrfToken },
+                    body: JSON.stringify({ color_by: colorBySelect.value, filters: collectFilters() }),
+                });
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const data = await response.json();
+                CURRENT_FITS = data.fits || [];
+                drawFits(CURRENT_FITS);
+                const nOk = CURRENT_FITS.filter(f => f.success).length;
+                const nFail = CURRENT_FITS.length - nOk;
+                fitStatus.textContent = `${nOk} fit${nOk === 1 ? '' : 's'} drawn` + (nFail ? ` (${nFail} skipped)` : '');
+            } catch (e) {
+                console.error(e);
+                fitStatus.textContent = 'Fit failed — see console.';
+            } finally {
+                fitBtn.disabled = false;
+                fitBtn.textContent = 'Compute fit';
+            }
+        }
+
+        function clearFits() {
+            CURRENT_FITS = null;
+            fitStatus.textContent = '';
+            updatePlots();  // redraw without fit overlays
+        }
+
+        function drawFits(fits) {
+            // Group successful fits by units bucket so we can dim the scatter
+            // points on each affected plot once, then batch-add the fit lines.
+            const byBucket = {};
+            for (const fit of fits) {
+                if (!fit.success) continue;
+                if (!PLOT_STATE[fit.units_bucket]) continue;
+                (byBucket[fit.units_bucket] ||= []).push(fit);
+            }
+
+            for (const [bucket, bucketFits] of Object.entries(byBucket)) {
+                const state = PLOT_STATE[bucket];
+                // Fade the scatter points so the fit lines stand out. Line-only
+                // fit traces don't carry marker.opacity, so they're unaffected.
+                Plotly.restyle(state.plotDiv, { 'marker.opacity': 0.25 });
+
+                const newTraces = [];
+                for (const fit of bucketFits) {
+                    const color = state.colorMap[fit.group] || '#111';
+                    // White halo underneath — makes the colored line pop even
+                    // against similarly-colored scatter points.
+                    newTraces.push({
+                        x: fit.curve.t,
+                        y: fit.curve.y,
+                        mode: 'lines',
+                        type: 'scatter',
+                        line: { color: 'white', width: 7 },
+                        hoverinfo: 'skip',
+                        showlegend: false,
+                    });
+                    // Colored fit line on top.
+                    newTraces.push({
+                        x: fit.curve.t,
+                        y: fit.curve.y,
+                        mode: 'lines',
+                        type: 'scatter',
+                        name: `Fit: ${fit.group}`,
+                        line: { color, width: 3 },
+                        hoverinfo: 'skip',
+                        showlegend: false,
+                    });
+                }
+                Plotly.addTraces(state.plotDiv, newTraces);
+            }
+        }
+
+        fitBtn.addEventListener('click', computeFit);
+        clearFitBtn.addEventListener('click', clearFits);
 
         // --- Initial Load ---
         document.addEventListener('DOMContentLoaded', () => {

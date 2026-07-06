@@ -18,4 +18,5 @@ urlpatterns = [
     path('docs/', views.docs_view, name='docs'),
     path('why_kinetics/', views.why_kinetics_view, name='why_kinetics'),
     path('add_dataset/', views.add_dataset_view, name='add_dataset'),
+    path('fit/', views.fit_view, name='fit_pathogen_load'),
 ]

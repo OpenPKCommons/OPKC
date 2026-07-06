@@ -106,6 +106,7 @@ Psuedocode planning:
 """
 
 # %%
+import numpy as np
 import pandas as pd
 import sys
 from pathlib import Path
@@ -172,7 +173,15 @@ remapped_test_days = remap_days(test_days)
 def expand_tabs(in_df, col_name, assay):
     df_expanded = pd.DataFrame()
 
-    df_expanded["BiomarkerQuantity"] = in_df[col_name].values
+    # Source values are linear-scale TCID50 (equivalents/mL for RT-qPCR, or /mL
+    # for titer). Log10-transform for consistency with other viral-load studies
+    # so downstream plots and fits share a common y-axis scale. Values <= 0 are
+    # BLOD sentinels (log10 undefined); flag BelowLOD and leave BiomarkerQuantity
+    # NaN for those. LOD_min isn't well-defined in log10 units (log10(0) is -inf),
+    # so it's left as NA.
+    src = pd.to_numeric(pd.Series(in_df[col_name].values), errors="coerce")
+    df_expanded["BelowLOD"] = src.le(0).where(src.notna(), pd.NA).values
+    df_expanded["BiomarkerQuantity"] = np.log10(src.where(src > 0)).values
     df_expanded["TimeDays"] = in_df["TimeDays"].values
 
     # set sample_source based on col_name: L = left, R = right; H = hindquarters, F = forequarters
@@ -192,7 +201,7 @@ def expand_tabs(in_df, col_name, assay):
     if assay == "RT-qPCR":
         df_expanded["SampleSource"] = sample_source
         df_expanded["SampleMethod"] = "milk sample"
-        df_expanded["Units"] = "TCID50 equivalent/mL"
+        df_expanded["Units"] = "log10(TCID50 equivalent/mL)"
         df_expanded["AssayType"] = "RT-qPCR"
         df_expanded["AssayTargets"] = "Influenza A - M gene"
         df_expanded["ReagentSystem"] = "Luna qPCR Kit"
@@ -201,7 +210,7 @@ def expand_tabs(in_df, col_name, assay):
     if assay == "titer":
         df_expanded["SampleSource"] = sample_source
         df_expanded["SampleMethod"] = "milk sample"
-        df_expanded["Units"] = "TCID50/mL"
+        df_expanded["Units"] = "log10(TCID50/mL)"
         df_expanded["AssayType"] = "Infectious virus titer"
         df_expanded["AssayTargets"] = ""
         df_expanded["ReagentSystem"] = ""

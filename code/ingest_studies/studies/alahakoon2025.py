@@ -59,7 +59,14 @@ def load_and_format():
     df["IndivSpecies"] = "Mosquitoes"
     df["DOI"] = "10.1101/2025.07.02.662782"
     df["Units"] = "Ct"
-    df["LOD_max"] = 40
+    lod_max = 40
+    df["LOD_max"] = lod_max
+    # Raw ctval == 0 is a non-physical sentinel (0 amplification cycles doesn't
+    # happen); interpret as "not detected" and canonicalize to LOD_max so the
+    # rows sit at the ceiling on the Ct axis instead of at the top of the plot.
+    df["BiomarkerQuantity"] = pd.to_numeric(df["BiomarkerQuantity"], errors="coerce")
+    df["BelowLOD"] = df["BiomarkerQuantity"].le(0).where(df["BiomarkerQuantity"].notna(), pd.NA)
+    df.loc[df["BiomarkerQuantity"].le(0), "BiomarkerQuantity"] = lod_max
     df["AssayType"] = "RT-qPCR" # referred to in the paper as "Real-time PCR with reverse transcription (rRT–PCR)"
     df["ReagentSystem"] = "trioplex RT-qPCR assay"
     df["SampleSource"] = "mosquito"

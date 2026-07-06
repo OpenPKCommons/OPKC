@@ -27,6 +27,7 @@ Notes:
 # DPOS - days post onset of symptoms
 # Note: RNA load/ml and FFU/ml both in log10, representing RNA viral load and infectious viral loads respectively
 
+import numpy as np
 import pandas as pd
 import os
 from schema import enforce_schema, coerce_types
@@ -36,23 +37,32 @@ def load_and_format():
     base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.."))
     df = pd.read_csv(os.path.join(base_dir, "data", "puhach2022.csv"))
 
-    # Keep only the columns we need: 
-    df = df[['sample number', 'DPOS', 'Variant', 'FFU/ml', 'Age']]
+    # Keep only the columns we need. The paper reports both RNA load (RT-qPCR)
+    # and infectious virus (FFU by focus-forming assay); we ingest the RNA load
+    # to match AssayType="RT-qPCR" and keep the y-axis scale comparable with
+    # other RT-qPCR viral-kinetics studies.
+    df = df[['sample number', 'DPOS', 'Variant', 'RNA load/ml', 'Age']]
 
-    # Rename columns to match schema: 
+    # Rename columns to match schema:
     df = df.rename(columns={
         "sample number": "IndivID",
         "DPOS": "TimeDays",
-        "FFU/ml": "BiomarkerQuantity", # log10 genome copies per ml for RNA viral loads
+        "RNA load/ml": "BiomarkerQuantity",  # linear copies/mL; log10-transformed below
         "Variant": "PathogenSubtype",
         "Age": "AgeRng1"
         })
+
+    # Log10-transform to match other RT-qPCR studies. Source has no zeros in
+    # practice, but flag any source <= 0 as BLOD defensively.
+    src = pd.to_numeric(df["BiomarkerQuantity"], errors="coerce")
+    df["BelowLOD"] = src.le(0).where(src.notna(), pd.NA)
+    df["BiomarkerQuantity"] = np.log10(src.where(src > 0))
 
     # Add additional columns with known but missing information:
     df["StudyID"] = "puhach2022"
     df["Pathogen"] = "SARS-CoV-2"
     df["IndivSpecies"] = "Human"
-    df["Units"] = "GEml (log10VL)"
+    df["Units"] = "log10(copies/mL)"
     df["DOI"] = "10.1038/s41591-022-01816-0"
     df["AssayType"] = "RT-qPCR"
     df["ReadoutPlatform"] = "Roche cobas 6800"

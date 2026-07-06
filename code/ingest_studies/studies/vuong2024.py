@@ -25,6 +25,7 @@ Notes:
 
 
 # %%
+import numpy as np
 import pandas as pd
 import sys
 from pathlib import Path
@@ -58,12 +59,17 @@ def vuong2024():
 
     df = df.rename(columns={k: v for k, v in rename_map.items() if k in df.columns})
 
-    # Flag values below the assay's LOD instead of destroying them. Preserve the
-    # raw reported number.
-    lod_min = 0  # log10VL floor: values at or below this are below the LOD
-    df["BiomarkerQuantity"] = pd.to_numeric(df["BiomarkerQuantity"], errors="coerce")
-    df["LOD_min"] = lod_min
-    df["BelowLOD"] = df["BiomarkerQuantity"].le(lod_min).where(df["BiomarkerQuantity"].notna(), pd.NA)
+    # Source viremia is in linear-scale copies/mL. Log10-transform for
+    # consistency with wongnak/waickman etc. so downstream plots and fits share
+    # a common y-axis scale.
+    #
+    # BLOD is detected on the *linear-scale* source: source <= 0 is a sentinel
+    # for "not detected". log10 is undefined for these, so BiomarkerQuantity
+    # stays NaN for BLOD rows but BelowLOD is flagged. LOD_min in log10 units
+    # isn't well-defined (log10(0) is -inf), so left as NA.
+    src = pd.to_numeric(df["BiomarkerQuantity"], errors="coerce")
+    df["BelowLOD"] = src.le(0).where(src.notna(), pd.NA)
+    df["BiomarkerQuantity"] = np.log10(src.where(src > 0))
 
     # Construct SampleID 
     df["SampleID"] = df["IndivID"].astype(str) + "_" + df["TimeDays"].astype(str)
@@ -78,8 +84,7 @@ def vuong2024():
     df["AgeRng1"] = df["Age"]
     df["AgeRng2"] = df["Age"]
 
-    # Units (raw RNA copies per ml)
-    df["Units"] = "copies/ml"
+    df["Units"] = "log10(copies/mL)"
 
     # Enforce schema and coerce types
     df["Biomarker"] = "pathogen load"
