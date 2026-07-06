@@ -2,6 +2,7 @@
 
 from django.shortcuts import render
 from django.http import HttpResponse
+from functools import lru_cache
 import os
 import pandas as pd
 import json
@@ -15,6 +16,59 @@ REPO_ROOT = os.path.dirname(BASE_DIR)
 # The site reads the *published* CSV in output/. See output/README.md for the
 # staged-vs-published workflow.
 DATA_FILE_PATH = os.path.join(REPO_ROOT, 'output', 'combined_cleaned_data_published.csv')
+
+
+# ---------------------------------------------------------------------------
+# Data caching
+#
+# Reading and munging the published CSV on every request is wasteful. Instead,
+# we cache the *computed* results (home-page stats + chart context) keyed by
+# the CSV's mtime. When the published CSV changes on disk, the mtime changes,
+# the cache key changes, and the next request naturally recomputes. No server
+# restart needed after publishing new data; no Django cache backend required.
+# ---------------------------------------------------------------------------
+
+def _data_mtime():
+    """Cache key: the mtime of the published CSV, or 0 if missing."""
+    try:
+        return os.path.getmtime(DATA_FILE_PATH)
+    except OSError:
+        return 0
+
+
+@lru_cache(maxsize=2)
+def _compute_home_stats(mtime):
+    df = pd.read_csv(DATA_FILE_PATH, na_values=['<NA>'])
+    return {
+        'total_data_points': f"{df['PathogenLoad'].dropna().count():,}",
+        'total_studies': f"{df['StudyID'].nunique():,}",
+        'total_pathogens': f"{df['Pathogen'].nunique():,}",
+        'total_people': f"{df['IndivID'].nunique():,}",
+    }
+
+
+@lru_cache(maxsize=2)
+def _compute_chart_context(mtime):
+    df = pd.read_csv(DATA_FILE_PATH, na_values=['<NA>'])
+
+    study_ids = sorted(df['StudyID'].dropna().unique().tolist())
+    sample_types = sorted(df['SampleSource'].dropna().unique().tolist())
+    pathogens = sorted(df['Pathogen'].dropna().unique().tolist())
+    subtypes = sorted(df['Subtype'].dropna().unique().tolist())
+
+    plot_columns = ['StudyID', 'SampleSource', 'TimeDays', 'PathogenLoad',
+                    'AgeRng1', 'AgeRng2', 'Pathogen', 'Subtype', 'Units']
+    core_plot_cols = ['StudyID', 'SampleSource', 'TimeDays', 'PathogenLoad', 'Pathogen']
+    df_plot = df[plot_columns].dropna(subset=core_plot_cols, how='any')
+    df_plot = df_plot.astype(object).where(pd.notnull(df_plot), None)
+
+    return {
+        'study_ids': study_ids,
+        'sample_types': sample_types,
+        'pathogens': pathogens,
+        'subtypes': subtypes,
+        'all_data': df_plot.to_dict(orient='records'),
+    }
 
 # --- 2. DEFINE YOUR FEATURED PAPERS ---
 # (This section is unchanged)
@@ -80,20 +134,7 @@ def home_view(request):
     """
     context = {}
     try:
-        # --- "At a Glance" Stats ---
-        df = pd.read_csv(DATA_FILE_PATH, na_values=['<NA>'])
-        
-        # Use new column names
-        total_data_points = df['PathogenLoad'].dropna().count()
-        total_studies = df['StudyID'].nunique()
-        total_pathogens = df['Pathogen'].nunique()
-        total_people = df['IndivID'].nunique()
-
-        context['total_data_points'] = f"{total_data_points:,}"
-        context['total_studies'] = f"{total_studies:,}"
-        context['total_pathogens'] = f"{total_pathogens:,}"
-        context['total_people'] = f"{total_people:,}"
-        
+        context.update(_compute_home_stats(_data_mtime()))
     except Exception as e:
         print(f"Error in home_view while reading CSV: {e}")
         context['total_data_points'] = "N/A"
@@ -118,53 +159,13 @@ def chart_view(request):
     This view now passes ALL data to the template for client-side filtering.
     """
     try:
-        # 1. Read the CSV file
-        df = pd.read_csv(DATA_FILE_PATH, na_values=['<NA>'])
-
-        # --- 2. Get Unique IDs for Filters ---
-        study_ids = df['StudyID'].dropna().unique().tolist()
-        study_ids.sort()
-        
-        sample_types = df['SampleSource'].dropna().unique().tolist()
-        sample_types.sort()
-        
-        # --- NEW: Get Pathogens and Subtypes ---
-        pathogens = df['Pathogen'].dropna().unique().tolist()
-        pathogens.sort()
-        
-        subtypes = df['Subtype'].dropna().unique().tolist()
-        subtypes.sort()
-        # --- End NEW ---
-
-        # --- 3. Prepare ALL Data for JS ---
-        
-        # --- MODIFIED: Add Pathogen and Subtype to columns ---
-        plot_columns = ['StudyID', 'SampleSource', 'TimeDays', 'PathogenLoad', 'AgeRng1', 'AgeRng2', 'Pathogen', 'Subtype', 'Units']
-        
-        # --- MODIFIED: Add Pathogen to core columns ---
-        core_plot_cols = ['StudyID', 'SampleSource', 'TimeDays', 'PathogenLoad', 'Pathogen']
-        
-        df_plot = df[plot_columns].dropna(subset=core_plot_cols, how='any')
-
-        # ROBUST FIX for NaN (converts remaining NaNs to None for JSON)
-        df_plot = df_plot.astype(object).where(pd.notnull(df_plot), None)
-        
-        all_data_list = df_plot.to_dict(orient='records')
-        
-        context = {
-            'chart_title': 'Sample Data Dashboard',
-            'study_ids': study_ids,
-            'sample_types': sample_types,
-            'pathogens': pathogens, # <-- NEW
-            'subtypes': subtypes,     # <-- NEW
-            'all_data': all_data_list,
-        }
-
+        context = {'chart_title': 'Sample Data Dashboard'}
+        context.update(_compute_chart_context(_data_mtime()))
         return render(request, 'visualization/data_chart.html', context)
-        
+
     except FileNotFoundError:
         return HttpResponse(f"Error: Data file not found at: {DATA_FILE_PATH}", status=500)
-        
+
     except Exception as e:
         return HttpResponse(f"An error occurred during data processing: {e}", status=500)
 
