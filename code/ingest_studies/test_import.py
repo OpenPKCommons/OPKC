@@ -1,11 +1,41 @@
-from studies import eales2025, facciuolo2025, hakki2022, jones2021, ke2022, kissler2023, penamosca2025, puhach2022, russell2024, savela2022, vuong2024, wagstaffe2024, waickman2022, waickman2024, wongnak2024 #alpha order
-from schema import enforce_schema, coerce_types
-import pandas as pd
+"""
+Test one study's ingestion in isolation. Handy for iterating on a single
+study without regenerating the full combined dataset.
+
+Usage (from anywhere):
+    python3 code/ingest_studies/test_import.py <study_name>
+
+Example:
+    python3 code/ingest_studies/test_import.py facciuolo2025
+
+Writes: output/test_import.csv
+"""
+import argparse
+import importlib
+from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+OUTPUT_PATH = REPO_ROOT / "output" / "test_import.csv"
+
 
 def main():
-    df_to_test = facciuolo2025.load_and_format()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "study_name",
+        help="Module in studies/ (e.g. 'facciuolo2025')",
+    )
+    args = parser.parse_args()
 
-    df_to_test.to_csv("output/test_import.csv", index=False)
+    module = importlib.import_module(f"studies.{args.study_name}")
+    df = module.load_and_format()
+
+    OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
+    df.to_csv(OUTPUT_PATH, index=False)
+
+    populated = [c for c in df.columns if df[c].notna().any()]
+    print(f"Wrote {len(df):,} rows from {args.study_name} to {OUTPUT_PATH}")
+    print(f"Populated columns ({len(populated)}/{len(df.columns)}): {populated}")
+
 
 if __name__ == "__main__":
     main()

@@ -53,7 +53,7 @@
                     <option value="StudyID" selected>Study</option>
                     <option value="SampleSource">Sample Source</option>
                     <option value="Pathogen">Pathogen</option>
-                    <option value="Subtype">Subtype</option>
+                    <option value="PathogenSubtype">Subtype</option>
                     <option value="Age">Age</option>
                 </select>
             </div>
@@ -90,6 +90,28 @@
                     </div>
                 </div>
                 <div id="subtype-filter-list" class="filter-list h-24 max-h-24 overflow-y-auto space-y-1 rounded-md border border-gray-300 p-3 bg-gray-50">
+                </div>
+            </div>
+            <div id="biomarker-filter-group">
+                <div class="flex justify-between items-center mb-2">
+                    <label class="font-semibold text-gray-700">Filter by Biomarker</label>
+                    <div>
+                        <button id="biomarker-select-all" class="text-xs font-medium text-blue-600 hover:underline">All</button> |
+                        <button id="biomarker-select-none" class="text-xs font-medium text-blue-600 hover:underline">None</button>
+                    </div>
+                </div>
+                <div id="biomarker-filter-list" class="filter-list h-24 max-h-24 overflow-y-auto space-y-1 rounded-md border border-gray-300 p-3 bg-gray-50">
+                </div>
+            </div>
+            <div id="blod-filter-group">
+                <div class="flex justify-between items-center mb-2">
+                    <label class="font-semibold text-gray-700">Filter by Detection</label>
+                    <div>
+                        <button id="blod-select-all" class="text-xs font-medium text-blue-600 hover:underline">All</button> |
+                        <button id="blod-select-none" class="text-xs font-medium text-blue-600 hover:underline">None</button>
+                    </div>
+                </div>
+                <div id="blod-filter-list" class="filter-list h-24 max-h-24 overflow-y-auto space-y-1 rounded-md border border-gray-300 p-3 bg-gray-50">
                 </div>
             </div>
             <div id="samplesource-filter-group">
@@ -153,7 +175,9 @@
     {{ sample_types|json_script:"unique-samples-json" }}
     {{ pathogens|json_script:"unique-pathogens-json" }}
     {{ subtypes|json_script:"unique-subtypes-json" }}
-    
+    {{ biomarkers|json_script:"unique-biomarkers-json" }}
+    {{ blod_statuses|json_script:"unique-blod-json" }}
+
     <script>
         // --- 1. Get Data from Django ---
         let ALL_DATA = [];
@@ -161,6 +185,8 @@
         let UNIQUE_SAMPLES = [];
         let UNIQUE_PATHOGENS = [];
         let UNIQUE_SUBTYPES = [];
+        let UNIQUE_BIOMARKERS = [];
+        let UNIQUE_BLOD = [];
         
         // --- NEW: Define Unit Categories ---
         const UNITS_CT = ['Ct', 'Ct (max 40)', 'Ct (max 45)', 'Ct (max 38) WITH PLOTDIGITIZER'];
@@ -175,7 +201,9 @@
             UNIQUE_SAMPLES = JSON.parse(document.getElementById('unique-samples-json').textContent);
             UNIQUE_PATHOGENS = JSON.parse(document.getElementById('unique-pathogens-json').textContent);
             UNIQUE_SUBTYPES = JSON.parse(document.getElementById('unique-subtypes-json').textContent);
-            
+            UNIQUE_BIOMARKERS = JSON.parse(document.getElementById('unique-biomarkers-json').textContent);
+            UNIQUE_BLOD = JSON.parse(document.getElementById('unique-blod-json').textContent);
+
             if (!ALL_DATA || ALL_DATA.length === 0) {
                  statusMessage.textContent = 'No data loaded from server.';
             }
@@ -186,6 +214,8 @@
             document.getElementById('samplesource-filter-list').innerHTML = '<p class="text-red-500">Error loading filters.</p>';
             document.getElementById('pathogen-filter-list').innerHTML = '<p class="text-red-500">Error loading filters.</p>';
             document.getElementById('subtype-filter-list').innerHTML = '<p class="text-red-500">Error loading filters.</p>';
+            document.getElementById('biomarker-filter-list').innerHTML = '<p class="text-red-500">Error loading filters.</p>';
+            document.getElementById('blod-filter-list').innerHTML = '<p class="text-red-500">Error loading filters.</p>';
         }
         
         // --- 2. Get DOM References ---
@@ -196,6 +226,8 @@
         const sampleListDiv = document.getElementById('samplesource-filter-list');
         const pathogenListDiv = document.getElementById('pathogen-filter-list');
         const subtypeListDiv = document.getElementById('subtype-filter-list');
+        const biomarkerListDiv = document.getElementById('biomarker-filter-list');
+        const blodListDiv = document.getElementById('blod-filter-list');
         const minAgeInput = document.getElementById('min-age');
         const maxAgeInput = document.getElementById('max-age');
         const colorBySelect = document.getElementById('color-by-select');
@@ -229,6 +261,30 @@
                 label.dataset.value = subtype;
                 label.innerHTML = `<input type="checkbox" class="filter-checkbox" data-filter-type="subtype" value="${subtype}" checked> ${subtype}`;
                 subtypeListDiv.appendChild(label);
+            });
+
+            UNIQUE_BIOMARKERS.forEach(biomarker => {
+                const label = document.createElement('label');
+                label.className = 'block font-normal text-sm cursor-pointer hover:bg-gray-200 rounded px-1 biomarker-label';
+                label.dataset.value = biomarker;
+                // Default: only "pathogen load" checked. Other biomarkers (immune
+                // markers, gene expression, etc.) live on different scales, so the
+                // shared y-axis only makes sense for one at a time.
+                const isChecked = (biomarker === 'pathogen load') ? 'checked' : '';
+                label.innerHTML = `<input type="checkbox" class="filter-checkbox" data-filter-type="biomarker" value="${biomarker}" ${isChecked}> ${biomarker}`;
+                biomarkerListDiv.appendChild(label);
+            });
+
+            UNIQUE_BLOD.forEach(status => {
+                const label = document.createElement('label');
+                label.className = 'block font-normal text-sm cursor-pointer hover:bg-gray-200 rounded px-1 blod-label';
+                label.dataset.value = status;
+                // Default: exclude BLOD rows. They carry real measurements now but
+                // cluster at floor values (log10VL ~0-1) and can look misleading
+                // alongside detected points. Users can opt back in.
+                const isChecked = (status === 'Below LOD') ? '' : 'checked';
+                label.innerHTML = `<input type="checkbox" class="filter-checkbox" data-filter-type="blod" value="${status}" ${isChecked}> ${status}`;
+                blodListDiv.appendChild(label);
             });
 
             UNIQUE_SAMPLES.forEach(sample => {
@@ -282,7 +338,7 @@
             const selectedPathogens = Array.from(pathogenListDiv.querySelectorAll('input[type=checkbox]:checked')).map(cb => cb.value);
             const validSubtypes = new Set();
             ALL_DATA.forEach(row => {
-                if (selectedPathogens.includes(row.Pathogen)) validSubtypes.add(row.Subtype);
+                if (selectedPathogens.includes(row.Pathogen)) validSubtypes.add(row.PathogenSubtype);
             });
 
             subtypeListDiv.querySelectorAll('.subtype-label').forEach(label => {
@@ -319,6 +375,8 @@
             const selectedSamples = Array.from(sampleListDiv.querySelectorAll('input[type=checkbox]:checked')).map(cb => cb.value);
             const selectedPathogens = Array.from(pathogenListDiv.querySelectorAll('input[type=checkbox]:checked')).map(cb => cb.value);
             const selectedSubtypes = Array.from(subtypeListDiv.querySelectorAll('input[type=checkbox]:checked')).map(cb => cb.value);
+            const selectedBiomarkers = Array.from(biomarkerListDiv.querySelectorAll('input[type=checkbox]:checked')).map(cb => cb.value);
+            const selectedBlod = Array.from(blodListDiv.querySelectorAll('input[type=checkbox]:checked')).map(cb => cb.value);
             const userMinAge = parseFloat(minAgeInput.value) || 0;
             const userMaxAge = parseFloat(maxAgeInput.value) || 100;
             const colorBy = colorBySelect.value; 
@@ -328,18 +386,20 @@
                 const studiesMatch = selectedStudies.includes(row.StudyID);
                 const samplesMatch = selectedSamples.includes(row.SampleSource);
                 const pathogensMatch = selectedPathogens.includes(row.Pathogen);
-                const subtypesMatch = selectedSubtypes.includes(row.Subtype);
-                
+                const subtypesMatch = selectedSubtypes.includes(row.PathogenSubtype);
+                const biomarkersMatch = selectedBiomarkers.includes(row.Biomarker);
+                const blodMatch = selectedBlod.includes(row.BelowLOD);
+
                 const personMinAge = row.AgeRng1;
                 const personMaxAge = row.AgeRng2;
-                let ageMatch = true; 
+                let ageMatch = true;
                 if (personMinAge !== null && personMaxAge !== null) {
                     ageMatch = (personMaxAge >= userMinAge) && (personMinAge <= userMaxAge);
                 } else {
-                    if (userMinAge !== 0 || userMaxAge !== 100) ageMatch = false; 
+                    if (userMinAge !== 0 || userMaxAge !== 100) ageMatch = false;
                 }
-                
-                return studiesMatch && samplesMatch && ageMatch && pathogensMatch && subtypesMatch;
+
+                return studiesMatch && samplesMatch && ageMatch && pathogensMatch && subtypesMatch && biomarkersMatch && blodMatch;
             });
 
             // --- 3. Prep Data for SCATTER Plots (Split by Units) ---
@@ -352,7 +412,7 @@
             };
 
             filteredData.forEach(d => {
-                if (d.TimeDays === null || d.PathogenLoad === null) return;
+                if (d.TimeDays === null || d.BiomarkerQuantity === null) return;
 
                 if (UNITS_CT.includes(d.Units)) {
                     dataBuckets['ct'].push(d);
@@ -398,7 +458,7 @@
                         switch (colorBy) {
                             case 'StudyID': groupKey = d.StudyID; break;
                             case 'Pathogen': groupKey = d.Pathogen; break;
-                            case 'Subtype': groupKey = d.Subtype; break;
+                            case 'PathogenSubtype': groupKey = d.PathogenSubtype; break;
                             case 'Age': groupKey = getAgeBin(d); break;
                             default: groupKey = d.SampleSource; break;
                         }
@@ -425,9 +485,9 @@
                         }
                         const trace = tracesMap.get(groupKey);
                         trace.x.push(d.TimeDays);
-                        trace.y.push(d.PathogenLoad);
+                        trace.y.push(d.BiomarkerQuantity);
                         
-                        const hoverStr = `${d.StudyID}<br>${d.SampleSource}<br>${d.Pathogen} (${d.Subtype || 'N/A'})`;
+                        const hoverStr = `${d.StudyID}<br>${d.SampleSource}<br>${d.Pathogen} (${d.PathogenSubtype || 'N/A'})`;
                         trace.text.push(hoverStr);
                         if (!trace.customdata) trace.customdata = [];
                         trace.customdata.push(d.Units);
@@ -554,10 +614,10 @@
         };
         
         // FIXED: Changed 'sample' to 'samplesource'
-        ['study', 'pathogen', 'subtype', 'samplesource'].forEach(addAllNoneListeners);
+        ['study', 'pathogen', 'subtype', 'biomarker', 'blod', 'samplesource'].forEach(addAllNoneListeners);
 
         // Attach listeners to container for delegation (more efficient)
-        [studyListDiv, pathogenListDiv, subtypeListDiv, sampleListDiv].forEach(div => {
+        [studyListDiv, pathogenListDiv, subtypeListDiv, biomarkerListDiv, blodListDiv, sampleListDiv].forEach(div => {
             div.addEventListener('change', handleFilterChange);
         });
 

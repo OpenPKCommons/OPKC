@@ -65,7 +65,7 @@ graph LR
 #### Fields and definitions
 - StudyID: A unique identifier for the study from which the data comes
 - IndivID: A unique individual identifier
-- Pathogen: ["SARS2", "Flu", "Dengue", "WestNile"]
+- Pathogen: ["SARS-CoV-2", "Influenza", "Dengue", "West Nile virus"]
     - Prefer shortest cleanest, high-level term
     - Keep track of naming quirks here for consistency
 - IndivSpecies: Spcies (corresponding to the individual subject of study) e.g. human, dairy cattle

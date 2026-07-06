@@ -33,11 +33,13 @@ Notes:
 # data from respiratory samples
 
 import pandas as pd
+import os
 from schema import enforce_schema, coerce_types
 
 def load_and_format():
     # Import the raw data:
-    df = pd.read_csv("data/vanKampen2021.csv")
+    base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.."))
+    df = pd.read_csv(os.path.join(base_dir, "data", "vanKampen2021.csv"))
 
     # Keep only the columns we need: 
     df = df[['duration of symptoms in days', 'RNA copies per mL']] # replaced if using code section below
@@ -91,7 +93,7 @@ def load_and_format():
     
     # Add additional columns with known but missing information:
     df["StudyID"] = "vanKampen2021"
-    df["Pathogen"] = "SARS2"
+    df["Pathogen"] = "SARS-CoV-2"
     df["IndivSpecies"] = "Human"
     df["Units"] = "GEml (log10VL)" # RNA copies
     df["DOI"] = "10.1038/s41467-020-20568-4"

@@ -120,7 +120,7 @@ def load_savela2022_infection(data_dir: str) -> pd.DataFrame:
 
         # Metadata
         df["StudyID"] = "savela2022"
-        df["Pathogen"] = "SARS2"
+        df["Pathogen"] = "SARS-CoV-2"
         df["IndivSpecies"] = "Human"
         df["Units"] = "copies/mL"
         df["AssayType"] = "RT-qPCR"
@@ -175,6 +175,7 @@ def load_savela2022_infection(data_dir: str) -> pd.DataFrame:
     out.drop(columns=["t0"], inplace=True)
 
     # Final schema alignment
+    out["Biomarker"] = "pathogen load"
     out = enforce_schema(out)
     out = coerce_types(out)
 

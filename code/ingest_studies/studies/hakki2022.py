@@ -97,20 +97,29 @@ def load_and_format():
     #   - If CopiesPerML present: Log10VL = log10(copies/mL), Units = "log10(copies/mL)"
     #   - Else if PFUPerML present: Log10VL = log10(PFU/mL), Units = "log10(PFU/mL)"
     #   - Else (no quantitative): keep Units as "Ct" only if you map Ct elsewhere (not present here); otherwise leave NA.
+    # NOTE on LOD_min: the BelowLOD threshold operates on the *linear-scale* source
+    # (CopiesPerML or PFUPerML <= 0). But BiomarkerQuantity is log10-transformed,
+    # and log10(0) is undefined, so an LOD_min value in log10 units isn't
+    # well-defined for this study. Left as NA; revisit if a real assay LOD (e.g.,
+    # "10 copies/mL") can be extracted from the paper.
     if "CopiesPerML" in df.columns and df["CopiesPerML"].notna().any():
-        df["BiomarkerQuantity"] = df["CopiesPerML"].apply(_safe_log10)
+        src = df["CopiesPerML"]
+        df["BiomarkerQuantity"] = src.apply(_safe_log10)
         df["Units"] = "log10(copies/mL)"
+        df["BelowLOD"] = src.le(0).where(src.notna(), pd.NA)
     elif "PFUPerML" in df.columns and df["PFUPerML"].notna().any():
-        df["BiomarkerQuantity"] = df["PFUPerML"].apply(_safe_log10)
+        src = df["PFUPerML"]
+        df["BiomarkerQuantity"] = src.apply(_safe_log10)
         df["Units"] = "log10(PFU/mL)"
+        df["BelowLOD"] = src.le(0).where(src.notna(), pd.NA)
     else:
-        # No quantitative load; leave Log10VL as NaN and Units unspecified.
+        # No quantitative load; leave BiomarkerQuantity, Units, and BLOD as NA.
         df["BiomarkerQuantity"] = float("nan")
         df["Units"] = pd.NA
 
     # 6) Fill study-level metadata lab schema expects
     df["StudyID"] = "hakki2022"
-    df["Pathogen"] = "SARS2"
+    df["Pathogen"] = "SARS-CoV-2"
     df["IndivSpecies"] = "Human"
     df["DOI"] = "10.1016/S2213-2600(22)00226-0"
     df["AssayTargets"] = "ORF1ab"
@@ -127,6 +136,7 @@ def load_and_format():
         df["LFD_Positive"] = df["LFD_Positive"].map({1: True, 0: False, "1": True, "0": False}).fillna(df["LFD_Positive"])
 
     # 7) Enforce schema and types
+    df["Biomarker"] = "pathogen load"
     df = enforce_schema(df)
     df = coerce_types(df)
 

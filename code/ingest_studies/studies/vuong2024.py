@@ -58,9 +58,12 @@ def vuong2024():
 
     df = df.rename(columns={k: v for k, v in rename_map.items() if k in df.columns})
 
-    # Below detection limit is NA
+    # Flag values below the assay's LOD instead of destroying them. Preserve the
+    # raw reported number.
+    lod_min = 0  # log10VL floor: values at or below this are below the LOD
     df["BiomarkerQuantity"] = pd.to_numeric(df["BiomarkerQuantity"], errors="coerce")
-    df.loc[df["BiomarkerQuantity"] <= 0, "BiomarkerQuantity"] = pd.NA
+    df["LOD_min"] = lod_min
+    df["BelowLOD"] = df["BiomarkerQuantity"].le(lod_min).where(df["BiomarkerQuantity"].notna(), pd.NA)
 
     # Construct SampleID 
     df["SampleID"] = df["IndivID"].astype(str) + "_" + df["TimeDays"].astype(str)
@@ -79,6 +82,7 @@ def vuong2024():
     df["Units"] = "copies/ml"
 
     # Enforce schema and coerce types
+    df["Biomarker"] = "pathogen load"
     df = enforce_schema(df)
     df = coerce_types(df)
 

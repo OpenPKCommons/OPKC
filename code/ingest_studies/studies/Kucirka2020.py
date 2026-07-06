@@ -30,11 +30,13 @@ Notes:
 # Zhao et al. (2020), Liu et al. (2020), Guo et al. (2020), Wölfel et al. (2020), Danis et al. (2020), Kujawski et al. (2020) (nasal only), Kim et al. (2020), and Young et al. (2020) each looked at the sensitivity of the RT-PCR by time since symptom onset.
 
 import pandas as pd
+import os
 from schema import enforce_schema, coerce_types
 
 def load_and_format():
     # Import the raw data:
-    df = pd.read_csv("data/kucirka2020.csv")
+    base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.."))
+    df = pd.read_csv(os.path.join(base_dir, "data", "kucirka2020.csv"))
 
     # Keep only the columns we need: 
     df = df[['study', 'test', 'day']] # , 'n', 'test_pos', 'nqp', 'pct_pos'
@@ -51,7 +53,7 @@ def load_and_format():
     
     # Add additional columns with known but missing information:
     df["StudyID"] = "Kucirka2020"
-    df["Pathogen"] = "SARS2"
+    df["Pathogen"] = "SARS-CoV-2"
     df["IndivSpecies"] = "Human"
     df["Units"] = "mixed" # study specific!
     df["DOI"] = "10.7326/M20-1495"

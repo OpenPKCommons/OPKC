@@ -95,7 +95,7 @@ Psuedocode planning:
 
 [] Additional columns
     [] StudyID = "Facciuolo2025"
-    [] Pathogen = "Flu"
+    [] Pathogen = "Influenza"
     [] Subtype = "H5N1 B3.13"
     [] PtSpecies = "Dairy cattle"
     [] DOI = "10.1038/s41564-025-01998-6"
@@ -289,12 +289,13 @@ def load_and_format():
 
     # Add additional columns
     df["StudyID"] = "Facciuolo2025"
-    df["Pathogen"] = "Flu"
+    df["Pathogen"] = "Influenza"
     df["PathogenSubtype"] = "H5N1 B3.13"
     df["IndivSpecies"] = "Dairy cattle"
     df["DOI"] = "10.1038/s41564-025-01998-6"
 
     # Enforce schema and coerce types
+    df["Biomarker"] = "pathogen load"
     df = enforce_schema(df)
     df = coerce_types(df)
 

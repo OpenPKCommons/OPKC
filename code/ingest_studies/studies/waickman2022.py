@@ -31,7 +31,7 @@ available with Waickman et al. 2022 Sci Transl Med.
   but not time-resolved; commented out below.
 • Treatments: acetaminophen, oral fluids, antinausea medication reported but not
   time-resolved and not given to all participants; commented out below.
-• "BLOD" = below limit of detection
+• "BelowLOD" = below limit of detection
 """
 
 import os, sys
@@ -56,9 +56,12 @@ def _load_sheet(base_dir, sheet_name, platform_type, units, readout_platform, ta
     df["TimeDays"] = df["Study day"]
     df = df.drop(columns=["Study day"])
 
-    # Replace BLOD / non-detectable values ≤1 with NaN
+    # Flag values below the assay's LOD instead of destroying them. Preserve the
+    # raw reported number.
+    lod_min = 1.0  # log10VL floor: values at or below this are below the LOD
     df["BiomarkerQuantity"] = pd.to_numeric(df["BiomarkerQuantity"], errors="coerce")
-    df.loc[df["BiomarkerQuantity"] <= 1.0, "BiomarkerQuantity"] = pd.NA
+    df["LOD_min"] = lod_min
+    df["BelowLOD"] = df["BiomarkerQuantity"].le(lod_min).where(df["BiomarkerQuantity"].notna(), pd.NA)
 
     # Core metadata
     df["StudyID"] = "waickman2022"
@@ -82,6 +85,7 @@ def _load_sheet(base_dir, sheet_name, platform_type, units, readout_platform, ta
     df["ReadoutPlatform"] = readout_platform
     df["AssayTargets"] = targets
     
+    df["Biomarker"] = "pathogen load"
     df = enforce_schema(df)
     df = coerce_types(df)
     return df

@@ -75,9 +75,13 @@ def penamosca2025():
 
     df = df.rename(columns={k: v for k, v in rename_map.items() if k in df.columns})
 
-    # Convert BiomarkerQuantity (Ct values) to numeric, with negative results or missing Ct values becoming NA
+    # Convert Ct values to numeric. A Ct <= 0 is a sentinel for "negative / not
+    # detected" (not a real Ct); flag as BelowLOD but preserve the raw source value.
+    # TODO: LOD_min/LOD_max aren't populated here. The real LOD for a Ct-based assay
+    # is a *ceiling* (LOD_max, e.g., 40 or 45 cycles) — not the <=0 sentinel we're
+    # checking for BLOD. Look up the paper's max cycle count and set LOD_max instead.
     df["BiomarkerQuantity"] = pd.to_numeric(df["BiomarkerQuantity"], errors="coerce")
-    df.loc[df["BiomarkerQuantity"] <= 0, "BiomarkerQuantity"] = pd.NA 
+    df["BelowLOD"] = df["BiomarkerQuantity"].le(0).where(df["BiomarkerQuantity"].notna(), pd.NA)
 
     # Calculate TimeDays from sample_date and date_gripa_cow (disease onset date)
     df["sample_date"] = pd.to_datetime(df["sample_date"], errors="coerce")
@@ -88,7 +92,7 @@ def penamosca2025():
     df["SampleID"] = df["IndivID"].astype(str) + "_" + df["TimeDays"].astype(str)
 
     df["StudyID"] = "penamosca2025"
-    df["Pathogen"] = "Flu"
+    df["Pathogen"] = "Influenza"
     df["IndivSpecies"] = "Dairy cattle"
     df["DOI"] = "10.1038/s41467-025-61553-z"
     df["AssayType"] = "RT-qPCR"
@@ -98,6 +102,7 @@ def penamosca2025():
     df["Units"] = "Ct (max 40)" # paper does not list the max cycles! inferred 40 from max Ct values in data
 
     # Enforce schema and coerce types
+    df["Biomarker"] = "pathogen load"
     df = enforce_schema(df)
     df = coerce_types(df)
 

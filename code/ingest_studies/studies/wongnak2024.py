@@ -20,11 +20,13 @@ Notes:
 - Clinical cohort with outcome stratification
 """
 import pandas as pd
+import os
 from schema import enforce_schema, coerce_types
 
 def load_and_format():
     # Import the raw data:
-    df = pd.read_csv("data/wongnak2024.csv")
+    base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.."))
+    df = pd.read_csv(os.path.join(base_dir, "data", "wongnak2024.csv"))
 
     # Keep only the columns we need: 
     df = df[['ID', 'Time', 'Trt', 'Swab_ID', 'Age', 'BARCODE', 'Variant', 'log10_viral_load']]
@@ -46,7 +48,7 @@ def load_and_format():
 
     # Add additional columns with known but missing information:
     df["StudyID"] = "wongnak2024"
-    df["Pathogen"] = "SARS2"
+    df["Pathogen"] = "SARS-CoV-2"
     df["IndivSpecies"] = "Human"
     df["DOI"] = "10.1016/S1473-3099(24)00183-X"
     df["Units"] = "GEml (log10VL)"
@@ -55,6 +57,7 @@ def load_and_format():
     df["ReadoutPlatform"] = "TaqCheckFastPCR"
     df["AssayTargets"] = "N, S"
 
+    df["Biomarker"] = "pathogen load"
     df = enforce_schema(df)
     df = coerce_types(df)
 

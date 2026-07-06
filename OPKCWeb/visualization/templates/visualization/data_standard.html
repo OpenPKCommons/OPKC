@@ -81,21 +81,27 @@
                     </p>
                 </div>
                 <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg group transition-all duration-300 hover:shadow-md overflow-hidden">
-                    <h4 class="text-base font-semibold text-blue-800 m-0">Pathogen Load</h4>
+                    <h4 class="text-base font-semibold text-blue-800 m-0">Biomarker Quantity</h4>
                     <p class="text-sm text-blue-900 max-h-0 opacity-0 transition-all duration-300 ease-out group-hover:max-h-40 group-hover:opacity-100 group-hover:mt-2 overflow-hidden">
-                        The measured pathogen load. We prefer Log10(copies/mL).
+                        The measured value of the biomarker (typically pathogen load, e.g., Log10 copies/mL, or a Ct value).
                     </p>
                 </div>
                 <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg group transition-all duration-300 hover:shadow-md overflow-hidden">
-                    <h4 class="text-base font-semibold text-blue-800 m-0">Platform Type</h4>
+                    <h4 class="text-base font-semibold text-blue-800 m-0">Biomarker</h4>
                     <p class="text-sm text-blue-900 max-h-0 opacity-0 transition-all duration-300 ease-out group-hover:max-h-40 group-hover:opacity-100 group-hover:mt-2 overflow-hidden">
-                        Category of platform used to measure pathogen load (e.g., "RT-qPCR", "rapid antigen")
+                        What is being measured. Use "pathogen load" for direct viral or bacterial load, or a specific marker name (e.g., "IFN-&gamma;", "IgG titer") for other biomarkers.
+                    </p>
+                </div>
+                <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg group transition-all duration-300 hover:shadow-md overflow-hidden">
+                    <h4 class="text-base font-semibold text-blue-800 m-0">Assay Type</h4>
+                    <p class="text-sm text-blue-900 max-h-0 opacity-0 transition-all duration-300 ease-out group-hover:max-h-40 group-hover:opacity-100 group-hover:mt-2 overflow-hidden">
+                        The type of assay used to make the measurement (e.g., "RT-qPCR", "plaque assay", "antibody titer").
                     </p>
                 </div>
                 <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg group transition-all duration-300 hover:shadow-md overflow-hidden">
                     <h4 class="text-base font-semibold text-blue-800 m-0">Units</h4>
                     <p class="text-sm text-blue-900 max-h-0 opacity-0 transition-all duration-300 ease-out group-hover:max-h-40 group-hover:opacity-100 group-hover:mt-2 overflow-hidden">
-                        The units for the viral load, e.g., "Ct", "Log10 copies/mL".
+                        The units for the biomarker measurement, e.g., "Ct", "Log10 copies/mL".
                     </p>
                 </div>
                 <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg group transition-all duration-300 hover:shadow-md overflow-hidden">
@@ -153,15 +159,39 @@
                     </p>
                 </div>
                 <div class="p-4 bg-green-50 border border-green-200 rounded-lg group transition-all duration-300 hover:shadow-md overflow-hidden">
-                    <h4 class="text-base font-semibold text-green-800 m-0">Targets</h4>
+                    <h4 class="text-base font-semibold text-green-800 m-0">Assay Targets</h4>
                     <p class="text-sm text-green-900 max-h-0 opacity-0 transition-all duration-300 ease-out group-hover:max-h-40 group-hover:opacity-100 group-hover:mt-2 overflow-hidden">
                         The specific gene target(s) of the assay (e.g., "N gene", "S gene").
                     </p>
                 </div>
                 <div class="p-4 bg-green-50 border border-green-200 rounded-lg group transition-all duration-300 hover:shadow-md overflow-hidden">
-                    <h4 class="text-base font-semibold text-green-800 m-0">Platform Tech</h4>
+                    <h4 class="text-base font-semibold text-green-800 m-0">Reagent System</h4>
                     <p class="text-sm text-green-900 max-h-0 opacity-0 transition-all duration-300 ease-out group-hover:max-h-40 group-hover:opacity-100 group-hover:mt-2 overflow-hidden">
-                        The specific underlying technology of the assay (e.g., "Alinity", "cobas").
+                        The reagent kit used (e.g., "Luna qPCR kit").
+                    </p>
+                </div>
+                <div class="p-4 bg-green-50 border border-green-200 rounded-lg group transition-all duration-300 hover:shadow-md overflow-hidden">
+                    <h4 class="text-base font-semibold text-green-800 m-0">Readout Platform</h4>
+                    <p class="text-sm text-green-900 max-h-0 opacity-0 transition-all duration-300 ease-out group-hover:max-h-40 group-hover:opacity-100 group-hover:mt-2 overflow-hidden">
+                        The instrument or platform reading out the assay (e.g., "Roche cobas", "BioRad CFX").
+                    </p>
+                </div>
+                <div class="p-4 bg-green-50 border border-green-200 rounded-lg group transition-all duration-300 hover:shadow-md overflow-hidden">
+                    <h4 class="text-base font-semibold text-green-800 m-0">LOD max</h4>
+                    <p class="text-sm text-green-900 max-h-0 opacity-0 transition-all duration-300 ease-out group-hover:max-h-40 group-hover:opacity-100 group-hover:mt-2 overflow-hidden">
+                        For assays where high values mean weak signal (e.g., Ct-based RT-qPCR), the value at or above which the measurement is below the assay's limit of detection. Typically the maximum cycle count (e.g., 40 or 45).
+                    </p>
+                </div>
+                <div class="p-4 bg-green-50 border border-green-200 rounded-lg group transition-all duration-300 hover:shadow-md overflow-hidden">
+                    <h4 class="text-base font-semibold text-green-800 m-0">LOD min</h4>
+                    <p class="text-sm text-green-900 max-h-0 opacity-0 transition-all duration-300 ease-out group-hover:max-h-40 group-hover:opacity-100 group-hover:mt-2 overflow-hidden">
+                        For assays where low values mean weak signal (e.g., log10 viral load, PFU/mL), the value at or below which the measurement is below the assay's limit of detection.
+                    </p>
+                </div>
+                <div class="p-4 bg-green-50 border border-green-200 rounded-lg group transition-all duration-300 hover:shadow-md overflow-hidden">
+                    <h4 class="text-base font-semibold text-green-800 m-0">BelowLOD</h4>
+                    <p class="text-sm text-green-900 max-h-0 opacity-0 transition-all duration-300 ease-out group-hover:max-h-40 group-hover:opacity-100 group-hover:mt-2 overflow-hidden">
+                        Boolean flag: True if the measurement is below the assay's limit of detection (undetected), False if a real detected value. Leave blank if the source data doesn't distinguish.
                     </p>
                 </div>
             </div>
@@ -201,7 +231,7 @@
                     </p>
                 </div>
                 <div class="p-4 bg-gray-50 border border-gray-200 rounded-lg group transition-all duration-300 hover:shadow-md overflow-hidden">
-                    <h4 class="text-base font-semibold text-gray-800 m-0">Subtype</h4>
+                    <h4 class="text-base font-semibold text-gray-800 m-0">Pathogen Subtype</h4>
                     <p class="text-sm text-gray-900 max-h-0 opacity-0 transition-all duration-300 ease-out group-hover:max-h-40 group-hover:opacity-100 group-hover:mt-2 overflow-hidden">
                         Pathogen variant (e.g., A/H1N1 or BA.1)
                     </p>

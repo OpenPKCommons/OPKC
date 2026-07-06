@@ -21,11 +21,13 @@ Notes:
 - No standalone public dataset repository
 """
 import pandas as pd
+import os
 from schema import enforce_schema, coerce_types
 
 def load_and_format():
     # Import the raw data:
-    df = pd.read_csv("data/ke2022.csv")
+    base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.."))
+    df = pd.read_csv(os.path.join(base_dir, "data", "ke2022.csv"))
 
     # Keep only the columns we need: 
     df = df[['Ind', 'Time', 'Lineage', 'Nasal_CN', 'Saliva_Ct', 'Antigen', 'Age']]
@@ -59,7 +61,7 @@ def load_and_format():
 
     # Add additional columns with known but missing information:
     df["StudyID"] = "ke2022"
-    df["Pathogen"] = "SARS2"
+    df["Pathogen"] = "SARS-CoV-2"
     df["IndivSpecies"] = "Human"
     df["AgeRng2"] = df["AgeRng1"]
     df["DOI"] = "10.1038/s41564-022-01105-z"
@@ -96,6 +98,7 @@ def load_and_format():
         "nasal": -0.25,
         })
 
+    df["Biomarker"] = "pathogen load"
     df = enforce_schema(df)
     df = coerce_types(df)
     return df

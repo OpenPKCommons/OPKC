@@ -20,11 +20,13 @@ Notes:
 - No public raw viral load dataset released
 """
 import pandas as pd
+import os
 from schema import enforce_schema, coerce_types
 
 def load_and_format():
     # Import the raw data:
-    df = pd.read_csv("data/wagstaffe2024.csv")
+    base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.."))
+    df = pd.read_csv(os.path.join(base_dir, "data", "wagstaffe2024.csv"))
 
     # Keep only the columns we need (all in this case): 
     df = df[['PersonID', 'DaysPostInoculation', 'GEml', 'site']]
@@ -47,7 +49,7 @@ def load_and_format():
 
     # Add additional columns with known but missing information:
     df["StudyID"] = "wagstaffe2024"
-    df["Pathogen"] = "SARS2"
+    df["Pathogen"] = "SARS-CoV-2"
     df["IndivSpecies"] = "Human"
     df["DOI"] = "10.1126/sciimmunol.adj9285"
     df["Units"] = "GEml (log10VL)"
@@ -71,6 +73,7 @@ def load_and_format():
         # throat: 0.69 days^-1
         # nose: 1.29 days^-1
 
+    df["Biomarker"] = "pathogen load"
     df = enforce_schema(df)
     df = coerce_types(df)
     

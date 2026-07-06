@@ -39,34 +39,72 @@ def _data_mtime():
 @lru_cache(maxsize=2)
 def _compute_home_stats(mtime):
     df = pd.read_csv(DATA_FILE_PATH, na_values=['<NA>'])
+    # Count distinct (StudyID, IndivID) pairs so that per-study IDs like "1", "2"
+    # don't collide across studies. Rows with no IndivID contribute nothing.
+    unique_people = (
+        df[['StudyID', 'IndivID']]
+        .dropna(subset=['IndivID'])
+        .drop_duplicates()
+        .shape[0]
+    )
     return {
-        'total_data_points': f"{df['PathogenLoad'].dropna().count():,}",
+        'total_data_points': f"{len(df):,}",
         'total_studies': f"{df['StudyID'].nunique():,}",
         'total_pathogens': f"{df['Pathogen'].nunique():,}",
-        'total_people': f"{df['IndivID'].nunique():,}",
+        'total_people': f"{unique_people:,}",
     }
+
+
+def _blod_label(v):
+    """Map raw BelowLOD values (True / False / NA, possibly as strings after CSV
+    round-trip) to user-facing display labels."""
+    if pd.isna(v):
+        return 'Unspecified'
+    s = str(v).strip().lower()
+    if s == 'true':
+        return 'Below LOD'
+    if s == 'false':
+        return 'Detected'
+    return 'Unspecified'
 
 
 @lru_cache(maxsize=2)
 def _compute_chart_context(mtime):
     df = pd.read_csv(DATA_FILE_PATH, na_values=['<NA>'])
+    df['BelowLOD'] = df['BelowLOD'].apply(_blod_label)
 
     study_ids = sorted(df['StudyID'].dropna().unique().tolist())
     sample_types = sorted(df['SampleSource'].dropna().unique().tolist())
     pathogens = sorted(df['Pathogen'].dropna().unique().tolist())
-    subtypes = sorted(df['Subtype'].dropna().unique().tolist())
+    subtypes = sorted(df['PathogenSubtype'].dropna().unique().tolist())
+    biomarkers = sorted(df['Biomarker'].dropna().unique().tolist())
+    blod_statuses = sorted(df['BelowLOD'].dropna().unique().tolist())
 
-    plot_columns = ['StudyID', 'SampleSource', 'TimeDays', 'PathogenLoad',
-                    'AgeRng1', 'AgeRng2', 'Pathogen', 'Subtype', 'Units']
-    core_plot_cols = ['StudyID', 'SampleSource', 'TimeDays', 'PathogenLoad', 'Pathogen']
+    plot_columns = ['StudyID', 'SampleSource', 'TimeDays', 'BiomarkerQuantity',
+                    'AgeRng1', 'AgeRng2', 'Pathogen', 'PathogenSubtype',
+                    'Biomarker', 'BelowLOD', 'Units']
+    core_plot_cols = ['StudyID', 'SampleSource', 'TimeDays', 'BiomarkerQuantity', 'Pathogen']
     df_plot = df[plot_columns].dropna(subset=core_plot_cols, how='any')
     df_plot = df_plot.astype(object).where(pd.notnull(df_plot), None)
+
+    # Report silently-dropped rows so we notice when a study disappears from the
+    # chart (e.g. because an ingest script forgot to set SampleSource). Grouped
+    # by study, with a per-column breakdown so the cause is visible at a glance.
+    dropped = len(df) - len(df_plot)
+    if dropped:
+        excluded = df[df[core_plot_cols].isna().any(axis=1)]
+        print(f"[chart] dropped {dropped:,} of {len(df):,} rows for missing core columns")
+        for study, g in excluded.groupby('StudyID'):
+            reasons = {c: int(g[c].isna().sum()) for c in core_plot_cols if g[c].isna().any()}
+            print(f"  {study}: {len(g):,} rows dropped -> {reasons}")
 
     return {
         'study_ids': study_ids,
         'sample_types': sample_types,
         'pathogens': pathogens,
         'subtypes': subtypes,
+        'biomarkers': biomarkers,
+        'blod_statuses': blod_statuses,
         'all_data': df_plot.to_dict(orient='records'),
     }
 

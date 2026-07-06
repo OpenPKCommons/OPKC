@@ -103,7 +103,7 @@ base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.."))
     
 # Additional columns
 [x] StudyID -> "Eales2025_Baker" # for now _distinguish from other Eales data
-[x] Pathogen -> "Flu"
+[x] Pathogen -> "Influenza"
 [x] PtSpecies -> "Dairy cattle"
 [x] PlatformType -> "RT-qPCR"
 [x] Units -> "Ct (max 40)"
@@ -165,13 +165,14 @@ def baker():
 
     # Additional columns with known information:
     df["StudyID"] = "Eales2025_Baker"
-    df["Pathogen"] = "Flu"
+    df["Pathogen"] = "Influenza"
     df["PathogenSubtype"] = "H5N1"
     df["IndivSpecies"] = "Dairy cattle"
     df["DOI"] = "10.1101/2025.02.01.636082v1" # Eales et al
     df["Units"] = "Ct"
-    df["Ct_max"] = 40
+    df["LOD_max"] = 40
     df["AssayType"] = "RT-qPCR"
+    df["Biomarker"] = "pathogen load"
 
     # Enforce schema and coerce types
     df = enforce_schema(df)
@@ -224,18 +225,19 @@ def caserta():
 
     # Additional columns with known information:
     df1a["StudyID"] = "Eales2025_Caserta"
-    df1a["Pathogen"] = "Flu"
+    df1a["Pathogen"] = "Influenza"
     df1a["PathogenSubtype"] = "H5N1"
     df1a["IndivSpecies"] = "Dairy cattle"
     df1a["DOI"] = "10.1101/2025.02.01.636082v1" # Eales et al
     df1a["Units"] = "Ct"
-    df1a["Ct_max"] = 45
+    df1a["LOD_max"] = 45
     df1a["AssayType"] = "RT-qPCR" # referred to in the paper as "Real-time PCR with reverse transcription (rRT–PCR)"
     df1a["ReagentSystem"] = "Path-ID Multiplex One-Step RT-PCR Kit"
     df1a["ReadoutPlatform"] = "Applied Biosystems 7500 Fast PCR"
     df1a["AssayTargets"] = "IAV matrix gene"
     df1a["SampleSource"] = "milk" # raw data from Caserta et al directly does have the other sample types in figure, but Eales didn't ingest these
     df1a["SampleMethod"] = "milk sample"
+    df1a["Biomarker"] = "pathogen load"
 
     # now can enforce schema and coerce types
     df1a = enforce_schema(df1a)
@@ -260,20 +262,21 @@ def halwe():
     })
 
     # Halwe1-3 are subtype H5N1 B3.13 (US), and Hawe4-6 are H5N1 edDG (EU)
-    df["Subtype"] = df["IndivID"].apply(lambda x: "H5N1 B3.13" if x in ["Halwe1", "Halwe2", "Halwe3"] else "H5N1 edDG")
+    df["PathogenSubtype"] = df["IndivID"].apply(lambda x: "H5N1 B3.13" if x in ["Halwe1", "Halwe2", "Halwe3"] else "H5N1 edDG")
 
     # Additional columns with known information:
     df["StudyID"] = "Eales2025_Halwe"
-    df["Pathogen"] = "Flu"
+    df["Pathogen"] = "Influenza"
     df["IndivSpecies"] = "Dairy cattle"
     df["DOI"] = "10.1101/2025.02.01.636082v1" # Eales et al
     df["Units"] = "Ct WITH PLOTDIGITIZER"
-    df['Ct_max'] = 38
+    df['LOD_max'] = 38
     df["AssayType"] = "RT-qPCR"
     df["SampleSource"] = "milk"
     df["SampleMethod"] = "milk sample"
     df["ReagentSystem"] = "AgPath-ID One-Step RT–PCR kit"
     df["ReadoutPlatform"] = "BioRad CFX Maestro 1.1"
+    df["Biomarker"] = "pathogen load"
 
     # Enforce schema and coerce types
     df = enforce_schema(df)

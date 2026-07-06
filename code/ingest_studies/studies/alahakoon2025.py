@@ -30,11 +30,13 @@ Notes:
 # how can we incorporate num_count available in SOME of the data? But there is only one viral load data point for each...
 
 import pandas as pd
+import os
 from schema import enforce_schema, coerce_types
 
 def load_and_format():
     # Import the raw data:
-    df = pd.read_csv("data/alahakoon2025.csv")
+    base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.."))
+    df = pd.read_csv(os.path.join(base_dir, "data", "alahakoon2025.csv"))
 
     # Keep only the columns we need: 
     df = df[['disease_week', 'species', 'ctval']]
@@ -53,15 +55,17 @@ def load_and_format():
 
     # Add additional columns with known but missing information:
     df["StudyID"] = "alahakoon2025"
-    df["Pathogen"] = "WestNile"
+    df["Pathogen"] = "West Nile virus"
     df["IndivSpecies"] = "Mosquitoes"
     df["DOI"] = "10.1101/2025.07.02.662782"
     df["Units"] = "Ct"
-    df["Ct_max"] = 40
+    df["LOD_max"] = 40
     df["AssayType"] = "RT-qPCR" # referred to in the paper as "Real-time PCR with reverse transcription (rRT–PCR)"
     df["ReagentSystem"] = "trioplex RT-qPCR assay"
+    df["SampleSource"] = "mosquito"
     df["SampleMethod"] = "CO2 light traps"
 
+    df["Biomarker"] = "pathogen load"
     df = enforce_schema(df)
     df = coerce_types(df)
     return df

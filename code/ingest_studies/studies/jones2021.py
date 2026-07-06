@@ -26,54 +26,49 @@ Notes:
 # personHash , gender , PAMS1 , hospitalized , onset , B117 , date , viralLoad , age , testName , testCentre , testCentreCategory
 
 import pandas as pd
+import os
 from schema import enforce_schema, coerce_types
 
 def load_and_format():
     # Import the raw data:
-    df = pd.read_csv("data/jones2021.csv")
+    base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.."))
+    df = pd.read_csv(os.path.join(base_dir, "data", "jones2021.csv"))
 
     # Keep only the columns we need: 
     df = df[['personHash', 'onset', 'B117', 'date', 'viralLoad', 'age']] # redo patient ID to numerical instead of alphabetical - needed?
 
-    # Compute the days of the infection based on 'onset' and 'date'
-    # convert datetime format
+    # Compute TimeDays as days from a per-person reference date:
+    #   (a) the person's earliest recorded symptom onset if any, otherwise
+    #   (b) the person's earliest sample date (i.e., day 0 = first positive sample).
+    # Onset is null for ~96% of rows in this dataset (mostly asymptomatic diagnostic
+    # testing), so most rows fall back to (b).
     df["onset"] = pd.to_datetime(df["onset"])
-    df["date"] = pd.to_datetime(df["date"])
-    # identify persons to loop over
-    uniquePersons = df['personHash'].unique()
-    # loop through each individual
-    for val in uniquePersons:
-        df_subset = df.loc[df['personHash'] == val]
-        # determine date of symptom onset which is either the first element in onset...
-        givenOnset = df_subset['onset'].iloc[0]
-        # or the first element in date
-        if pd.isnull(givenOnset):
-            givenOnset = df_subset['date'].iloc[0]
-        # Compute the difference for all elements in the subset
-        # This is a new column with the difference from the first value
-        df['computedTimeDays'] = (df_subset['date'] - givenOnset).dt.days
-    # delete 'onset', 'date' columns (or keep them?)
+    df["date"]  = pd.to_datetime(df["date"])
+    first_onset = df.groupby("personHash")["onset"].transform("min")
+    first_date  = df.groupby("personHash")["date"].transform("min")
+    reference   = first_onset.fillna(first_date)
+    df["computedTimeDays"] = (df["date"] - reference).dt.days
+
     df = df[['personHash', 'computedTimeDays', 'viralLoad', 'age', 'B117']]
 
     # Rename columns to match schema: 
     df = df.rename(columns={
-        "personHash": "PersonID",
+        "personHash": "IndivID",
         "computedTimeDays": "TimeDays",
         "viralLoad": "BiomarkerQuantity", 
         "age": "AgeRng1"
         })
     
-    # for rows where "B117" is TRUE, df["Subtype"] = "B.1.1.7", else leave blank
+    # For B117-flagged rows, tag as Alpha lineage with the corresponding assay targets.
     df["PathogenSubtype"] = ""
-    df.loc[df["B117"] == True, "Subtype"] = "B.1.1.7"
+    df.loc[df["B117"] == True, "PathogenSubtype"] = "B.1.1.7"
 
-    #and for thoes rows where df["Subtype"] == "B.1.1.7", df["Targets"] = "N501Y, del69/70 spike protein AA"
     df["AssayTargets"] = ""
     df.loc[df["PathogenSubtype"] == "B.1.1.7", "AssayTargets"] = "N501Y, del69/70 spike protein AA"
 
     # Add additional columns with known but missing information:
     df["StudyID"] = "jones2021"
-    df["Pathogen"] = "SARS2"
+    df["Pathogen"] = "SARS-CoV-2"
     df["IndivSpecies"] = "Human"
     df["Units"] = "GEml (log10VL)" # intercepts available in supplemental material
     df["DOI"] = "10.1126/science.abi5273"
@@ -82,8 +77,14 @@ def load_and_format():
     ## these were used to calculate the culture probability in the source paper, they are not simulated data
     ## not currently ingested here but could be added in future versions
     df["ReadoutPlatform"] = "Roche Light Cycler 480, or Roche cobas 6800/8800"
+    # ~97% of samples are upper respiratory swabs (per paper Methods); the remaining
+    # ~3% are lower respiratory tract samples from intubated patients. The raw data
+    # doesn't distinguish per-row, so we use a single coarse URT label.
+    df["SampleSource"] = "upper respiratory"
+    df["SampleMethod"] = "swab"
 
 
+    df["Biomarker"] = "pathogen load"
     df = enforce_schema(df)
     df = coerce_types(df)
     return df

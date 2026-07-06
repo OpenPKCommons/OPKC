@@ -28,18 +28,20 @@ Notes:
 # Note: RNA load/ml and FFU/ml both in log10, representing RNA viral load and infectious viral loads respectively
 
 import pandas as pd
+import os
 from schema import enforce_schema, coerce_types
 
 def load_and_format():
     # Import the raw data:
-    df = pd.read_csv("data/puhach2022.csv")
+    base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.."))
+    df = pd.read_csv(os.path.join(base_dir, "data", "puhach2022.csv"))
 
     # Keep only the columns we need: 
     df = df[['sample number', 'DPOS', 'Variant', 'FFU/ml', 'Age']]
 
     # Rename columns to match schema: 
     df = df.rename(columns={
-        "sample number": "PersonID",
+        "sample number": "IndivID",
         "DPOS": "TimeDays",
         "FFU/ml": "BiomarkerQuantity", # log10 genome copies per ml for RNA viral loads
         "Variant": "PathogenSubtype",
@@ -48,14 +50,17 @@ def load_and_format():
 
     # Add additional columns with known but missing information:
     df["StudyID"] = "puhach2022"
-    df["Pathogen"] = "SARS2"
+    df["Pathogen"] = "SARS-CoV-2"
     df["IndivSpecies"] = "Human"
     df["Units"] = "GEml (log10VL)"
     df["DOI"] = "10.1038/s41591-022-01816-0"
     df["AssayType"] = "RT-qPCR"
     df["ReadoutPlatform"] = "Roche cobas 6800"
     df["AssayTargets"] = "E-gene, S-gene"
+    df["SampleSource"] = "nasopharynx"
+    df["SampleMethod"] = "swab"
 
+    df["Biomarker"] = "pathogen load"
     df = enforce_schema(df)
     df = coerce_types(df)
     

@@ -21,11 +21,13 @@ Notes:
 
 """
 import pandas as pd
+import os
 from schema import enforce_schema, coerce_types, split_age_range
 
 def load_and_format():
     # Import the raw data:
-    df = pd.read_csv("data/russell2024.csv")
+    base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.."))
+    df = pd.read_csv(os.path.join(base_dir, "data", "russell2024.csv"))
 
     # Keep only the columns we need: 
     df = df[['id', 'swab_type', 'VOC', 'symptoms', 'symptom_onset_date', 't', 'age_group', 'ct_type', 'ct_value']]
@@ -71,7 +73,7 @@ def load_and_format():
 
     # Add additional columns with known but missing information:
     df["StudyID"] = "russell2024"
-    df["Pathogen"] = "SARS2"
+    df["Pathogen"] = "SARS-CoV-2"
     df["IndivSpecies"] = "Human"
     df["DOI"] = "10.1371/journal.pbio.3002463"
     df["Units"] = "Ct"
@@ -79,6 +81,7 @@ def load_and_format():
     df["AssayType"] = "RT-qPCR"
     df["ReadoutPlatform"] = "QuantStudio 3"
 
+    df["Biomarker"] = "pathogen load"
     df = enforce_schema(df)
     df = coerce_types(df)
     
