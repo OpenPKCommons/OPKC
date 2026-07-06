@@ -9,9 +9,12 @@ import random # <-- 1. IMPORT THE RANDOM MODULE
 
 # Define the absolute path to the base directory of the Django project (OPKCWeb)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# Repo root is one directory above the Django project
+REPO_ROOT = os.path.dirname(BASE_DIR)
 
-# Construct the full path to the CSV data file
-DATA_FILE_PATH = os.path.join(BASE_DIR, 'visualization', 'data', 'combined_cleaned_data.csv')
+# The site reads the *published* CSV in output/. See output/README.md for the
+# staged-vs-published workflow.
+DATA_FILE_PATH = os.path.join(REPO_ROOT, 'output', 'combined_cleaned_data_published.csv')
 
 # --- 2. DEFINE YOUR FEATURED PAPERS ---
 # (This section is unchanged)

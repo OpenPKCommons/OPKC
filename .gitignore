@@ -20,3 +20,6 @@ db.sqlite3
 # IDE/Editor files (e.g., VS Code or PyCharm)
 .vscode/
 .idea/
+
+# Staged (unpublished) ingestion output — see output/README.md
+output/combined_cleaned_data_staged.csv
