@@ -19,4 +19,5 @@ urlpatterns = [
     path('why_kinetics/', views.why_kinetics_view, name='why_kinetics'),
     path('add_dataset/', views.add_dataset_view, name='add_dataset'),
     path('fit/', views.fit_view, name='fit_pathogen_load'),
+    path('download/', views.download_view, name='download_selection'),
 ]

@@ -151,6 +151,17 @@
                 <div id="fit-status" class="text-xs text-gray-600 italic"></div>
             </div>
 
+            <div class="pt-2 border-t border-gray-200 space-y-2">
+                <label class="font-semibold text-gray-700">Download</label>
+                <p class="text-xs text-gray-500 leading-tight">
+                    Export the current filter selection as a CSV containing the full schema record for each matching row.
+                </p>
+                <button id="download-btn" class="w-full px-3 py-2 text-sm font-medium bg-blue-600 hover:bg-blue-700 text-white rounded-md shadow-sm disabled:bg-gray-400 disabled:cursor-not-allowed">
+                    Download CSV
+                </button>
+                <div id="download-status" class="text-xs text-gray-600 italic"></div>
+            </div>
+
             <div id="status-message" class="text-sm text-gray-600 italic text-center">
                 Loading...
             </div>
@@ -784,6 +795,42 @@
 
         fitBtn.addEventListener('click', computeFit);
         clearFitBtn.addEventListener('click', clearFits);
+
+        // --- CSV download ---
+        const downloadBtn = document.getElementById('download-btn');
+        const downloadStatus = document.getElementById('download-status');
+
+        async function downloadCsv() {
+            downloadBtn.disabled = true;
+            downloadBtn.textContent = 'Preparing…';
+            downloadStatus.textContent = '';
+            try {
+                const response = await fetch("{% url 'visualization:download_selection' %}", {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrfToken },
+                    body: JSON.stringify({ filters: collectFilters() }),
+                });
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const blob = await response.blob();
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'opkc_selection.csv';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                downloadStatus.textContent = `Downloaded ${(blob.size / 1024).toFixed(0)} KB`;
+            } catch (e) {
+                console.error(e);
+                downloadStatus.textContent = 'Download failed — see console.';
+            } finally {
+                downloadBtn.disabled = false;
+                downloadBtn.textContent = 'Download CSV';
+            }
+        }
+
+        downloadBtn.addEventListener('click', downloadCsv);
 
         // --- Initial Load ---
         document.addEventListener('DOMContentLoaded', () => {

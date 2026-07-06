@@ -264,6 +264,30 @@ def _apply_chart_filters(df, f):
 
 
 @require_POST
+def download_view(request):
+    """Return the currently-selected subset of the dataset as a CSV attachment.
+
+    Applies the same filter set the chart uses. All schema columns are included
+    so the download is a full record, not just what's on the plot.
+    """
+    try:
+        payload = json.loads(request.body or b"{}")
+    except json.JSONDecodeError:
+        return JsonResponse({"error": "invalid JSON"}, status=400)
+
+    df = pd.read_csv(DATA_FILE_PATH, na_values=['<NA>'], low_memory=False)
+    df['BelowLOD'] = df['BelowLOD'].apply(_blod_label)
+    df['PathogenSubtype'] = df['PathogenSubtype'].fillna('Unspecified')
+    df = df.dropna(subset=['StudyID', 'SampleSource', 'TimeDays', 'Pathogen'])
+    df = _apply_chart_filters(df, payload.get("filters", {}))
+
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="opkc_selection.csv"'
+    df.to_csv(response, index=False)
+    return response
+
+
+@require_POST
 def fit_view(request):
     """Compute per-group piecewise-linear kinetics fits and return JSON.
 
