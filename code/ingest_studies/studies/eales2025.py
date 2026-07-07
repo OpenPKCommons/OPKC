@@ -277,7 +277,7 @@ def halwe():
     df["Pathogen"] = "Influenza"
     df["IndivSpecies"] = "Dairy cattle"
     df["DOI"] = "10.1101/2025.02.01.636082v1" # Eales et al
-    df["Units"] = "Ct WITH PLOTDIGITIZER"
+    df["Units"] = "Ct"
     df['LOD_max'] = 38
     df["AssayType"] = "RT-qPCR"
     df["SampleSource"] = "milk"

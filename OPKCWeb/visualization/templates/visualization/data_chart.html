@@ -28,6 +28,9 @@
         .filter-list::-webkit-scrollbar-track { background: #f1f5f9; }
         .filter-list::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 5px; }
         .filter-list::-webkit-scrollbar-thumb:hover { background: #475569; }
+        details > summary { cursor: pointer; }
+        details > summary::-webkit-details-marker { display: none; }
+        details > summary::marker { display: none; }
     </style>
 </head>
 <body class="bg-white font-sans text-gray-800 flex flex-col lg:flex-row h-screen overflow-hidden">
@@ -45,11 +48,11 @@
             <p class="text-sm text-gray-600 mt-1">Filter & Stratify Data</p>
         </div>
         
-        <div class="flex-grow overflow-y-auto p-6 space-y-6">
-            
+        <div class="flex-grow overflow-y-auto p-6 space-y-3">
+
             <div>
-                <label for="color-by-select" class="font-semibold text-gray-700">Color Scatter By</label>
-                <select id="color-by-select" class="w-full p-2 mt-2 border border-gray-300 rounded-md shadow-sm text-sm bg-white">
+                <label for="color-by-select" class="font-semibold text-gray-700 text-sm">Color By</label>
+                <select id="color-by-select" class="w-full p-2 mt-1 border border-gray-300 rounded-md shadow-sm text-sm bg-white">
                     <option value="StudyID" selected>Study</option>
                     <option value="SampleSource">Sample Source</option>
                     <option value="Pathogen">Pathogen</option>
@@ -58,87 +61,103 @@
                 </select>
             </div>
 
-            <div id="study-filter-group">
-                <div class="flex justify-between items-center mb-2">
-                    <label class="font-semibold text-gray-700">Filter by Study</label>
-                    <div>
-                        <button id="study-select-all" class="text-xs font-medium text-blue-600 hover:underline">All</button> |
-                        <button id="study-select-none" class="text-xs font-medium text-blue-600 hover:underline">None</button>
-                    </div>
+            <details open id="study-filter-group" class="border-t border-gray-100 pt-3">
+                <summary class="flex justify-between items-center select-none mb-1">
+                    <span class="font-semibold text-gray-700 text-sm">Study</span>
+                    <span id="study-badge" class="text-xs px-1.5 py-0.5 rounded-full font-medium bg-gray-100 text-gray-500"></span>
+                </summary>
+                <div class="flex justify-end gap-1 mb-1 text-xs">
+                    <button id="study-select-all" class="font-medium text-blue-600 hover:underline">All</button>
+                    <span class="text-gray-400">|</span>
+                    <button id="study-select-none" class="font-medium text-blue-600 hover:underline">None</button>
                 </div>
-                <div id="study-filter-list" class="filter-list h-32 max-h-32 overflow-y-auto space-y-1 rounded-md border border-gray-300 p-3 bg-gray-50">
+                <div id="study-filter-list" class="filter-list max-h-32 overflow-y-auto space-y-1 rounded-md border border-gray-300 p-3 bg-gray-50 text-sm">
                 </div>
-            </div>
+            </details>
 
-            <div id="pathogen-filter-group">
-                <div class="flex justify-between items-center mb-2">
-                    <label class="font-semibold text-gray-700">Filter by Pathogen</label>
-                    <div>
-                        <button id="pathogen-select-all" class="text-xs font-medium text-blue-600 hover:underline">All</button> |
-                        <button id="pathogen-select-none" class="text-xs font-medium text-blue-600 hover:underline">None</button>
-                    </div>
+            <details id="pathogen-filter-group" class="border-t border-gray-100 pt-3">
+                <summary class="flex justify-between items-center select-none mb-1">
+                    <span class="font-semibold text-gray-700 text-sm">Pathogen</span>
+                    <span id="pathogen-badge" class="text-xs px-1.5 py-0.5 rounded-full font-medium bg-gray-100 text-gray-500"></span>
+                </summary>
+                <div class="flex justify-end gap-1 mb-1 text-xs">
+                    <button id="pathogen-select-all" class="font-medium text-blue-600 hover:underline">All</button>
+                    <span class="text-gray-400">|</span>
+                    <button id="pathogen-select-none" class="font-medium text-blue-600 hover:underline">None</button>
                 </div>
-                <div id="pathogen-filter-list" class="filter-list h-24 max-h-24 overflow-y-auto space-y-1 rounded-md border border-gray-300 p-3 bg-gray-50">
+                <div id="pathogen-filter-list" class="filter-list max-h-24 overflow-y-auto space-y-1 rounded-md border border-gray-300 p-3 bg-gray-50 text-sm">
                 </div>
-            </div>
-            <div id="subtype-filter-group">
-                <div class="flex justify-between items-center mb-2">
-                    <label class="font-semibold text-gray-700">Filter by Subtype</label>
-                    <div>
-                        <button id="subtype-select-all" class="text-xs font-medium text-blue-600 hover:underline">All</button> |
-                        <button id="subtype-select-none" class="text-xs font-medium text-blue-600 hover:underline">None</button>
-                    </div>
-                </div>
-                <div id="subtype-filter-list" class="filter-list h-24 max-h-24 overflow-y-auto space-y-1 rounded-md border border-gray-300 p-3 bg-gray-50">
-                </div>
-            </div>
-            <div id="biomarker-filter-group">
-                <div class="flex justify-between items-center mb-2">
-                    <label class="font-semibold text-gray-700">Filter by Biomarker</label>
-                    <div>
-                        <button id="biomarker-select-all" class="text-xs font-medium text-blue-600 hover:underline">All</button> |
-                        <button id="biomarker-select-none" class="text-xs font-medium text-blue-600 hover:underline">None</button>
-                    </div>
-                </div>
-                <div id="biomarker-filter-list" class="filter-list h-24 max-h-24 overflow-y-auto space-y-1 rounded-md border border-gray-300 p-3 bg-gray-50">
-                </div>
-            </div>
-            <div id="blod-filter-group">
-                <div class="flex justify-between items-center mb-2">
-                    <label class="font-semibold text-gray-700">Filter by Detection</label>
-                    <div>
-                        <button id="blod-select-all" class="text-xs font-medium text-blue-600 hover:underline">All</button> |
-                        <button id="blod-select-none" class="text-xs font-medium text-blue-600 hover:underline">None</button>
-                    </div>
-                </div>
-                <div id="blod-filter-list" class="filter-list h-24 max-h-24 overflow-y-auto space-y-1 rounded-md border border-gray-300 p-3 bg-gray-50">
-                </div>
-            </div>
-            <div id="samplesource-filter-group">
-                <div class="flex justify-between items-center mb-2">
-                    <label class="font-semibold text-gray-700">Filter by Sample Source</label>
-                    <div>
-                        <button id="samplesource-select-all" class="text-xs font-medium text-blue-600 hover:underline">All</button> |
-                        <button id="samplesource-select-none" class="text-xs font-medium text-blue-600 hover:underline">None</button>
-                    </div>
-                </div>
-                <div id="samplesource-filter-list" class="filter-list h-24 max-h-24 overflow-y-auto space-y-1 rounded-md border border-gray-300 p-3 bg-gray-50">
-                </div>
-            </div>
+            </details>
 
-            <div id="age-filter-group">
-                <label class="font-semibold text-gray-700">Filter by Age</label>
+            <details id="subtype-filter-group" class="border-t border-gray-100 pt-3">
+                <summary class="flex justify-between items-center select-none mb-1">
+                    <span class="font-semibold text-gray-700 text-sm">Subtype</span>
+                    <span id="subtype-badge" class="text-xs px-1.5 py-0.5 rounded-full font-medium bg-gray-100 text-gray-500"></span>
+                </summary>
+                <div class="flex justify-end gap-1 mb-1 text-xs">
+                    <button id="subtype-select-all" class="font-medium text-blue-600 hover:underline">All</button>
+                    <span class="text-gray-400">|</span>
+                    <button id="subtype-select-none" class="font-medium text-blue-600 hover:underline">None</button>
+                </div>
+                <div id="subtype-filter-list" class="filter-list max-h-24 overflow-y-auto space-y-1 rounded-md border border-gray-300 p-3 bg-gray-50 text-sm">
+                </div>
+            </details>
+
+            <details id="biomarker-filter-group" class="border-t border-gray-100 pt-3">
+                <summary class="flex justify-between items-center select-none mb-1">
+                    <span class="font-semibold text-gray-700 text-sm">Biomarker</span>
+                    <span id="biomarker-badge" class="text-xs px-1.5 py-0.5 rounded-full font-medium bg-gray-100 text-gray-500"></span>
+                </summary>
+                <div class="flex justify-end gap-1 mb-1 text-xs">
+                    <button id="biomarker-select-all" class="font-medium text-blue-600 hover:underline">All</button>
+                    <span class="text-gray-400">|</span>
+                    <button id="biomarker-select-none" class="font-medium text-blue-600 hover:underline">None</button>
+                </div>
+                <div id="biomarker-filter-list" class="filter-list max-h-24 overflow-y-auto space-y-1 rounded-md border border-gray-300 p-3 bg-gray-50 text-sm">
+                </div>
+            </details>
+
+            <details id="blod-filter-group" class="border-t border-gray-100 pt-3">
+                <summary class="flex justify-between items-center select-none mb-1">
+                    <span class="font-semibold text-gray-700 text-sm">Detection</span>
+                    <span id="blod-badge" class="text-xs px-1.5 py-0.5 rounded-full font-medium bg-gray-100 text-gray-500"></span>
+                </summary>
+                <div class="flex justify-end gap-1 mb-1 text-xs">
+                    <button id="blod-select-all" class="font-medium text-blue-600 hover:underline">All</button>
+                    <span class="text-gray-400">|</span>
+                    <button id="blod-select-none" class="font-medium text-blue-600 hover:underline">None</button>
+                </div>
+                <div id="blod-filter-list" class="filter-list max-h-24 overflow-y-auto space-y-1 rounded-md border border-gray-300 p-3 bg-gray-50 text-sm">
+                </div>
+            </details>
+
+            <details id="samplesource-filter-group" class="border-t border-gray-100 pt-3">
+                <summary class="flex justify-between items-center select-none mb-1">
+                    <span class="font-semibold text-gray-700 text-sm">Sample Source</span>
+                    <span id="samplesource-badge" class="text-xs px-1.5 py-0.5 rounded-full font-medium bg-gray-100 text-gray-500"></span>
+                </summary>
+                <div class="flex justify-end gap-1 mb-1 text-xs">
+                    <button id="samplesource-select-all" class="font-medium text-blue-600 hover:underline">All</button>
+                    <span class="text-gray-400">|</span>
+                    <button id="samplesource-select-none" class="font-medium text-blue-600 hover:underline">None</button>
+                </div>
+                <div id="samplesource-filter-list" class="filter-list max-h-24 overflow-y-auto space-y-1 rounded-md border border-gray-300 p-3 bg-gray-50 text-sm">
+                </div>
+            </details>
+
+            <details id="age-filter-group" class="border-t border-gray-100 pt-3">
+                <summary class="select-none font-semibold text-gray-700 text-sm mb-1">Age</summary>
                 <div class="flex items-center space-x-2 mt-2">
                     <input type="number" id="min-age" value="0" min="0" max="100" class="w-1/2 p-2 border border-gray-300 rounded-md shadow-sm text-sm">
-                    <span class="text-gray-600">to</span>
+                    <span class="text-gray-600 text-sm">to</span>
                     <input type="number" id="max-age" value="100" min="0" max="100" class="w-1/2 p-2 border border-gray-300 rounded-md shadow-sm text-sm">
                 </div>
-            </div>
+            </details>
 
-            <div class="pt-2 border-t border-gray-200 space-y-2">
-                <label class="font-semibold text-gray-700">Kinetics fit</label>
+            <div class="pt-3 border-t border-gray-200 space-y-2">
+                <label class="font-semibold text-gray-700 text-sm">Kinetics fit</label>
                 <p class="text-xs text-gray-500 leading-tight">
-                    Fits a 4-piece linear MLE to <em>Quantitative Load</em> and <em>Ct Value</em> panels, and a sliding-window mean of positivity to the <em>Binary Result</em> panel. All are stratified by the "Color Scatter By" grouping.
+                    Fits a 4-piece linear MLE to <em>Quantitative Load</em> and <em>Ct Value</em> panels, and a sliding-window mean of positivity to the <em>Binary Result</em> panel. Stratified by the "Color By" grouping.
                 </p>
                 <div class="flex gap-2">
                     <button id="fit-btn" class="flex-1 px-3 py-2 text-sm font-medium bg-blue-600 hover:bg-blue-700 text-white rounded-md shadow-sm disabled:bg-gray-400 disabled:cursor-not-allowed">
@@ -151,19 +170,15 @@
                 <div id="fit-status" class="text-xs text-gray-600 italic"></div>
             </div>
 
-            <div class="pt-2 border-t border-gray-200 space-y-2">
-                <label class="font-semibold text-gray-700">Download</label>
+            <div class="pt-3 border-t border-gray-200 space-y-2">
+                <label class="font-semibold text-gray-700 text-sm">Download</label>
                 <p class="text-xs text-gray-500 leading-tight">
-                    Export the current filter selection as a CSV containing the full schema record for each matching row.
+                    Export the current filter selection as a CSV.
                 </p>
                 <button id="download-btn" class="w-full px-3 py-2 text-sm font-medium bg-blue-600 hover:bg-blue-700 text-white rounded-md shadow-sm disabled:bg-gray-400 disabled:cursor-not-allowed">
                     Download CSV
                 </button>
                 <div id="download-status" class="text-xs text-gray-600 italic"></div>
-            </div>
-
-            <div id="status-message" class="text-sm text-gray-600 italic text-center">
-                Loading...
             </div>
 
         </div>
@@ -179,11 +194,9 @@
         </div>
     </aside>
 
-    <main class="w-full lg:w-3/4 h-1/2 lg:h-full p-4 lg:p-8 flex flex-col space-y-6 overflow-y-auto">
-        <div class="flex-shrink-0">
-            <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-6">
-                Pathogen Load vs. Time
-            </h2>
+    <main class="w-full lg:w-3/4 h-1/2 lg:h-full p-4 lg:p-8 flex flex-col space-y-2 overflow-y-auto">
+        <div id="status-message" class="text-sm text-gray-500 italic flex-shrink-0">Loading...</div>
+        <div class="flex-shrink-0 flex-1">
             <div id="plots-container" class="w-full h-[560px] flex flex-row space-x-2">
                 </div>
         </div>
@@ -258,6 +271,9 @@
         const PLOT_STATE = {};
         // Last computed fit result. Cleared when filters change (fits go stale).
         let CURRENT_FITS = null;
+        // Scatter plot divs from the current render, used to link x-axes.
+        let SCATTER_DIVS = [];
+        let isSyncingAxes = false;
 
         function populateFilters() {
             UNIQUE_STUDIES.forEach(study => {
@@ -391,6 +407,33 @@
             });
         }
 
+        function updateFilterBadges() {
+            const groups = [
+                { listId: 'study-filter-list',       badgeId: 'study-badge' },
+                { listId: 'pathogen-filter-list',     badgeId: 'pathogen-badge' },
+                { listId: 'subtype-filter-list',      badgeId: 'subtype-badge' },
+                { listId: 'biomarker-filter-list',    badgeId: 'biomarker-badge' },
+                { listId: 'blod-filter-list',         badgeId: 'blod-badge' },
+                { listId: 'samplesource-filter-list', badgeId: 'samplesource-badge' },
+            ];
+            groups.forEach(({ listId, badgeId }) => {
+                const listEl = document.getElementById(listId);
+                const badge  = document.getElementById(badgeId);
+                if (!listEl || !badge) return;
+                const allCbs = Array.from(listEl.querySelectorAll('input[type=checkbox]'))
+                    .filter(cb => cb.closest('label').style.display !== 'none');
+                const total   = allCbs.length;
+                const checked = allCbs.filter(cb => cb.checked).length;
+                if (total === 0) { badge.textContent = ''; return; }
+                badge.textContent = `${checked}/${total}`;
+                if (checked < total) {
+                    badge.className = 'text-xs px-1.5 py-0.5 rounded-full font-bold bg-blue-100 text-blue-700';
+                } else {
+                    badge.className = 'text-xs px-1.5 py-0.5 rounded-full font-medium bg-gray-100 text-gray-500';
+                }
+            });
+        }
+
         function getAgeBin(row) {
             if (row.AgeRng1 === null) return "Unknown";
             const avgAge = (row.AgeRng1 + row.AgeRng2) / 2;
@@ -408,6 +451,7 @@
          * Main function to filter data and update BOTH charts (Scatter & Bar)
          */
         function updatePlots() {
+            SCATTER_DIVS = [];
             // 1. Get selected filters
             const selectedStudies = Array.from(studyListDiv.querySelectorAll('input[type=checkbox]:checked')).map(cb => cb.value);
             const selectedSamples = Array.from(sampleListDiv.querySelectorAll('input[type=checkbox]:checked')).map(cb => cb.value);
@@ -501,6 +545,9 @@
                     const tracesMap = new Map();
                     let colorIndex = 0;
                     const colorMap = {}; // Local map for consistency within this plot
+                    const pointOpacity = categoryData.length <= 50  ? 0.85 :
+                                         categoryData.length <= 200 ? 0.65 :
+                                         categoryData.length <= 500 ? 0.45 : 0.3;
 
                     categoryData.forEach(d => {
                         let groupKey;
@@ -527,7 +574,7 @@
                                 mode: 'markers',
                                 type: 'scatter',
                                 name: groupKey,
-                                marker: { size: 6, opacity: 0.7, color: colorMap[groupKey] },
+                                marker: { size: 6, opacity: pointOpacity, color: colorMap[groupKey] },
                                 text: [],
                                 hovertemplate: '<b>%{text}</b><br>Time: %{x} days<br>Load: %{y}<br><i>Unit: %{customdata}</i>'
                             });
@@ -600,6 +647,7 @@
                     };
 
                     Plotly.newPlot(plotDiv, traces, layout, { displayModeBar: false, responsive: true });
+                    SCATTER_DIVS.push(plotDiv);
 
                     // Remember the plot + color assignment so drawFits() can
                     // overlay matching fit lines.
@@ -644,6 +692,29 @@
                 });
             }
 
+            // Link x-axes: zoom/pan on one scatter plot syncs all others.
+            if (SCATTER_DIVS.length > 1) {
+                SCATTER_DIVS.forEach((div) => {
+                    div.on('plotly_relayout', (eventData) => {
+                        if (isSyncingAxes) return;
+                        const x0   = eventData['xaxis.range[0]'];
+                        const x1   = eventData['xaxis.range[1]'];
+                        const auto = eventData['xaxis.autorange'];
+                        if (x0 === undefined && auto === undefined) return;
+                        isSyncingAxes = true;
+                        SCATTER_DIVS.forEach((other) => {
+                            if (other === div) return;
+                            if (auto) {
+                                Plotly.relayout(other, { 'xaxis.autorange': true });
+                            } else {
+                                Plotly.relayout(other, { 'xaxis.range[0]': x0, 'xaxis.range[1]': x1 });
+                            }
+                        });
+                        isSyncingAxes = false;
+                    });
+                });
+            }
+
             // If a fit is active, overlay it onto the freshly drawn plots.
             if (CURRENT_FITS) drawFits(CURRENT_FITS);
 
@@ -668,6 +739,7 @@
             // click "Compute fit" again to refit against the new subset.
             CURRENT_FITS = null;
             document.getElementById('fit-status').textContent = '';
+            updateFilterBadges();
             updatePlots();
         }
 
@@ -698,7 +770,7 @@
 
         minAgeInput.addEventListener('change', updatePlots);
         maxAgeInput.addEventListener('change', updatePlots);
-        colorBySelect.addEventListener('change', updatePlots);
+        colorBySelect.addEventListener('change', () => refreshFilters(null));
 
         window.addEventListener('resize', () => {
              updatePlots(); // Simple way to handle resize for multiple plots
@@ -847,6 +919,7 @@
                 updateDynamicSampleFilter();
                 updateDynamicPathogenFilter();
                 updateDynamicSubtypeFilter();
+                updateFilterBadges();
                 updatePlots();
             } else {
                  plotsContainer.innerHTML = '<div class="w-full h-full flex items-center justify-center text-gray-500 italic">No data to display.</div>';
