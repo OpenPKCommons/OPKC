@@ -74,7 +74,7 @@ def vuong2024():
     # Construct SampleID 
     df["SampleID"] = df["IndivID"].astype(str) + "_" + df["TimeDays"].astype(str)
 
-    df["StudyID"] = "vuong2024"
+    df["StudyID"] = "Vuong2024"
     df["Pathogen"] = "Dengue"
     df["IndivSpecies"] = "Human"
     df["SampleSource"] = "serum"

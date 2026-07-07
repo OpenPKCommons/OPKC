@@ -60,7 +60,7 @@ def load_and_format():
         })
 
     # Add additional columns with known but missing information:
-    df["StudyID"] = "ke2022"
+    df["StudyID"] = "Ke2022"
     df["Pathogen"] = "SARS-CoV-2"
     df["IndivSpecies"] = "Human"
     df["AgeRng2"] = df["AgeRng1"]

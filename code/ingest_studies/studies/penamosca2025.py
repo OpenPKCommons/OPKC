@@ -91,7 +91,7 @@ def penamosca2025():
     # Construct SampleID 
     df["SampleID"] = df["IndivID"].astype(str) + "_" + df["TimeDays"].astype(str)
 
-    df["StudyID"] = "penamosca2025"
+    df["StudyID"] = "Penamosca2025"
     df["Pathogen"] = "Influenza"
     df["IndivSpecies"] = "Dairy cattle"
     df["DOI"] = "10.1038/s41467-025-61553-z"

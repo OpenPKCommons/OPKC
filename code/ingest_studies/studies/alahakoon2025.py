@@ -54,7 +54,7 @@ def load_and_format():
         })
 
     # Add additional columns with known but missing information:
-    df["StudyID"] = "alahakoon2025"
+    df["StudyID"] = "Alahakoon2025"
     df["Pathogen"] = "West Nile virus"
     df["IndivSpecies"] = "Mosquitoes"
     df["DOI"] = "10.1101/2025.07.02.662782"

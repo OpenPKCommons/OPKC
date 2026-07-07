@@ -67,7 +67,7 @@ def load_and_format():
     df.loc[df["PathogenSubtype"] == "B.1.1.7", "AssayTargets"] = "N501Y, del69/70 spike protein AA"
 
     # Add additional columns with known but missing information:
-    df["StudyID"] = "jones2021"
+    df["StudyID"] = "Jones2021"
     df["Pathogen"] = "SARS-CoV-2"
     df["IndivSpecies"] = "Human"
     df["Units"] = "GEml (log10VL)" # intercepts available in supplemental material

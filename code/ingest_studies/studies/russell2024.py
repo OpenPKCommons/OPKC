@@ -72,7 +72,7 @@ def load_and_format():
     # df = split_age_range(df, col="age_group")
 
     # Add additional columns with known but missing information:
-    df["StudyID"] = "russell2024"
+    df["StudyID"] = "Russell2024"
     df["Pathogen"] = "SARS-CoV-2"
     df["IndivSpecies"] = "Human"
     df["DOI"] = "10.1371/journal.pbio.3002463"

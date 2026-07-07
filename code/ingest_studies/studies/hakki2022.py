@@ -118,7 +118,7 @@ def load_and_format():
         df["Units"] = pd.NA
 
     # 6) Fill study-level metadata lab schema expects
-    df["StudyID"] = "hakki2022"
+    df["StudyID"] = "Hakki2022"
     df["Pathogen"] = "SARS-CoV-2"
     df["IndivSpecies"] = "Human"
     df["DOI"] = "10.1016/S2213-2600(22)00226-0"

@@ -119,7 +119,7 @@ def load_savela2022_infection(data_dir: str) -> pd.DataFrame:
         df["SampleMethod"] = [p[1] for p in sample_pairs]
 
         # Metadata
-        df["StudyID"] = "savela2022"
+        df["StudyID"] = "Savela2022"
         df["Pathogen"] = "SARS-CoV-2"
         df["IndivSpecies"] = "Human"
         df["Units"] = "copies/mL"

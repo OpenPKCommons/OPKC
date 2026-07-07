@@ -59,7 +59,7 @@ def _load_sheet(base_dir, sheet_name, platform_type, units, readout_platform, ta
     df["BelowLOD"] = df["BiomarkerQuantity"].le(lod_min).where(df["BiomarkerQuantity"].notna(), pd.NA)
 
     # Core metadata
-    df["StudyID"] = "waickman2024"
+    df["StudyID"] = "Waickman2024"
     df["Pathogen"] = "Dengue"
     df["IndivSpecies"] = "human"
     # df["Symptoms1"] = "R51"     # Headache

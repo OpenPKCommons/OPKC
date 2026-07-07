@@ -25,7 +25,10 @@ STUDIES = [
     "jones2021",
     "ke2022",
     "kissler2023",
-    # "Kucirka2020",    # excluded — ingest not currently wired in
+    # "Kucirka2020",    # excluded — meta-analysis of test positivity, not raw
+    #                   #   kinetics; doesn't map to per-sample-per-person schema.
+    #                   #   Reingest would need to convert aggregates → synthetic
+    #                   #   binary rows before it can flow through the chart.
     "penamosca2025",
     "puhach2022",
     "russell2024",

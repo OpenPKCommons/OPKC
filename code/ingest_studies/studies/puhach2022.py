@@ -59,7 +59,7 @@ def load_and_format():
     df["BiomarkerQuantity"] = np.log10(src.where(src > 0))
 
     # Add additional columns with known but missing information:
-    df["StudyID"] = "puhach2022"
+    df["StudyID"] = "Puhach2022"
     df["Pathogen"] = "SARS-CoV-2"
     df["IndivSpecies"] = "Human"
     df["Units"] = "log10(copies/mL)"
