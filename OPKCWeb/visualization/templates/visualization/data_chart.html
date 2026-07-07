@@ -266,6 +266,13 @@
         
         const PLOTLY_COLORS = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf'];
 
+        function hexToRgba(hex, alpha) {
+            const r = parseInt(hex.slice(1, 3), 16);
+            const g = parseInt(hex.slice(3, 5), 16);
+            const b = parseInt(hex.slice(5, 7), 16);
+            return `rgba(${r},${g},${b},${alpha})`;
+        }
+
         // Per-bucket plot state (populated on each redraw). Used by the fit
         // overlay to attach traces to the right plot and match group colors.
         const PLOT_STATE = {};
@@ -653,26 +660,54 @@
                     // overlay matching fit lines.
                     PLOT_STATE[cat] = { plotDiv, colorMap };
 
-                    // --- Mini histogram beneath scatter ---
-                    const histCounts = {};
+                    // --- Mini histogram beneath scatter (stacked, color-matched) ---
+                    // Group counts by the same key used in the scatter above.
+                    const histGroups = new Map();
                     categoryData.forEach(d => {
-                        if (d.TimeDays !== null) {
-                            const day = Math.floor(d.TimeDays);
-                            histCounts[day] = (histCounts[day] || 0) + 1;
+                        if (d.TimeDays === null) return;
+                        let gk;
+                        switch (colorBy) {
+                            case 'StudyID':        gk = d.StudyID; break;
+                            case 'Pathogen':       gk = d.Pathogen; break;
+                            case 'PathogenSubtype': gk = d.PathogenSubtype; break;
+                            case 'Age':            gk = getAgeBin(d); break;
+                            default:               gk = d.SampleSource; break;
                         }
+                        if (!gk) gk = 'Unknown';
+                        const day = Math.floor(d.TimeDays);
+                        if (!histGroups.has(gk)) histGroups.set(gk, {});
+                        const c = histGroups.get(gk);
+                        c[day] = (c[day] || 0) + 1;
                     });
-                    const histDays = Object.keys(histCounts).map(Number).sort((a, b) => a - b);
-                    const histTrace = [{
-                        x: histDays,
-                        y: histDays.map(d => histCounts[d]),
-                        type: 'scatter',
-                        fill: 'tozeroy',
-                        line: { shape: 'hvh', color: '#94a3b8', width: 1 },
-                        fillcolor: 'rgba(148, 163, 184, 0.25)',
-                        mode: 'lines',
-                        hovertemplate: 'Day %{x}: %{y}<extra></extra>',
-                        showlegend: false
-                    }];
+
+                    const allHistDays = Array.from(
+                        new Set(Array.from(histGroups.values()).flatMap(c => Object.keys(c).map(Number)))
+                    ).sort((a, b) => a - b);
+
+                    // Stack in the same group order as the scatter traces.
+                    const groupOrder = Array.from(tracesMap.keys());
+                    const histTrace = [];
+                    let cumulative = new Array(allHistDays.length).fill(0);
+                    groupOrder.forEach(gk => {
+                        if (!histGroups.has(gk)) return;
+                        const counts = histGroups.get(gk);
+                        const perGroup = allHistDays.map(day => counts[day] || 0);
+                        const newCumulative = cumulative.map((c, i) => c + perGroup[i]);
+                        histTrace.push({
+                            x: allHistDays,
+                            y: newCumulative,
+                            customdata: perGroup,
+                            type: 'scatter',
+                            fill: histTrace.length === 0 ? 'tozeroy' : 'tonexty',
+                            line: { shape: 'hvh', color: colorMap[gk], width: 1 },
+                            fillcolor: hexToRgba(colorMap[gk], 0.35),
+                            mode: 'lines',
+                            name: gk,
+                            hovertemplate: `${gk}<br>Day %{x}: %{customdata}<extra></extra>`,
+                            showlegend: false,
+                        });
+                        cumulative = newCumulative;
+                    });
                     const histLayout = {
                         xaxis: { gridcolor: '#f3f4f6', zeroline: false, tickfont: { size: 10 } },
                         yaxis: {
