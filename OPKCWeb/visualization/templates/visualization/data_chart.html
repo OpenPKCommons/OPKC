@@ -274,8 +274,8 @@
                 label.className = 'block font-normal text-sm cursor-pointer hover:bg-gray-200 rounded px-1 study-label';
                 label.dataset.value = study; 
                 
-                // --- CHANGED: Default only to 'ke2022' ---
-                const isChecked = (study === 'ke2022') ? 'checked' : '';
+                // Default only to Ke2022 checked on first load.
+                const isChecked = (study === 'Ke2022') ? 'checked' : '';
                 
                 label.innerHTML = `<input type="checkbox" class="filter-checkbox" data-filter-type="study" value="${study}" ${isChecked}> ${study}`;
                 studyListDiv.appendChild(label);
