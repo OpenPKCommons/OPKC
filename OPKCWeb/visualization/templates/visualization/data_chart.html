@@ -536,7 +536,8 @@
                         // the categorical value to 0/1 so smoothed positivity
                         // curves (0..1) share the same coordinate system.
                         if (cat === 'binary') {
-                            trace.y.push(d.BiomarkerQuantity === 'Pos' ? 1 : 0);
+                            const baseVal = d.BiomarkerQuantity === 'Pos' ? 1 : 0;
+                            trace.y.push(baseVal + (Math.random() - 0.5) * 0.08);
                         } else {
                             trace.y.push(d.BiomarkerQuantity);
                         }
