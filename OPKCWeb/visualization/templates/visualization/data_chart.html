@@ -184,15 +184,7 @@
             <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-6">
                 Pathogen Load vs. Time
             </h2>
-            <div id="plots-container" class="w-full h-[500px] flex flex-row space-x-2">
-                </div>
-        </div>
-        
-        <div class="bg-white rounded-lg shadow-md border border-gray-200 p-4 md:p-6 flex-shrink-0">
-            <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-6">
-                Sample Count by Day
-            </h2>
-            <div id="timeDaysBarChart" class="w-full h-[500px]">
+            <div id="plots-container" class="w-full h-[560px] flex flex-row space-x-2">
                 </div>
         </div>
     </main>
@@ -249,7 +241,6 @@
         // --- 2. Get DOM References ---
         // CHANGED: Use the new container ID
         const plotsContainer = document.getElementById('plots-container');
-        const barPlotDiv = document.getElementById('timeDaysBarChart');
         const studyListDiv = document.getElementById('study-filter-list');
         const sampleListDiv = document.getElementById('samplesource-filter-list');
         const pathogenListDiv = document.getElementById('pathogen-filter-list');
@@ -485,14 +476,25 @@
                 const widthPercent = 100 / activeCategories.length;
 
                 activeCategories.forEach((cat, index) => {
-                    // Create a div for this specific plot
-                    const plotDiv = document.createElement('div');
-                    plotDiv.className = 'h-full';
-                    plotDiv.style.width = `${widthPercent}%`;
+                    // Column: scatter on top, mini histogram below
+                    const colDiv = document.createElement('div');
+                    colDiv.style.width = `${widthPercent}%`;
+                    colDiv.style.height = '100%';
+                    colDiv.style.display = 'flex';
+                    colDiv.style.flexDirection = 'column';
                     if (index < activeCategories.length - 1) {
-                        plotDiv.style.borderRight = '1px solid #e5e7eb'; // Separator
+                        colDiv.style.borderRight = '1px solid #e5e7eb';
                     }
-                    plotsContainer.appendChild(plotDiv);
+                    plotsContainer.appendChild(colDiv);
+
+                    const plotDiv = document.createElement('div');
+                    plotDiv.style.flex = '1';
+                    colDiv.appendChild(plotDiv);
+
+                    const histDiv = document.createElement('div');
+                    histDiv.style.height = '130px';
+                    histDiv.style.borderTop = '1px solid #f3f4f6';
+                    colDiv.appendChild(histDiv);
 
                     // Group data by 'colorBy' for this bucket
                     const categoryData = dataBuckets[cat];
@@ -602,43 +604,48 @@
                     // Remember the plot + color assignment so drawFits() can
                     // overlay matching fit lines.
                     PLOT_STATE[cat] = { plotDiv, colorMap };
+
+                    // --- Mini histogram beneath scatter ---
+                    const histCounts = {};
+                    categoryData.forEach(d => {
+                        if (d.TimeDays !== null) {
+                            const day = Math.floor(d.TimeDays);
+                            histCounts[day] = (histCounts[day] || 0) + 1;
+                        }
+                    });
+                    const histDays = Object.keys(histCounts).map(Number).sort((a, b) => a - b);
+                    const histTrace = [{
+                        x: histDays,
+                        y: histDays.map(d => histCounts[d]),
+                        type: 'scatter',
+                        fill: 'tozeroy',
+                        line: { shape: 'hvh', color: '#94a3b8', width: 1 },
+                        fillcolor: 'rgba(148, 163, 184, 0.25)',
+                        mode: 'lines',
+                        hovertemplate: 'Day %{x}: %{y}<extra></extra>',
+                        showlegend: false
+                    }];
+                    const histLayout = {
+                        xaxis: { gridcolor: '#f3f4f6', zeroline: false, tickfont: { size: 10 } },
+                        yaxis: {
+                            title: { text: 'Samples', font: { size: 10 }, standoff: 2 },
+                            zeroline: true,
+                            rangemode: 'tozero',
+                            gridcolor: '#f3f4f6',
+                            tickfont: { size: 9 },
+                            nticks: 3
+                        },
+                        paper_bgcolor: 'rgba(0,0,0,0)',
+                        plot_bgcolor: 'rgba(0,0,0,0)',
+                        margin: { l: 50, r: 20, t: 4, b: 40 },
+                        showlegend: false
+                    };
+                    Plotly.newPlot(histDiv, histTrace, histLayout, { displayModeBar: false, responsive: true });
                 });
             }
 
             // If a fit is active, overlay it onto the freshly drawn plots.
             if (CURRENT_FITS) drawFits(CURRENT_FITS);
-
-
-            // --- 4. Prep Data for Bar Plot (Unchanged logic) ---
-            const barCounts = {};
-            filteredData.forEach(row => {
-                if (row.TimeDays !== null) {
-                    const day = Math.floor(row.TimeDays); 
-                    barCounts[day] = (barCounts[day] || 0) + 1;
-                }
-            });
-            const sortedDays = Object.keys(barCounts).map(Number).sort((a, b) => a - b);
-            const barPlotData = [{
-                x: sortedDays,
-                y: sortedDays.map(day => barCounts[day]),
-                type: 'bar',
-                name: 'Sample Count',
-                marker: { color: 'rgb(37, 99, 235)' }
-            }];
-
-            const barLayout = {
-                xaxis: { title: 'Infection day', automargin: true, gridcolor: '#f3f4f6', zeroline: false },
-                yaxis: { title: 'Sample Count', zeroline: true, rangemode: 'tozero', gridcolor: '#f3f4f6' },
-                paper_bgcolor: 'rgba(0,0,0,0)',
-                plot_bgcolor: 'rgba(0,0,0,0)',
-                margin: { l: 60, r: 30, t: 60, b: 50 }, 
-            };
-
-            if (barPlotData[0].x.length > 0) {
-                Plotly.react(barPlotDiv, barPlotData, barLayout, { displayModeBar: false, responsive: true });
-            } else {
-                Plotly.react(barPlotDiv, [], {title: 'No data to display for selected filters'}, { responsive: true });
-            }
 
             statusMessage.textContent = `${filteredData.length} data points shown.`;
         }
@@ -843,7 +850,6 @@
                 updatePlots();
             } else {
                  plotsContainer.innerHTML = '<div class="w-full h-full flex items-center justify-center text-gray-500 italic">No data to display.</div>';
-                 barPlotDiv.innerHTML = '<div class="w-full h-full flex items-center justify-center text-gray-500 italic">No data to display.</div>';
             }
         });
 
